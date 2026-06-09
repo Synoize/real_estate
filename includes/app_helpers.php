@@ -11,11 +11,22 @@ function makeSlug($value)
 
 function cityUrl($city, $params = [])
 {
+    $useLocalityPath = !empty($params['_locality_path']);
+    unset($params['_locality_path']);
+
+    $locality = $useLocalityPath ? trim((string)($params['q'] ?? '')) : '';
+
+    if ($useLocalityPath && $locality !== '') {
+        unset($params['q']);
+    }
+
     $query = array_filter($params, static function ($value) {
         return $value !== null && $value !== '';
     });
 
-    return BASE_URL . makeSlug($city) . ($query ? '?' . http_build_query($query) : '');
+    $localitySegment = $locality !== '' ? str_replace('%20', '-', rawurlencode($locality)) : '';
+
+    return BASE_URL . makeSlug($city) . ($localitySegment !== '' ? '/' . $localitySegment : '') . ($query ? '?' . http_build_query($query) : '');
 }
 
 function fetchAvailableProjectCities($limit = 12)

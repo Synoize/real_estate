@@ -50,6 +50,11 @@ RewriteRule ^(about-us|contact-us|calculator|privacy-policy|terms|disclaimer|blo
 RewriteRule ^(admin|builder|employee|manager)/?$ $1/index.php [L,QSA]
 RewriteRule ^(admin|builder|employee|manager)/(login|logout|forgot-password|reset-password)/?$ $1/$2.php [L,QSA]
 
+# City/locality clean routes, for example /mumbai/bandra.
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([a-z0-9_-]+)/([^/]+)/?$ index.php?city_slug=$1&locality_slug=$2 [NC,L,QSA,B]
+
 # City clean routes, for example /mumbai or /pune.
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f

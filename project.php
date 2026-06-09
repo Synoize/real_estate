@@ -161,11 +161,14 @@ require_once __DIR__ . '/includes/header.php';
                 <button class="mt-4 h-12 w-full rounded-md bg-accent font-black text-primary">Schedule Now</button>
             </form>
 
-            <form method="post" action="<?php echo BASE_URL; ?>actions">
+            <form method="post" action="<?php echo BASE_URL; ?>actions" data-wishlist-form>
+                <?php $savedInWishlist = isLoggedIn() && isInWishlist((int)$project['id']); ?>
                 <input type="hidden" name="action" value="wishlist">
                 <input type="hidden" name="project_id" value="<?php echo (int)$project['id']; ?>">
-                <button class="h-12 w-full rounded-md border border-gray-200 bg-white font-bold text-primary">
-                    <i class="fa-regular fa-heart"></i> Save Project
+                <input type="hidden" name="redirect_to" value="<?php echo e(getCurrentPageUrl()); ?>">
+                <button class="h-12 w-full rounded-md border border-gray-200 bg-white font-bold text-primary" data-wishlist-button>
+                    <i class="<?php echo $savedInWishlist ? 'fa-solid text-red-500' : 'fa-regular'; ?> fa-heart" data-wishlist-icon></i>
+                    <span data-wishlist-label><?php echo $savedInWishlist ? 'Saved Project' : 'Save Project'; ?></span>
                 </button>
             </form>
         </aside>

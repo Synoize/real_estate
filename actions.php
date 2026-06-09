@@ -8,6 +8,15 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 $action = $_POST['action'] ?? '';
 $projectId = (int)($_POST['project_id'] ?? 0);
+$isAjax = strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest';
+
+function jsonActionResponse($payload, $statusCode = 200)
+{
+    http_response_code($statusCode);
+    header('Content-Type: application/json');
+    echo json_encode($payload);
+    exit;
+}
 
 try {
     if ($projectId <= 0) {
@@ -28,7 +37,17 @@ try {
     }
 
     if ($action === 'wishlist') {
-        requireLogin();
+        if (!isLoggedIn()) {
+            if ($isAjax) {
+                jsonActionResponse([
+                    'success' => false,
+                    'message' => 'Please login to save projects.',
+                    'login_url' => BASE_URL . 'login'
+                ], 401);
+            }
+
+            requireLogin();
+        }
 
         $stmt = $pdo->prepare("
             INSERT IGNORE INTO wishlist (user_id, project_id)
@@ -39,7 +58,30 @@ try {
             ':project_id' => $projectId
         ]);
 
-        setFlash('Project saved to your wishlist.', 'success');
+        if ($stmt->rowCount() > 0) {
+            $pdo->prepare('UPDATE projects SET total_wishlist = total_wishlist + 1 WHERE id = ?')->execute([$projectId]);
+            $message = 'Project saved to your wishlist.';
+            setFlash($message, 'success');
+        } else {
+            $message = 'Project is already in your wishlist.';
+            setFlash($message, 'success');
+        }
+
+        if ($isAjax) {
+            jsonActionResponse([
+                'success' => true,
+                'saved' => true,
+                'message' => $message,
+                'wishlist_count' => getWishlistCount()
+            ]);
+        }
+
+        $redirectTo = trim($_POST['redirect_to'] ?? '');
+
+        if ($redirectTo !== '' && strpos($redirectTo, BASE_URL) === 0) {
+            redirect($redirectTo);
+        }
+
         redirect(BASE_URL . 'project/' . urlencode($project['slug']));
     }
 
@@ -132,6 +174,13 @@ try {
 
     throw new RuntimeException('Unsupported action.');
 } catch (Throwable $e) {
+    if ($isAjax) {
+        jsonActionResponse([
+            'success' => false,
+            'message' => $e->getMessage()
+        ], 422);
+    }
+
     setFlash($e->getMessage(), 'danger');
     $fallback = !empty($project['slug']) ? BASE_URL . 'project/' . urlencode($project['slug']) : BASE_URL;
     redirect($fallback);

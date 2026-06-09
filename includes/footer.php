@@ -55,7 +55,7 @@ $footerLinks = [
                     <ul class="mt-4 space-y-3">
                         <?php foreach ($footerLocalities as $locality): ?>
                             <li>
-                                <a href="<?php echo e(cityUrl($locality['city'], ['q' => $locality['locality']])); ?>" class="text-sm text-white/70 hover:text-white">
+                                <a href="<?php echo e(cityUrl($locality['city'], ['q' => $locality['locality'], '_locality_path' => true])); ?>" class="text-sm text-white/70 hover:text-white">
                                     <?php echo e($locality['locality']); ?> Projects
                                 </a>
                             </li>

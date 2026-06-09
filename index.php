@@ -7,7 +7,9 @@ $pageTitle = 'Buy Homes Directly With Builders';
 $cities = fetchAvailableProjectCities(8);
 
 $citySlug = str_replace('_', '-', trim($_GET['city_slug'] ?? ''));
+$localitySlug = str_replace('_', '-', trim($_GET['locality_slug'] ?? ''));
 $cityFromPath = '';
+$localityFromPath = '';
 
 if (($_SERVER['QUERY_STRING'] ?? '') === '' && str_ends_with($_SERVER['REQUEST_URI'] ?? '', '?')) {
     redirect(strtok(getCurrentPageUrl(), '?'));
@@ -26,6 +28,34 @@ if ($citySlug !== '') {
     }
 }
 
+if ($cityFromPath !== '' && $localitySlug !== '') {
+    $localityStmt = $pdo->prepare("
+        SELECT locality
+        FROM projects
+        WHERE status = 'published'
+          AND deleted_at IS NULL
+          AND city = ?
+          AND locality IS NOT NULL
+          AND locality <> ''
+        GROUP BY locality
+    ");
+    $localityStmt->execute([$cityFromPath]);
+
+    foreach ($localityStmt->fetchAll() as $localityRow) {
+        if (makeSlug($localityRow['locality']) === makeSlug($localitySlug)) {
+            $localityFromPath = $localityRow['locality'];
+            break;
+        }
+    }
+
+    if ($localityFromPath === '') {
+        $params = $_GET;
+        unset($params['city_slug'], $params['locality_slug']);
+        $params['q'] = ucwords(str_replace(['-', '_'], ' ', $localitySlug));
+        redirect(cityUrl($cityFromPath, $params));
+    }
+}
+
 if ($citySlug === '' && !empty($_GET['city'])) {
     $params = $_GET;
     $cityForRedirect = trim($params['city']);
@@ -34,7 +64,7 @@ if ($citySlug === '' && !empty($_GET['city'])) {
 }
 
 $cleanParams = $_GET;
-unset($cleanParams['city_slug']);
+unset($cleanParams['city_slug'], $cleanParams['locality_slug']);
 $removedEmptyParam = false;
 
 foreach ($cleanParams as $key => $value) {
@@ -49,6 +79,11 @@ foreach ($cleanParams as $key => $value) {
 }
 
 if ($removedEmptyParam) {
+    if ($localityFromPath) {
+        $cleanParams['q'] = $localityFromPath;
+        $cleanParams['_locality_path'] = true;
+    }
+
     if ($cityFromPath) {
         redirect(cityUrl($cityFromPath, $cleanParams));
     }
@@ -59,14 +94,43 @@ if ($removedEmptyParam) {
 $filters = [
     'city' => $cityFromPath ?: trim($_GET['city'] ?? ''),
     'type' => trim($_GET['type'] ?? ''),
-    'q' => trim($_GET['q'] ?? '')
+    'q' => $localityFromPath ?: trim($_GET['q'] ?? '')
 ];
+
+if ($filters['city'] && $localitySlug === '' && !empty($_GET['q'])) {
+    $localityMatchStmt = $pdo->prepare("
+        SELECT locality
+        FROM projects
+        WHERE status = 'published'
+          AND deleted_at IS NULL
+          AND city = ?
+          AND locality IS NOT NULL
+          AND locality <> ''
+        GROUP BY locality
+    ");
+    $localityMatchStmt->execute([$filters['city']]);
+
+    foreach ($localityMatchStmt->fetchAll() as $localityRow) {
+        if (makeSlug($localityRow['locality']) === makeSlug($_GET['q'])) {
+            $params = $_GET;
+            unset($params['city_slug'], $params['locality_slug']);
+            $params['q'] = $localityRow['locality'];
+            $params['_locality_path'] = true;
+            redirect(cityUrl($filters['city'], $params));
+        }
+    }
+}
 
 $propertyTypes = fetchAvailableProjectTypes(['city' => $filters['city']]);
 
 if ($filters['type'] !== '' && !in_array($filters['type'], $propertyTypes, true)) {
     $params = $_GET;
-    unset($params['type'], $params['city_slug']);
+    unset($params['type'], $params['city_slug'], $params['locality_slug']);
+
+    if ($localityFromPath) {
+        $params['q'] = $localityFromPath;
+        $params['_locality_path'] = true;
+    }
 
     if ($filters['city']) {
         redirect(cityUrl($filters['city'], $params));
@@ -83,6 +147,21 @@ if ($requestedBudget !== '' && preg_match('/^\d+(\.\d+)?$/', $requestedBudget) &
     $selectedBudget = rtrim(rtrim(number_format((float)$requestedBudget, 2, '.', ''), '0'), '.');
     $selectedBudgetLabel = formatCurrency((float)$requestedBudget);
     $filters['budget_max'] = (float)$requestedBudget;
+}
+
+if ($filters['q'] !== '' && $localityFromPath === '') {
+    $searchCheckFilters = $filters;
+
+    if (empty(fetchPublishedProjects($searchCheckFilters, 1))) {
+        $params = $_GET;
+        unset($params['q'], $params['city_slug'], $params['locality_slug']);
+
+        if ($filters['city']) {
+            redirect(cityUrl($filters['city'], $params));
+        }
+
+        redirect(BASE_URL . ($params ? '?' . http_build_query($params) : ''));
+    }
 }
 
 $budgetOptions = fetchAvailableProjectBudgets([
@@ -203,7 +282,7 @@ require_once __DIR__ . '/includes/header.php';
                     <button
                         type="button"
                         data-search-type=""
-                        class="shrink-0 rounded-2xl rounded-b-none bg-primary min-w-[80px] px-5 py-3 text-white transition <?php echo !$filters['type'] ? 'border-b-4 border-accent-400' : 'text-white/80 hover:text-white'; ?>">
+                        class="shrink-0 rounded-2xl rounded-b-none bg-primary min-w-[80px] px-5 py-3 text-white transition <?php echo !$filters['type'] ? 'border-b-[3px] border-accent-400' : 'text-white/80 hover:text-white'; ?>">
                         All
                     </button>
                     <?php foreach ($propertyTypes as $type): ?>
@@ -211,7 +290,7 @@ require_once __DIR__ . '/includes/header.php';
                         <button
                             type="button"
                             data-search-type="<?php echo e($type); ?>"
-                            class="shrink-0 rounded-2xl rounded-b-none bg-primary min-w-[140px] px-5 py-3 text-white transition <?php echo $isActiveType ? 'border-b-4 border-accent-400' : 'text-white/80 hover:text-white'; ?>">
+                            class="shrink-0 rounded-2xl rounded-b-none bg-primary min-w-[140px] px-5 py-3 text-white transition <?php echo $isActiveType ? 'border-b-[3px] border-accent-400' : 'text-white/80 hover:text-white'; ?>">
                             <?php echo e($type === 'Plot' ? 'Plots' : $type); ?>
                         </button>
                     <?php endforeach; ?>
@@ -403,8 +482,9 @@ require_once __DIR__ . '/includes/header.php';
                                 <!-- TAGS -->
                                 <?php if ($filters['city'] && !empty($localities)): ?>
                                     <?php foreach (array_slice($localities, 0, 3) as $index => $locality): ?>
-                                        <a href="<?php echo cityUrl($filters['city'], ['q' => $locality['locality'], 'type' => $filters['type'], 'budget' => $selectedBudget]); ?>"
-                                            class="px-4 py-2 rounded-full <?php echo $index === 0 ? 'bg-accent text-white' : 'bg-gray-200 text-accent hover:bg-gray-300'; ?> text-[10px] font-medium transition">
+                                        <?php $isActiveLocality = makeSlug($filters['q']) === makeSlug($locality['locality']); ?>
+                                        <a href="<?php echo cityUrl($filters['city'], ['q' => $locality['locality'], '_locality_path' => true, 'type' => $filters['type'], 'budget' => $selectedBudget]); ?>"
+                                            class="px-4 py-2 rounded-full <?php echo $isActiveLocality || ($filters['q'] === '' && $index === 0) ? 'bg-accent text-white' : 'bg-gray-200 text-accent hover:bg-gray-300'; ?> text-[10px] font-medium transition">
                                             <?php echo e($locality['locality']); ?>
                                         </a>
                                     <?php endforeach; ?>
@@ -513,11 +593,11 @@ require_once __DIR__ . '/includes/header.php';
                             form.querySelector('[data-search-type-input]').value = tab.dataset.searchType || '';
 
                             form.querySelectorAll('[data-search-type]').forEach((typeTab) => {
-                                typeTab.classList.remove('border-b-4', 'border-accent-400');
+                                typeTab.classList.remove('border-b-[3px]', 'border-accent-400');
                                 typeTab.classList.add('text-white/80', 'hover:text-white');
                             });
 
-                            tab.classList.add('border-b-4', 'border-accent-400');
+                            tab.classList.add('border-b-[3px]', 'border-accent-400');
                             tab.classList.remove('text-white/80', 'hover:text-white');
 
                             form.requestSubmit();
@@ -670,9 +750,10 @@ require_once __DIR__ . '/includes/header.php';
                         $saleBadge = projectSaleBadge($project);
                         $primaryVideo = $projectVideos[(int)$project['id']] ?? [];
                         $videoUrl = trim((string)($primaryVideo['video_url'] ?? $project['youtube_video_link'] ?? ''));
+                        $savedInWishlist = isLoggedIn() && isInWishlist((int)$project['id']);
                         ?>
                         <article class="swiper-slide">
-                            <div class="bg-white rounded-2xl border border-gray-200 p-3 md:p-4 transition duration-300 hover:-translate-y-1 hover:shadow-sm">
+                            <div class="relative bg-white rounded-2xl border border-gray-200 p-3 md:p-4 transition duration-300 hover:-translate-y-1 hover:shadow-sm">
                                 <!-- IMAGE -->
                                 <a href="<?php echo BASE_URL . 'project/' . urlencode($project['slug']); ?>" class="relative">
                                     <img src="<?php echo e(projectImage($project)); ?>" alt="<?php echo e($project['project_name']); ?>"
@@ -686,11 +767,6 @@ require_once __DIR__ . '/includes/header.php';
                                         </button>
                                     <?php endif; ?>
 
-                                    <!-- HEART -->
-                                    <button class="absolute top-2 right-4 text-white text-xl md:text-2xl">
-                                        <i class="fa-regular fa-heart"></i>
-                                    </button>
-
                                     <!-- PLAY -->
                                     <button
                                         type="button"
@@ -699,6 +775,16 @@ require_once __DIR__ . '/includes/header.php';
                                         <i class="fa-solid fa-play"></i>
                                     </button>
                                 </a>
+
+                                <!-- HEART -->
+                                <form method="post" action="<?php echo BASE_URL; ?>actions" class="absolute top-2 right-4 z-20" data-wishlist-form>
+                                    <input type="hidden" name="action" value="wishlist">
+                                    <input type="hidden" name="project_id" value="<?php echo (int)$project['id']; ?>">
+                                    <input type="hidden" name="redirect_to" value="<?php echo e(getCurrentPageUrl()); ?>">
+                                    <button type="submit" class="text-white text-xl md:text-2xl drop-shadow" aria-label="<?php echo $savedInWishlist ? 'Saved in wishlist' : 'Add to wishlist'; ?>" data-wishlist-button>
+                                        <i class="<?php echo $savedInWishlist ? 'fa-solid text-red-500' : 'fa-regular'; ?> fa-heart" data-wishlist-icon></i>
+                                    </button>
+                                </form>
 
                                 <!-- CONTENT -->
                                 <div class="pt-4 p-1">
@@ -873,7 +959,7 @@ require_once __DIR__ . '/includes/header.php';
                     <div class="swiper-slide">
                         <div class="group relative bg-white rounded-2xl
     p-5 shadow-sm border
-    overflow-hidden hover:-translate-y-1 min-h-[260px] transition-all duration-300 hover:shadow-lg">
+    overflow-hidden hover:-translate-y-1 min-h-[260px] transition-all duration-300 hover:shadow-sm">
 
                             <?php if ($developerYears !== null): ?>
                                 <!-- YEARS -->
@@ -1250,6 +1336,249 @@ require_once __DIR__ . '/includes/header.php';
                     </button>
 
                 </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- Client Testimonials -->
+<section class="py-12 md:py-16 overflow-hidden">
+
+    <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-20">
+
+        <!-- TOP BAR -->
+        <div class="flex items-center justify-between mb-8">
+
+            <div>
+                <div
+                    class="flex items-center gap-2 text-red-500 uppercase font-semibold text-xs md:text-sm mb-3">
+                    <i class="fa-solid fa-video"></i>
+                    <span>Client Testimonials</span>
+                </div>
+
+                <h2 class="text-primary text-2xl md:text-3xl font-semibold leading-tight mb-3">
+                    Hear What Our Happy Clients Say
+                </h2>
+
+                <p class="text-gray-500 text-xs md:text-base">
+                    Watch real experiences and success stories shared by our valued clients
+                </p>
+            </div>
+
+            <!-- NAVIGATION -->
+            <div class="hidden md:flex items-center gap-3">
+
+                <button
+                    class="testimonial-prev w-11 h-11 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+
+                <button
+                    class="testimonial-next w-11 h-11 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- SWIPER -->
+        <div class="swiper testimonialSwiper overflow-visible">
+
+            <div class="swiper-wrapper">
+
+                <!-- CARD 1 -->
+                <div class="swiper-slide">
+
+                    <div
+                        class="overflow-hidden rounded-2xl min-w-[280px] max-w-[340px] h-[380px] sm:h-[440px] md:h-[480px] bg-black border border-gray-200 shadow-lg">
+
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/jNQXAC9IVRw"
+                            title="YouTube video" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+
+                    </div>
+
+                </div>
+
+                <!-- CARD 2 -->
+                <div class="swiper-slide">
+
+                    <div
+                        class="overflow-hidden rounded-2xl min-w-[280px] max-w-[340px] h-[380px] sm:h-[440px] md:h-[480px] bg-black border border-gray-200 shadow-lg">
+
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/jNQXAC9IVRw"
+                            title="YouTube video" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+
+                    </div>
+
+                </div>
+
+                <!-- CARD 3 -->
+                <div class="swiper-slide">
+
+                    <div
+                        class="overflow-hidden rounded-2xl min-w-[280px] max-w-[340px] h-[380px] sm:h-[440px] md:h-[480px] bg-black border border-gray-200 shadow-lg">
+
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/jNQXAC9IVRw"
+                            title="YouTube video" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+
+                    </div>
+
+                </div>
+
+                <!-- CARD 4 -->
+                <div class="swiper-slide">
+
+                    <div
+                        class="overflow-hidden rounded-2xl min-w-[280px] max-w-[340px] h-[380px] sm:h-[440px] md:h-[480px] bg-black border border-gray-200 shadow-lg">
+
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/jNQXAC9IVRw"
+                            title="YouTube video" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+
+                    </div>
+
+                </div>
+
+                <!-- CARD 5 -->
+                <div class="swiper-slide">
+
+                    <div
+                        class="overflow-hidden rounded-2xl min-w-[280px] max-w-[340px] h-[380px] sm:h-[440px] md:h-[480px] bg-black border border-gray-200 shadow-lg">
+
+                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/jNQXAC9IVRw"
+                            title="YouTube video" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FAQ's -->
+<section class="mx-auto max-w-3xl px-4 pb-12 md:pb-16">
+
+    <!-- Heading -->
+    <h2 class="text-primary text-center text-2xl md:text-3xl font-semibold leading-tight">
+        Frequently
+        <span class="relative inline-block border-b-2 border-accent border-solid rounded-sm pb-3">
+            Asked
+        </span>
+        Questions
+    </h2>
+
+    <!-- FAQ Container -->
+    <div class="mt-10 space-y-4">
+
+        <!-- ITEM -->
+        <div class="faq-item border rounded-xl overflow-hidden bg-white">
+
+            <button
+                class="faq-btn w-full flex items-center justify-between px-5 py-4 text-left font-medium text-xs md:text-base">
+
+                What products do you offer on your platform?
+
+                <!-- SVG ICON -->
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    class="faq-icon w-5 h-5 transition-transform duration-300" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+
+                </svg>
+
+            </button>
+
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+
+                <p class="px-5 py-5 text-xs md:text-sm bg-gray-50 text-gray-600 leading-relaxed">
+                    We offer electronics, fashion, home essentials, beauty products,
+                    lifestyle accessories, and many trending collections from trusted sellers.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ITEM -->
+        <div class="faq-item border rounded-xl overflow-hidden bg-white">
+
+            <button
+                class="faq-btn w-full flex items-center justify-between px-5 py-4 text-left font-medium text-xs md:text-base">
+
+                How long does delivery take?
+
+                <!-- SVG ICON -->
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    class="faq-icon w-5 h-5 transition-transform duration-300" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+
+                </svg>
+
+            </button>
+
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+
+                <p class="px-5 py-5 text-xs md:text-sm bg-gray-50 text-gray-600 leading-relaxed">
+                    Delivery usually takes between 2–7 business days depending on your
+                    location and shipping option selected.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ITEM -->
+        <div class="faq-item border rounded-xl overflow-hidden bg-white">
+
+            <button
+                class="faq-btn w-full flex items-center justify-between px-5 py-4 text-left font-medium text-xs md:text-base">
+
+                What payment methods are available?
+
+                <!-- SVG ICON -->
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    class="faq-icon w-5 h-5 transition-transform duration-300" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+
+                </svg>
+
+            </button>
+
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+
+                <p class="px-5 py-5 text-xs md:text-sm bg-gray-50 text-gray-600 leading-relaxed">
+                    We support UPI, debit cards, credit cards, net banking, wallets,
+                    and cash on delivery for eligible orders.
+                </p>
 
             </div>
 

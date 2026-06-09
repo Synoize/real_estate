@@ -82,6 +82,56 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         });
     }
+
+    document.querySelectorAll("[data-wishlist-form]").forEach((form) => {
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const button = form.querySelector("[data-wishlist-button]");
+            const icon = form.querySelector("[data-wishlist-icon]");
+            const label = form.querySelector("[data-wishlist-label]");
+
+            button?.setAttribute("disabled", "disabled");
+            button?.classList.add("opacity-70", "pointer-events-none");
+
+            try {
+                const response = await fetch(form.action, {
+                    method: "POST",
+                    body: new FormData(form),
+                    headers: {
+                        "X-Requested-With": "XMLHttpRequest",
+                        "Accept": "application/json",
+                    },
+                });
+
+                const data = await response.json();
+
+                if (response.status === 401 && data.login_url) {
+                    window.location.href = data.login_url;
+                    return;
+                }
+
+                if (!response.ok || !data.success) {
+                    throw new Error(data.message || "Could not update wishlist.");
+                }
+
+                if (data.saved) {
+                    icon?.classList.remove("fa-regular");
+                    icon?.classList.add("fa-solid", "text-red-500");
+                    button?.setAttribute("aria-label", "Saved in wishlist");
+
+                    if (label) {
+                        label.textContent = "Saved Project";
+                    }
+                }
+            } catch (error) {
+                form.submit();
+            } finally {
+                button?.removeAttribute("disabled");
+                button?.classList.remove("opacity-70", "pointer-events-none");
+            }
+        });
+    });
 });
 
 window.addEventListener("load", () => {
