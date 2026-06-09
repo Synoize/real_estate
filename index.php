@@ -4,8 +4,6 @@ require_once __DIR__ . '/includes/app_helpers.php';
 
 $pageTitle = 'Buy Homes Directly With Builders';
 
-$propertyTypes = ['Apartment', 'Plot', 'Villa'];
-
 $cities = fetchAvailableProjectCities(8);
 
 $citySlug = str_replace('_', '-', trim($_GET['city_slug'] ?? ''));
@@ -63,6 +61,19 @@ $filters = [
     'type' => trim($_GET['type'] ?? ''),
     'q' => trim($_GET['q'] ?? '')
 ];
+
+$propertyTypes = fetchAvailableProjectTypes(['city' => $filters['city']]);
+
+if ($filters['type'] !== '' && !in_array($filters['type'], $propertyTypes, true)) {
+    $params = $_GET;
+    unset($params['type'], $params['city_slug']);
+
+    if ($filters['city']) {
+        redirect(cityUrl($filters['city'], $params));
+    }
+
+    redirect(BASE_URL . ($params ? '?' . http_build_query($params) : ''));
+}
 
 $selectedBudget = '';
 $selectedBudgetLabel = '';
@@ -615,11 +626,11 @@ require_once __DIR__ . '/includes/header.php';
                 </div>
 
                 <h2 class="text-primary text-2xl md:text-3xl font-semibold leading-tight mb-3">
-                    Top New Launches In Mumbai
+                    <?php echo $filters['city'] ? 'Top New Launches In ' . e($filters['city']) : 'Top New Launches'; ?>
                 </h2>
 
                 <p class="text-gray-500 text-xs md:text-base">
-                    Discover the Latest Real Estate Projects in Mumbai
+                    <?php echo $filters['city'] ? 'Discover the latest real estate projects in ' . e($filters['city']) : 'Discover the latest real estate projects from live inventory'; ?>
                 </p>
             </div>
 
@@ -734,74 +745,23 @@ require_once __DIR__ . '/includes/header.php';
 
                                             <!-- SCROLLABLE AREA -->
                                             <div class="max-h-[80px] overflow-y-auto scrollbar-thin">
-                                                <!-- ROW -->
-                                                <?php if (!empty($unitPlans[0])): ?>
+                                                <?php foreach ($unitPlans as $index => $plan): ?>
+                                                    <?php
+                                                    $planTitle = trim((string)($plan['bhk_type'] ?: $plan['unit_name'] ?: $project['project_type']));
+                                                    $planArea = trim((string)($plan['area'] ?: $project['total_area']));
+                                                    $planPrice = (float)($plan['price'] ?? 0);
+                                                    ?>
                                                     <div class="flex justify-between items-center gap-3
             px-4 py-3 bg-primary-50
-            border-b border-gray-200
+            <?php echo $index < count($unitPlans) - 1 ? 'border-b border-gray-200' : ''; ?>
             text-primary font-semibold text-xs">
 
-                                                        <span><?php echo !empty($unitPlans[0]) ? e($unitPlans[0]['bhk_type'] ?: $unitPlans[0]['unit_name'] ?: 'Unit') : 'Unit'; ?></span>
-                                                        <span><?php echo !empty($unitPlans[0]) ? e($unitPlans[0]['area'] ?: 'Area on request') : 'Area on request'; ?></span>
-                                                        <span><?php echo !empty($unitPlans[0]) && (float)$unitPlans[0]['price'] > 0 ? e(formatCurrency($unitPlans[0]['price'])) : 'Price on request'; ?></span>
+                                                        <span><?php echo e($planTitle); ?></span>
+                                                        <span><?php echo e($planArea); ?></span>
+                                                        <span><?php echo e($planPrice > 0 ? formatCurrency($planPrice) : projectPriceRange($project)); ?></span>
 
                                                     </div>
-                                                <?php endif; ?>
-
-                                                <!-- ROW -->
-                                                <?php if (!empty($unitPlans[1])): ?>
-                                                    <div class="flex justify-between items-center gap-3
-            px-4 py-3 bg-primary-50
-            border-b border-gray-200
-            text-primary font-semibold text-xs">
-
-                                                        <span><?php echo !empty($unitPlans[1]) ? e($unitPlans[1]['bhk_type'] ?: $unitPlans[1]['unit_name'] ?: 'Unit') : 'Unit'; ?></span>
-                                                        <span><?php echo !empty($unitPlans[1]) ? e($unitPlans[1]['area'] ?: 'Area on request') : 'Area on request'; ?></span>
-                                                        <span><?php echo !empty($unitPlans[1]) && (float)$unitPlans[1]['price'] > 0 ? e(formatCurrency($unitPlans[1]['price'])) : 'Price on request'; ?></span>
-
-                                                    </div>
-                                                <?php endif; ?>
-
-                                                <!-- ROW -->
-                                                <?php if (!empty($unitPlans[2])): ?>
-                                                    <div class="flex justify-between items-center gap-3
-            px-4 py-3 bg-primary-50
-            border-b border-gray-200
-            text-primary font-semibold text-xs">
-
-                                                        <span><?php echo !empty($unitPlans[2]) ? e($unitPlans[2]['bhk_type'] ?: $unitPlans[2]['unit_name'] ?: 'Unit') : 'Unit'; ?></span>
-                                                        <span><?php echo !empty($unitPlans[2]) ? e($unitPlans[2]['area'] ?: 'Area on request') : 'Area on request'; ?></span>
-                                                        <span><?php echo !empty($unitPlans[2]) && (float)$unitPlans[2]['price'] > 0 ? e(formatCurrency($unitPlans[2]['price'])) : 'Price on request'; ?></span>
-
-                                                    </div>
-                                                <?php endif; ?>
-
-                                                <!-- ROW -->
-                                                <?php if (!empty($unitPlans[3])): ?>
-                                                    <div class="flex justify-between items-center gap-3
-            px-4 py-3 bg-primary-50
-            border-b border-gray-200
-            text-primary font-semibold text-xs">
-
-                                                        <span><?php echo !empty($unitPlans[3]) ? e($unitPlans[3]['bhk_type'] ?: $unitPlans[3]['unit_name'] ?: 'Unit') : 'Unit'; ?></span>
-                                                        <span><?php echo !empty($unitPlans[3]) ? e($unitPlans[3]['area'] ?: 'Area on request') : 'Area on request'; ?></span>
-                                                        <span><?php echo !empty($unitPlans[3]) && (float)$unitPlans[3]['price'] > 0 ? e(formatCurrency($unitPlans[3]['price'])) : 'Price on request'; ?></span>
-
-                                                    </div>
-                                                <?php endif; ?>
-
-                                                <!-- ROW -->
-                                                <?php if (!empty($unitPlans[4])): ?>
-                                                    <div class="flex justify-between items-center gap-3
-            px-4 py-3 bg-primary-50
-            text-primary font-semibold text-xs">
-
-                                                        <span><?php echo !empty($unitPlans[4]) ? e($unitPlans[4]['bhk_type'] ?: $unitPlans[4]['unit_name'] ?: 'Unit') : 'Unit'; ?></span>
-                                                        <span><?php echo !empty($unitPlans[4]) ? e($unitPlans[4]['area'] ?: 'Area on request') : 'Area on request'; ?></span>
-                                                        <span><?php echo !empty($unitPlans[4]) && (float)$unitPlans[4]['price'] > 0 ? e(formatCurrency($unitPlans[4]['price'])) : 'Price on request'; ?></span>
-
-                                                    </div>
-                                                <?php endif; ?>
+                                                <?php endforeach; ?>
 
                                             </div>
 

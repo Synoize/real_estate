@@ -57,6 +57,12 @@ INSERT IGNORE INTO project_categories (
   ('Apartment', 'apartment', 'building-2', 'active'),
   ('Plot', 'plot', 'map', 'active');
 
+UPDATE projects
+SET status = 'draft',
+    deleted_at = COALESCE(deleted_at, NOW())
+WHERE slug = 'skyline-garden-villas'
+  AND project_type NOT IN ('Apartment', 'Plot');
+
 INSERT IGNORE INTO projects (
   uuid, builder_id, assigned_manager_id, category_id, project_type,
   project_name, slug, project_code, rera_number, city, state, locality,
@@ -104,6 +110,105 @@ INSERT IGNORE INTO projects (
   NULL, 0, 120, 0, '12 acres', '2028-03-31', '2025-01-15',
   4500000, 12500000, 0, 1, 'Upcoming', 'published'
 );
+
+INSERT INTO project_unit_plans (
+  project_id, unit_name, bhk_type, area, facing, price, booking_amount, description
+)
+SELECT p.id, '2 BHK Comfort', '2 BHK', '760 sqft', 'East', 12500000, 500000, 'Compact sea-facing apartment plan.'
+FROM projects p
+WHERE p.slug = 'skyline-marina-residences'
+  AND NOT EXISTS (
+    SELECT 1 FROM project_unit_plans u
+    WHERE u.project_id = p.id AND u.unit_name = '2 BHK Comfort'
+  );
+
+INSERT INTO project_unit_plans (
+  project_id, unit_name, bhk_type, area, facing, price, booking_amount, description
+)
+SELECT p.id, '3 BHK Signature', '3 BHK', '1180 sqft', 'West', 24500000, 750000, 'Larger apartment with premium balcony space.'
+FROM projects p
+WHERE p.slug = 'skyline-marina-residences'
+  AND NOT EXISTS (
+    SELECT 1 FROM project_unit_plans u
+    WHERE u.project_id = p.id AND u.unit_name = '3 BHK Signature'
+  );
+
+INSERT INTO project_unit_plans (
+  project_id, unit_name, bhk_type, area, facing, price, booking_amount, description
+)
+SELECT p.id, '2 BHK Urban', '2 BHK', '680 sqft', 'East', 7200000, 300000, 'Efficient apartment for IT corridor buyers.'
+FROM projects p
+WHERE p.slug = 'green-vista-heights'
+  AND NOT EXISTS (
+    SELECT 1 FROM project_unit_plans u
+    WHERE u.project_id = p.id AND u.unit_name = '2 BHK Urban'
+  );
+
+INSERT INTO project_unit_plans (
+  project_id, unit_name, bhk_type, area, facing, price, booking_amount, description
+)
+SELECT p.id, '3 BHK Garden', '3 BHK', '1040 sqft', 'North', 11800000, 400000, 'Family apartment with garden-facing views.'
+FROM projects p
+WHERE p.slug = 'green-vista-heights'
+  AND NOT EXISTS (
+    SELECT 1 FROM project_unit_plans u
+    WHERE u.project_id = p.id AND u.unit_name = '3 BHK Garden'
+  );
+
+INSERT INTO project_unit_plans (
+  project_id, unit_name, bhk_type, area, facing, price, booking_amount, description
+)
+SELECT p.id, 'Residential Plot 1000', 'Plot', '1000 sqft', 'East', 4500000, 250000, 'Entry-sized plotted development unit.'
+FROM projects p
+WHERE p.slug = 'skyline-garden-plots'
+  AND NOT EXISTS (
+    SELECT 1 FROM project_unit_plans u
+    WHERE u.project_id = p.id AND u.unit_name = 'Residential Plot 1000'
+  );
+
+INSERT INTO project_unit_plans (
+  project_id, unit_name, bhk_type, area, facing, price, booking_amount, description
+)
+SELECT p.id, 'Residential Plot 1800', 'Plot', '1800 sqft', 'West', 8100000, 350000, 'Larger plotted development unit for future construction planning.'
+FROM projects p
+WHERE p.slug = 'skyline-garden-plots'
+  AND NOT EXISTS (
+    SELECT 1 FROM project_unit_plans u
+    WHERE u.project_id = p.id AND u.unit_name = 'Residential Plot 1800'
+  );
+
+INSERT INTO project_videos (
+  project_id, video_title, video_url, thumbnail
+)
+SELECT p.id, 'Skyline Marina Walkthrough', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', p.thumbnail_image
+FROM projects p
+WHERE p.slug = 'skyline-marina-residences'
+  AND NOT EXISTS (
+    SELECT 1 FROM project_videos v
+    WHERE v.project_id = p.id AND v.video_title = 'Skyline Marina Walkthrough'
+  );
+
+INSERT INTO project_videos (
+  project_id, video_title, video_url, thumbnail
+)
+SELECT p.id, 'Green Vista Heights Tour', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', p.thumbnail_image
+FROM projects p
+WHERE p.slug = 'green-vista-heights'
+  AND NOT EXISTS (
+    SELECT 1 FROM project_videos v
+    WHERE v.project_id = p.id AND v.video_title = 'Green Vista Heights Tour'
+  );
+
+INSERT INTO project_videos (
+  project_id, video_title, video_url, thumbnail
+)
+SELECT p.id, 'Skyline Garden Plots Overview', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', p.thumbnail_image
+FROM projects p
+WHERE p.slug = 'skyline-garden-plots'
+  AND NOT EXISTS (
+    SELECT 1 FROM project_videos v
+    WHERE v.project_id = p.id AND v.video_title = 'Skyline Garden Plots Overview'
+  );
 
 INSERT IGNORE INTO users (
   uuid, full_name, phone, email, password, city, state,

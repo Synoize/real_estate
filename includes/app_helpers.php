@@ -62,6 +62,39 @@ function fetchAvailableProjectLocalities($limit = 8)
     return $stmt->fetchAll();
 }
 
+function fetchAvailableProjectTypes($filters = [], $limit = 8)
+{
+    global $pdo;
+
+    $where = [
+        "p.status = 'published'",
+        "p.deleted_at IS NULL",
+        "p.project_type IS NOT NULL",
+        "p.project_type <> ''",
+        "(c.id IS NULL OR c.status = 'active')"
+    ];
+    $params = [];
+
+    if (!empty($filters['city'])) {
+        $where[] = 'p.city = :city';
+        $params[':city'] = $filters['city'];
+    }
+
+    $stmt = $pdo->prepare("
+        SELECT p.project_type, COUNT(*) AS total
+        FROM projects p
+        LEFT JOIN project_categories c ON c.category_name = p.project_type
+        WHERE " . implode(' AND ', $where) . "
+        GROUP BY p.project_type
+        HAVING total > 0
+        ORDER BY MIN(COALESCE(c.id, 999)), p.project_type ASC
+        LIMIT " . (int)$limit
+    );
+    $stmt->execute($params);
+
+    return array_column($stmt->fetchAll(), 'project_type');
+}
+
 function fetchAvailableProjectBudgets($filters = [], $limit = 20)
 {
     global $pdo;
