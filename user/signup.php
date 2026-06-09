@@ -1,4 +1,5 @@
 <?php
+
 /**
  * USER SIGNUP PAGE
  * Production Ready
@@ -64,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($email)) {
 
         $errors[] = 'Email address is required';
-
     } elseif (
         !filter_var($email, FILTER_VALIDATE_EMAIL)
     ) {
@@ -75,7 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($phone)) {
 
         $errors[] = 'Phone number is required';
-
     } elseif (
         !preg_match('/^\+[1-9]\d{7,14}$/', $phone)
     ) {
@@ -87,7 +86,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($password)) {
 
         $errors[] = 'Password is required';
-
     } elseif (strlen($password) < 6) {
 
         $errors[] =
@@ -296,7 +294,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':action_title'       => 'User Registration',
                     ':action_description' => 'New user account created',
                     ':ip_address'         =>
-                        $_SERVER['REMOTE_ADDR'] ?? NULL
+                    $_SERVER['REMOTE_ADDR'] ?? NULL
 
                 ]);
 
@@ -312,12 +310,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 redirect(BASE_URL);
                 exit;
             }
-
         } catch (PDOException $e) {
 
             error_log(
                 'USER SIGNUP ERROR : ' .
-                $e->getMessage()
+                    $e->getMessage()
             );
 
             $errors[] =
@@ -328,288 +325,274 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $pageTitle = "Create Account";
 
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/head.php';
 
 ?>
 
-<section class="min-h-screen bg-gray-100 py-10 px-4">
+<section class="min-h-screen flex items-center justify-center px-6 pt-12 pb-16">
 
-    <div class="max-w-md mx-auto">
+    <div class="w-full max-w-sm">
 
-        <div class="bg-white rounded-2xl shadow-sm border p-6 md:p-8">
+        <!-- Logo -->
 
-            <!-- Logo -->
+        <div class="text-center mb-8">
 
-            <div class="text-center mb-8">
+            <h1 class="text-2xl font-medium text-gray-900">
+                Create Account
+            </h1>
 
-                <img
-                    src="<?php echo ASSETS_URL; ?>/public/logo.png"
-                    alt="Logo"
-                    class="h-20 mx-auto mb-4"
-                >
-
-                <h1 class="text-2xl font-bold text-gray-900">
-                    Create Account
-                </h1>
-
-                <p class="text-sm text-gray-500 mt-2">
-                    Join our real estate platform
-                </p>
-
-            </div>
-
-            <!-- Errors -->
-
-            <?php if (!empty($errors)) : ?>
-
-                <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
-
-                    <ul class="space-y-1">
-
-                        <?php foreach ($errors as $error) : ?>
-
-                            <li class="text-red-600 text-sm">
-                                • <?php echo e($error); ?>
-                            </li>
-
-                        <?php endforeach; ?>
-
-                    </ul>
-
-                </div>
-
-            <?php endif; ?>
-
-            <!-- Form -->
-
-            <form
-                method="POST"
-                id="signupForm"
-                class="space-y-5"
-            >
-
-                <!-- Full Name -->
-
-                <div>
-
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Full Name
-                    </label>
-
-                    <input
-                        type="text"
-                        name="full_name"
-                        required
-                        value="<?php echo e($fullName); ?>"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-accent"
-                    >
-
-                </div>
-
-                <!-- Email -->
-
-                <div>
-
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Email Address
-                    </label>
-
-                    <input
-                        type="email"
-                        name="email"
-                        required
-                        value="<?php echo e($email); ?>"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-accent"
-                    >
-
-                </div>
-
-                <!-- Mobile -->
-
-                <div>
-
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Mobile Number
-                    </label>
-
-                    <input
-                        type="tel"
-                        name="phone"
-                        required
-                        maxlength="16"
-                        pattern="\+[0-9]{8,15}"
-                        value="<?php echo e($phone); ?>"
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-accent"
-                    >
-
-                    <p class="text-xs text-gray-500 mt-1">
-                        Example: +919876543210
-                    </p>
-
-                </div>
-
-                <!-- Password -->
-
-                <div>
-
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Password
-                    </label>
-
-                    <input
-                        type="password"
-                        name="password"
-                        minlength="6"
-                        required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-accent"
-                    >
-
-                </div>
-
-                <!-- Confirm Password -->
-
-                <div>
-
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Confirm Password
-                    </label>
-
-                    <input
-                        type="password"
-                        name="confirm_password"
-                        required
-                        class="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-accent"
-                    >
-
-                </div>
-
-                <!-- Terms -->
-
-                <div class="flex items-start">
-
-                    <input
-                        type="checkbox"
-                        id="terms"
-                        name="terms"
-                        class="w-4 h-4 mt-1"
-                    >
-
-                    <label
-                        for="terms"
-                        class="ml-2 text-sm text-gray-600"
-                    >
-                        I agree to the
-
-                        <a
-                            href="<?php echo BASE_URL; ?>terms.php"
-                            class="text-accent hover:underline"
-                        >
-                            Terms of Service
-                        </a>
-
-                        and
-
-                        <a
-                            href="<?php echo BASE_URL; ?>privacy-policy.php"
-                            class="text-accent hover:underline"
-                        >
-                            Privacy Policy
-                        </a>
-                    </label>
-
-                </div>
-
-                <!-- Submit -->
-
-                <button
-                    type="submit"
-                    class="w-full bg-accent text-black py-3 rounded-xl font-medium hover:opacity-90 transition"
-                >
-                    Create Account
-                </button>
-
-            </form>
-
-            <!-- Login -->
-
-            <div class="mt-6 text-center">
-
-                <p class="text-sm text-gray-600">
-
-                    Already have an account?
-
-                    <a
-                        href="<?php echo BASE_URL; ?>user/login.php"
-                        class="text-accent hover:underline"
-                    >
-                        Login
-                    </a>
-
-                </p>
-
-            </div>
+            <p class="text-[12px] text-gray-500 mt-2">
+                Join our real estate platform
+            </p>
 
         </div>
 
+        <!-- Errors -->
+
+        <?php if (!empty($errors)) : ?>
+
+            <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+
+                <ul class="space-y-1">
+
+                    <?php foreach ($errors as $error) : ?>
+
+                        <li class="text-red-600 text-sm">
+                            • <?php echo e($error); ?>
+                        </li>
+
+                    <?php endforeach; ?>
+
+                </ul>
+
+            </div>
+
+        <?php endif; ?>
+
+        <!-- Form -->
+
+        <form
+            method="POST"
+            id="signupForm"
+            class="space-y-5">
+
+            <!-- Full Name -->
+
+            <div>
+
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Full Name
+                </label>
+
+                <input
+                    type="text"
+                    name="full_name"
+                    required
+                    value="<?php echo e($fullName); ?>"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-accent">
+
+            </div>
+
+            <!-- Email -->
+
+            <div>
+
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    name="email"
+                    required
+                    value="<?php echo e($email); ?>"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-accent">
+
+            </div>
+
+            <!-- Mobile -->
+
+            <div>
+
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Mobile Number
+                </label>
+
+                <input
+                    type="tel"
+                    name="phone"
+                    required
+                    maxlength="16"
+                    pattern="\+[0-9]{8,15}"
+                    value="<?php echo e($phone); ?>"
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-accent">
+
+                <p class="text-xs text-gray-500 mt-1">
+                    Example: +919876543210
+                </p>
+
+            </div>
+
+            <!-- Password -->
+
+            <div>
+
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    name="password"
+                    minlength="6"
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-accent">
+
+            </div>
+
+            <!-- Confirm Password -->
+
+            <div>
+
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Confirm Password
+                </label>
+
+                <input
+                    type="password"
+                    name="confirm_password"
+                    required
+                    class="w-full px-4 py-3 border border-gray-300 rounded-xl outline-none focus:border-accent">
+
+            </div>
+
+            <!-- Terms -->
+
+            <div class="flex items-start">
+
+                <input
+                    type="checkbox"
+                    id="terms"
+                    name="terms"
+                    class="w-4 h-4 mt-1">
+
+                <label
+                    for="terms"
+                    class="ml-2 text-sm text-gray-600">
+                    I agree to the
+
+                    <a
+                        href="<?php echo BASE_URL; ?>terms"
+                        class="text-accent hover:underline">
+                        Terms of Service
+                    </a>
+
+                    and
+
+                    <a
+                        href="<?php echo BASE_URL; ?>privacy-policy"
+                        class="text-accent hover:underline">
+                        Privacy Policy
+                    </a>
+                </label>
+
+            </div>
+
+            <!-- Submit -->
+
+            <button
+                type="submit"
+                class="w-full bg-accent text-black py-3 rounded-xl font-medium hover:opacity-90 transition">
+                Create Account
+            </button>
+
+        </form>
+
+        <!-- Login -->
+
+        <div class="mt-6 text-center">
+
+            <p class="text-sm text-gray-600">
+
+                Already have an account?
+
+                <a
+                    href="<?php echo BASE_URL; ?>login"
+                    class="text-accent hover:underline">
+                    Login
+                </a>
+
+            </p>
+
+        </div>
     </div>
 
 </section>
 
+<footer class="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-100 bg-green-100 backdrop-blur-sm py-3">
+    <p class="text-center text-xs tracking-wide text-gray-400">
+        🔒 Protected by industry-standard security and privacy practices.
+    </p>
+</footer>
+
 <script>
+    /* Mobile Validation */
 
-/* Mobile Validation */
+    document.querySelector(
+        'input[name="phone"]'
+    ).addEventListener('input', function() {
 
-document.querySelector(
-    'input[name="phone"]'
-).addEventListener('input', function() {
+        this.value = this.value.replace(/\s+/g, '');
 
-    this.value = this.value.replace(/\s+/g, '');
+        if (
+            this.value.length > 0 &&
+            this.value[0] !== '+'
+        ) {
 
-    if (
-        this.value.length > 0 &&
-        this.value[0] !== '+'
-    ) {
+            this.value =
+                '+' +
+                this.value.replace(/[^0-9]/g, '');
 
-        this.value =
-            '+' +
-            this.value.replace(/[^0-9]/g, '');
+        } else {
 
-    } else {
-
-        this.value =
-            '+' +
-            this.value
+            this.value =
+                '+' +
+                this.value
                 .substring(1)
                 .replace(/[^0-9]/g, '');
-    }
+        }
 
-    this.value = this.value.slice(0, 16);
-});
+        this.value = this.value.slice(0, 16);
+    });
 
-/* Password Match */
+    /* Password Match */
 
-document.getElementById(
-    'signupForm'
-).addEventListener('submit', function(e) {
+    document.getElementById(
+        'signupForm'
+    ).addEventListener('submit', function(e) {
 
-    const password =
-        document.querySelector(
-            'input[name="password"]'
-        ).value;
+        const password =
+            document.querySelector(
+                'input[name="password"]'
+            ).value;
 
-    const confirmPassword =
-        document.querySelector(
-            'input[name="confirm_password"]'
-        ).value;
+        const confirmPassword =
+            document.querySelector(
+                'input[name="confirm_password"]'
+            ).value;
 
-    if (password !== confirmPassword) {
+        if (password !== confirmPassword) {
 
-        e.preventDefault();
+            e.preventDefault();
 
-        alert('Passwords do not match');
+            alert('Passwords do not match');
 
-        return false;
-    }
-});
-
+            return false;
+        }
+    });
 </script>
+
+</main>
+</body>
+
+</html>

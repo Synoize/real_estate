@@ -35,5 +35,5 @@ setFlash(
 /* Redirect */
 
 redirect(
-    EMPLOYEE_URL . 'login.php'
+    EMPLOYEE_URL . 'login'
 );

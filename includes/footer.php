@@ -1,319 +1,92 @@
 </main>
-  <footer class="bg-primary text-white pt-14 md:pt-16 pb-10 overflow-hidden">
+<?php
+require_once __DIR__ . '/app_helpers.php';
 
-    <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-20">
+$footerLocalities = fetchAvailableProjectLocalities(6);
+$footerCities = fetchAvailableProjectCities(6);
+$footerCityNames = array_map(static function ($city) {
+    return $city['city'];
+}, $footerCities);
 
-      <!-- TOP GRID -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-12">
-
-        <!-- LOGO AREA -->
-        <div class="sm:col-span-2 lg:col-span-1">
-
-          <!-- LOGO -->
-          <div class="flex items-center gap-3">
-
-            <!-- ICON -->
-            <div
-              class="w-12 h-12 rounded-xl border-2 border-white flex items-center justify-center text-2xl font-black shrink-0">
-              H
-            </div>
-
-            <!-- TEXT -->
+$footerLinks = [
+    'Company' => [
+        'About us' => BASE_URL . 'about-us',
+        'Contact us' => BASE_URL . 'contact-us',
+        'Careers' => BASE_URL . 'careers',
+        'Blogs' => BASE_URL . 'blogs',
+    ],
+    'Tools' => [
+        'Calculator' => BASE_URL . 'calculator',
+        'Privacy Policy' => BASE_URL . 'privacy-policy',
+        'Terms' => BASE_URL . 'terms',
+        'Disclaimer' => BASE_URL . 'disclaimer',
+    ],
+    'Role Access' => [
+        'Admin Login' => ADMIN_URL . 'login',
+        'Builder Login' => BUILDER_URL . 'login',
+        'Employee Login' => EMPLOYEE_URL . 'login',
+        'Manager Login' => MANAGER_URL . 'login',
+    ],
+];
+?>
+<footer class="bg-primary text-white">
+    <div class="mx-auto max-w-[1400px] px-4 py-12 sm:px-6 lg:px-10">
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-[1.25fr_2fr]">
             <div>
-
-              <h2 class="text-[32px] md:text-[28px] leading-none font-black tracking-tight">
-                HOUSIEY
-              </h2>
-
-              <p class="text-white/70 uppercase tracking-[2px] text-[10px] mt-1">
-                Home Buying Simplified
-              </p>
-
+                <a href="<?php echo BASE_URL; ?>" class="inline-flex items-center gap-3">
+                    <span class="flex h-12 w-12 items-center justify-center rounded-md border-2 border-white text-lg font-black">1H</span>
+                    <span>
+                        <span class="block text-2xl font-black">1HousingKey</span>
+                        <span class="block text-xs font-bold uppercase tracking-[2px] text-white/60">Home Buying Simplified</span>
+                    </span>
+                </a>
+                <p class="mt-5 max-w-md text-sm leading-7 text-white/75">
+                    Verified direct-builder projects, no brokerage assistance, online presentations, and free site visit booking.
+                </p>
+                <div class="mt-5 space-y-2 text-sm text-white/80">
+                    <p><i class="fa-solid fa-envelope mr-2 text-accent"></i> support@1housingkey.com</p>
+                    <p><i class="fa-solid fa-location-dot mr-2 text-accent"></i> <?php echo e($footerCityNames ? implode(', ', $footerCityNames) : 'Verified project cities'); ?></p>
+                </div>
             </div>
 
-          </div>
+            <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+                <div>
+                    <h3 class="text-base font-black">Top Localities</h3>
+                    <ul class="mt-4 space-y-3">
+                        <?php foreach ($footerLocalities as $locality): ?>
+                            <li>
+                                <a href="<?php echo e(cityUrl($locality['city'], ['q' => $locality['locality']])); ?>" class="text-sm text-white/70 hover:text-white">
+                                    <?php echo e($locality['locality']); ?> Projects
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </div>
 
-          <!-- DETAILS -->
-          <div class="mt-8 space-y-4">
-
-            <p class="text-[15px] text-white/95 font-medium leading-relaxed">
-              RERA No. - A51900001761
-            </p>
-
-            <p class="text-[15px] text-white/95 font-medium leading-relaxed">
-              C.I. Number: U45500MH2016PTC286594
-            </p>
-
-            <p class="text-[15px] text-white/95 font-medium break-all">
-              support@housiey.com
-            </p>
-
-            <!-- BLOG -->
-            <p class="text-[15px] text-white/70 leading-relaxed">
-              Explore Housiey Blogs
-              <a href="#" class="text-white underline font-semibold hover:text-[#8dc7ff] transition">
-                Visit Now
-              </a>
-            </p>
-
-          </div>
-
+                <?php foreach ($footerLinks as $heading => $links): ?>
+                    <div>
+                        <h3 class="text-base font-black"><?php echo e($heading); ?></h3>
+                        <ul class="mt-4 space-y-3">
+                            <?php foreach ($links as $label => $url): ?>
+                                <li><a href="<?php echo e($url); ?>" class="text-sm text-white/70 hover:text-white"><?php echo e($label); ?></a></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    </div>
+                <?php endforeach; ?>
+            </div>
         </div>
 
-        <!-- COL -->
-        <div>
-
-          <h3 class="text-[18px] font-bold mb-5">
-            Top Localities In Pune
-          </h3>
-
-          <ul class="space-y-3">
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Top
-                Projects in Hinjewadi</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Top
-                Projects in Wakad</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Top
-                Projects in Punawale</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Top
-                Projects in Kharadi</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Top
-                Projects in Tathawade</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Top
-                Projects in Ravet</a></li>
-
-          </ul>
-
+        <div class="mt-10 flex flex-col gap-3 border-t border-white/10 pt-6 text-sm text-white/60 md:flex-row md:items-center md:justify-between">
+            <p>&copy; <?php echo date('Y'); ?> 1HousingKey. All rights reserved.</p>
+            <div class="flex gap-4">
+                <a href="<?php echo BASE_URL; ?>terms" class="hover:text-white">Terms</a>
+                <a href="<?php echo BASE_URL; ?>privacy-policy" class="hover:text-white">Privacy</a>
+                <a href="<?php echo BASE_URL; ?>contact-us" class="hover:text-white">Contact</a>
+            </div>
         </div>
-
-        <!-- COL -->
-        <div>
-
-          <h3 class="text-[18px] font-bold mb-5">
-            Top Builders In Pune
-          </h3>
-
-          <ul class="space-y-3">
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Top
-                Projects by VTP Realty</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Top
-                Projects by Vilas Javdekar</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Top
-                Projects by Kohinoor Group</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Top
-                Projects by Pride Purple</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Top
-                Projects by Lodha Group</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Top
-                Projects by Shapoorji Pallonji</a></li>
-
-          </ul>
-
-        </div>
-
-        <!-- COL -->
-        <div>
-
-          <h3 class="text-[18px] font-bold mb-5">
-            News by Cities
-          </h3>
-
-          <ul class="space-y-3">
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Mumbai
-                News</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Bangalore
-                News</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Ahmedabad
-                News</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Pune
-                News</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Gurugram
-                News</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Hyderabad
-                News</a></li>
-
-          </ul>
-
-        </div>
-
-        <!-- COL -->
-        <div>
-
-          <h3 class="text-[18px] font-bold mb-5">
-            Useful Links
-          </h3>
-
-          <ul class="space-y-3">
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Sitemap</a>
-            </li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">News</a>
-            </li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Contact
-                Us</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">About
-                us</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Careers</a>
-            </li>
-
-          </ul>
-
-        </div>
-
-      </div>
-
-      <!-- BOTTOM GRID -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mt-16 pt-10 border-t border-white/10">
-
-        <div>
-
-        </div>
-        <!-- COL -->
-        <div>
-
-          <h3 class="text-[18px] font-bold mb-5">
-            Flats In Pune
-          </h3>
-
-          <ul class="space-y-3">
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">1
-                BHK flats in Pune</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">2
-                BHK flats in Pune</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">3
-                BHK flats in Pune</a></li>
-
-            <li>
-              <a href="#"
-                class="text-[#58a8ff] hover:text-white transition text-[14px] inline-block hover:translate-x-1">
-                View more (1)
-              </a>
-            </li>
-
-          </ul>
-
-        </div>
-
-        <!-- COL -->
-        <div>
-
-          <h3 class="text-[18px] font-bold mb-5">
-            Flats by Budget
-          </h3>
-
-          <ul class="space-y-3">
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Projects
-                under 50 Lac</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Projects
-                under 75 Lac</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Projects
-                under 1 Cr</a></li>
-
-            <li>
-              <a href="#"
-                class="text-[#58a8ff] hover:text-white transition text-[14px] inline-block hover:translate-x-1">
-                View more (2)
-              </a>
-            </li>
-
-          </ul>
-
-        </div>
-
-        <!-- COL -->
-        <div>
-
-          <h3 class="text-[18px] font-bold mb-5">
-            Possession Projects
-          </h3>
-
-          <ul class="space-y-3">
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Under
-                Construction</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">New
-                Launch Projects</a></li>
-
-            <li><a href="#"
-                class="text-white/70 hover:text-white transition text-[14px] leading-[1.6] inline-block hover:translate-x-1">Ready
-                To Move</a></li>
-
-            <li>
-              <a href="#"
-                class="text-[#58a8ff] hover:text-white transition text-[14px] inline-block hover:translate-x-1">
-                View more (4)
-              </a>
-            </li>
-
-          </ul>
-
-        </div>
-
-      </div>
-
     </div>
-
-  </footer>
-<script src="./assets/js/script.js"></script>
+</footer>
+<script src="<?php echo ASSETS_URL; ?>js/script.js"></script>
 </body>
 
 </html>

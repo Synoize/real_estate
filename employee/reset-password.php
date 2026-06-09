@@ -164,7 +164,7 @@ if (
             );
 
             redirect(
-                EMPLOYEE_URL . 'login.php'
+                EMPLOYEE_URL . 'login'
             );
 
         } catch (PDOException $e) {
@@ -283,7 +283,7 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="mt-6 text-center">
 
                 <a
-                    href="<?php echo EMPLOYEE_URL; ?>login.php"
+                    href="<?php echo EMPLOYEE_URL; ?>login"
                     class="text-sm text-accent hover:underline"
                 >
                     Back to Login

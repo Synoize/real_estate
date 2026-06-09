@@ -194,7 +194,17 @@ function getFlash()
 
 function formatCurrency($amount)
 {
-    return '₹' . number_format($amount, 2);
+    $amount = (float)$amount;
+
+    if ($amount >= 10000000) {
+        return 'Rs. ' . rtrim(rtrim(number_format($amount / 10000000, 2), '0'), '.') . ' Cr';
+    }
+
+    if ($amount >= 100000) {
+        return 'Rs. ' . rtrim(rtrim(number_format($amount / 100000, 2), '0'), '.') . ' L';
+    }
+
+    return 'Rs. ' . number_format($amount, 0);
 }
 
 /* =========================================================
@@ -312,7 +322,7 @@ function requireLogin()
             'warning'
         );
 
-        redirect(USER_URL . 'login.php');
+        redirect(BASE_URL . 'login');
     }
 }
 
@@ -325,7 +335,7 @@ function requireAdmin()
             'danger'
         );
 
-        redirect(ADMIN_URL . 'login.php');
+        redirect(ADMIN_URL . 'login');
     }
 }
 
@@ -338,7 +348,7 @@ function requireEmployee()
             'danger'
         );
 
-        redirect(EMPLOYEE_URL . 'login.php');
+        redirect(EMPLOYEE_URL . 'login');
     }
 }
 
@@ -351,7 +361,7 @@ function requireBuilder()
             'danger'
         );
 
-        redirect(BUILDER_URL . 'login.php');
+        redirect(BUILDER_URL . 'login');
     }
 }
 
@@ -364,7 +374,7 @@ function requireManager()
             'danger'
         );
 
-        redirect(MANAGER_URL . 'login.php');
+        redirect(MANAGER_URL . 'login');
     }
 }
 

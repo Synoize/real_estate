@@ -1,4 +1,5 @@
 <?php
+
 /**
  * USER LOGIN
  * Production Ready Login System
@@ -42,9 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($email)) {
         $errors[] = 'Email address is required';
-    }
-
-    elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'Invalid email address';
     }
 
@@ -86,34 +85,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$user) {
 
                 $errors[] = 'Invalid email or password';
-
             }
 
-            /* ACCOUNT STATUS CHECK */
-
-            elseif ($user['status'] !== 'active') {
+            /* ACCOUNT STATUS CHECK */ elseif ($user['status'] !== 'active') {
 
                 $errors[] = 'Your account is inactive';
-
-            }
-
-            elseif ((int)$user['is_blocked'] === 1) {
+            } elseif ((int)$user['is_blocked'] === 1) {
 
                 $errors[] = 'Your account has been blocked';
-
             }
 
-            /* VERIFY PASSWORD */
-
-            elseif (!password_verify($password, $user['password'])) {
+            /* VERIFY PASSWORD */ elseif (!password_verify($password, $user['password'])) {
 
                 $errors[] = 'Invalid email or password';
-
             }
 
-            /* LOGIN SUCCESS */
-
-            else {
+            /* LOGIN SUCCESS */ else {
 
                 /* GENERATE AUTH TOKEN */
 
@@ -132,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $updateStmt->execute([
                     ':auth_token'   => $authToken,
-                    ':last_login_ip'=> $_SERVER['REMOTE_ADDR'] ?? NULL,
+                    ':last_login_ip' => $_SERVER['REMOTE_ADDR'] ?? NULL,
                     ':id'           => $user['id']
                 ]);
 
@@ -198,7 +185,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':user_type'         => 'User',
                     ':user_id'           => $user['id'],
                     ':action_title'      => 'User Login',
-                    ':action_description'=> 'User logged into account',
+                    ':action_description' => 'User logged into account',
                     ':ip_address'        => $_SERVER['REMOTE_ADDR'] ?? NULL
                 ]);
 
@@ -218,7 +205,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header("Location: " . $redirect);
                 exit;
             }
-
         } catch (PDOException $e) {
 
             error_log(
@@ -234,163 +220,153 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $pageTitle = "User Login";
 
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/head.php';
 ?>
 
-<section class="min-h-screen flex items-center justify-center px-4 py-12 bg-gray-50">
+<section class="min-h-screen flex items-center justify-center px-6 py-12">
 
-    <div class="w-full max-w-md">
+    <div class="w-full max-w-sm">
+        <div class="text-center mb-8">
 
-        <div class="bg-white rounded-2xl shadow-sm border p-6 md:p-8">
+            <h1 class="text-2xl font-medium text-gray-900">
+                Welcome Back
+            </h1>
 
-            <!-- Logo -->
+            <p class="text-[12px] text-gray-500 mt-2">
+                Login to your account
+            </p>
 
-            <div class="text-center mb-8">
+        </div>
 
-                <img
-                    src="<?php echo ASSETS_URL; ?>/public/logo.png"
-                    alt="Logo"
-                    class="h-20 mx-auto mb-4"
-                >
+        <!-- Error Messages -->
 
-                <h1 class="text-2xl font-bold text-gray-900">
-                    Welcome Back
-                </h1>
+        <?php if (!empty($errors)) : ?>
 
-                <p class="text-gray-500 mt-1">
-                    Login to your account
-                </p>
+            <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+
+                <ul class="space-y-1">
+
+                    <?php foreach ($errors as $error) : ?>
+
+                        <li class="text-sm text-red-600">
+                            • <?php echo htmlspecialchars($error); ?>
+                        </li>
+
+                    <?php endforeach; ?>
+
+                </ul>
+
+            </div>
+
+        <?php endif; ?>
+
+        <!-- Login Form -->
+
+        <form
+            method="POST"
+            action=""
+            class="space-y-5">
+
+            <!-- Email -->
+
+            <div>
+
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Email Address
+                </label>
+
+                <input
+                    type="email"
+                    name="email"
+                    value="<?php echo htmlspecialchars($email); ?>"
+                    placeholder="Enter your email"
+                    required
+                    class="w-full h-12 px-4 border border-gray-300 rounded-xl outline-none focus:border-accent">
 
             </div>
 
-            <!-- Error Messages -->
+            <!-- Password -->
 
-            <?php if (!empty($errors)) : ?>
+            <div>
 
-                <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Password
+                </label>
 
-                    <ul class="space-y-1">
-
-                        <?php foreach ($errors as $error) : ?>
-
-                            <li class="text-sm text-red-600">
-                                • <?php echo htmlspecialchars($error); ?>
-                            </li>
-
-                        <?php endforeach; ?>
-
-                    </ul>
-
-                </div>
-
-            <?php endif; ?>
-
-            <!-- Login Form -->
-
-            <form
-                method="POST"
-                action=""
-                class="space-y-5"
-            >
-
-                <!-- Email -->
-
-                <div>
-
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Email Address
-                    </label>
-
-                    <input
-                        type="email"
-                        name="email"
-                        value="<?php echo htmlspecialchars($email); ?>"
-                        placeholder="Enter your email"
-                        required
-                        class="w-full h-12 px-4 border border-gray-300 rounded-xl outline-none focus:border-accent"
-                    >
-
-                </div>
-
-                <!-- Password -->
-
-                <div>
-
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Password
-                    </label>
-
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Enter your password"
-                        required
-                        class="w-full h-12 px-4 border border-gray-300 rounded-xl outline-none focus:border-accent"
-                    >
-
-                </div>
-
-                <!-- Remember -->
-
-                <div class="flex items-center justify-between">
-
-                    <label class="flex items-center gap-2">
-
-                        <input
-                            type="checkbox"
-                            name="remember"
-                            class="w-4 h-4"
-                        >
-
-                        <span class="text-sm text-gray-600">
-                            Remember me
-                        </span>
-
-                    </label>
-
-                    <a
-                        href="<?php echo BASE_URL; ?>user/forgot-password.php"
-                        class="text-sm text-accent hover:underline"
-                    >
-                        Forgot Password?
-                    </a>
-
-                </div>
-
-                <!-- Button -->
-
-                <button
-                    type="submit"
-                    class="w-full h-12 rounded-xl bg-accent text-black font-medium hover:opacity-90 transition"
-                >
-                    Login
-                </button>
-
-            </form>
-
-            <!-- Signup -->
-
-            <div class="mt-6 text-center">
-
-                <p class="text-sm text-gray-600">
-
-                    Don't have an account?
-
-                    <a
-                        href="<?php echo BASE_URL; ?>user/signup.php"
-                        class="text-accent font-medium hover:underline"
-                    >
-                        Create Account
-                    </a>
-
-                </p>
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Enter your password"
+                    required
+                    class="w-full h-12 px-4 border border-gray-300 rounded-xl outline-none focus:border-accent">
 
             </div>
+
+            <!-- Remember -->
+
+            <div class="flex items-center justify-between">
+
+                <label class="flex items-center gap-2">
+
+                    <input
+                        type="checkbox"
+                        name="remember"
+                        class="w-4 h-4">
+
+                    <span class="text-sm text-gray-600">
+                        Remember me
+                    </span>
+
+                </label>
+
+                <a
+                    href="<?php echo BASE_URL; ?>forgot-password"
+                    class="text-sm text-accent hover:underline">
+                    Forgot Password?
+                </a>
+
+            </div>
+
+            <!-- Button -->
+
+            <button
+                type="submit"
+                class="w-full h-12 rounded-xl bg-accent text-black font-medium hover:opacity-90 transition">
+                Login
+            </button>
+
+        </form>
+
+        <!-- Signup -->
+
+        <div class="mt-6 text-center">
+
+            <p class="text-sm text-gray-600">
+
+                Don't have an account?
+
+                <a
+                    href="<?php echo BASE_URL; ?>signup"
+                    class="text-accent font-medium hover:underline">
+                    Create Account
+                </a>
+
+            </p>
 
         </div>
 
     </div>
 
+
 </section>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<footer class="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-100 bg-green-100 backdrop-blur-sm py-3">
+    <p class="text-center text-xs tracking-wide text-gray-400">
+        🔒 Protected by industry-standard security and privacy practices.
+    </p>
+</footer>
+
+</main>
+</body>
+
+</html>

@@ -7,13 +7,13 @@ $errors = [];
 $successMessage = '';
 
 try {
-    $stmt = $pdo->prepare('SELECT id, full_name, phone, email FROM users WHERE id = ? AND status = 1');
+    $stmt = $pdo->prepare("SELECT id, full_name, phone, email FROM users WHERE id = ? AND status = 'active'");
     $stmt->execute([$_SESSION['user_id']]);
     $currentUser = $stmt->fetch();
 
     if (!$currentUser) {
         setFlash('Account not found or inactive.', 'danger');
-        redirect(BASE_URL . 'user/login.php');
+        redirect(BASE_URL . 'login');
     }
 } catch (PDOException $e) {
     $errors[] = 'Failed to load profile. Please try again.';
@@ -52,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $successMessage = 'Profile updated successfully.';
 
-            $stmt = $pdo->prepare('SELECT id, full_name, phone, email FROM users WHERE id = ? AND status = 1');
+            $stmt = $pdo->prepare("SELECT id, full_name, phone, email FROM users WHERE id = ? AND status = 'active'");
             $stmt->execute([$_SESSION['user_id']]);
             $currentUser = $stmt->fetch();
         } catch (PDOException $e) {

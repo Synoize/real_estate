@@ -137,7 +137,7 @@ if (
             );
 
             redirect(
-                ADMIN_URL . 'login.php'
+                ADMIN_URL . 'login'
             );
 
         } catch (PDOException $e) {

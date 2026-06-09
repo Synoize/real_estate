@@ -176,7 +176,7 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="mt-6 text-center">
 
                 <a
-                    href="<?php echo BASE_URL; ?>user/login.php"
+                    href="<?php echo ADMIN_URL; ?>login"
                     class="text-sm text-accent hover:underline"
                 >
                     Back to Login

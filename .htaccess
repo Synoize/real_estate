@@ -1,0 +1,61 @@
+Options -Indexes
+
+RewriteEngine On
+RewriteBase /real_estate/
+
+# Canonicalize bare trailing question marks, for example /mumbai? -> /mumbai.
+RewriteCond %{THE_REQUEST} \s/+real_estate/([^?\s]+)\?\s [NC]
+RewriteRule ^ %1? [R=301,L,NE]
+
+# Pretty project canonical URL: /project/project-slug
+RewriteCond %{THE_REQUEST} \s/+real_estate/project\.php\?slug=([^\s&]+) [NC]
+RewriteRule ^project\.php$ project/%1? [R=301,L,NE]
+
+# User-facing aliases should be short.
+RewriteCond %{THE_REQUEST} \s/+real_estate/user/login(?:\.php)?[?\s/] [NC]
+RewriteRule ^user/login(?:\.php)?/?$ login [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+real_estate/user/signup(?:\.php)?[?\s/] [NC]
+RewriteRule ^user/signup(?:\.php)?/?$ signup [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+real_estate/user/profile(?:\.php)?[?\s/] [NC]
+RewriteRule ^user/profile(?:\.php)?/?$ profile [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+real_estate/user/logout(?:\.php)?[?\s/] [NC]
+RewriteRule ^user/logout(?:\.php)?/?$ logout [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+real_estate/user/forgot-password(?:\.php)?[?\s/] [NC]
+RewriteRule ^user/forgot-password(?:\.php)?/?$ forgot-password [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+real_estate/user/reset-password(?:\.php)?[?\s/] [NC]
+RewriteRule ^user/reset-password(?:\.php)?/?$ reset-password [R=301,L]
+
+# Hide .php for direct requests, including role pages.
+RewriteCond %{THE_REQUEST} \s/+real_estate/([^\s?]+)\.php[?\s] [NC]
+RewriteRule ^ %1 [R=301,L,NE]
+
+# Public clean routes.
+RewriteRule ^login/?$ user/login.php [L,QSA]
+RewriteRule ^signup/?$ user/signup.php [L,QSA]
+RewriteRule ^profile/?$ user/profile.php [L,QSA]
+RewriteRule ^logout/?$ user/logout.php [L,QSA]
+RewriteRule ^forgot-password/?$ user/forgot-password.php [L,QSA]
+RewriteRule ^reset-password/?$ user/reset-password.php [L,QSA]
+RewriteRule ^wishlist/?$ user/wishlist.php [L,QSA]
+RewriteRule ^actions/?$ actions.php [L,QSA]
+RewriteRule ^project/([^/]+)/?$ project.php?slug=$1 [L,QSA,B]
+RewriteRule ^(about-us|contact-us|calculator|privacy-policy|terms|disclaimer|blogs|careers|help)/?$ page.php?slug=$1 [L,QSA]
+
+# Role clean routes.
+RewriteRule ^(admin|builder|employee|manager)/?$ $1/index.php [L,QSA]
+RewriteRule ^(admin|builder|employee|manager)/(login|logout|forgot-password|reset-password)/?$ $1/$2.php [L,QSA]
+
+# City clean routes, for example /mumbai or /pune.
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([a-z0-9_-]+)/?$ index.php?city_slug=$1 [NC,L,QSA]
+
+# Generic extensionless PHP fallback for future pages.
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.+?)/?$ $1.php [L,QSA]

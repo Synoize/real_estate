@@ -64,6 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     status
                 FROM employees
                 WHERE employee_code = :employee_code
+                   OR email = :employee_code
                 LIMIT 1
             ");
 
@@ -345,7 +346,7 @@ require_once __DIR__ . '/../includes/header.php';
                     </label>
 
                     <a
-                        href="<?php echo EMPLOYEE_URL; ?>forgot-password.php"
+                        href="<?php echo EMPLOYEE_URL; ?>forgot-password"
                         class="text-sm text-accent hover:underline"
                     >
                         Forgot Password?

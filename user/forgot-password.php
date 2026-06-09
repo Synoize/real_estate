@@ -23,9 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($email)) {
         $errors[] = 'Email address is required';
-    }
-
-    elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         $errors[] = 'Invalid email address';
     }
 
@@ -51,7 +49,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$user) {
 
                 $errors[] = 'No account found with this email';
-
             } else {
 
                 $resetToken = bin2hex(random_bytes(32));
@@ -71,13 +68,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $updateStmt->execute([
                     ':token' => $resetToken,
-                    ':expiry'=> $expiry,
+                    ':expiry' => $expiry,
                     ':id'    => $user['id']
                 ]);
 
                 $resetLink =
                     BASE_URL .
-                    'user/reset-password.php?token=' .
+                    'reset-password?token=' .
                     $resetToken;
 
                 /* Send Email Here */
@@ -85,7 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $success =
                     'Password reset link sent successfully';
             }
-
         } catch (PDOException $e) {
 
             error_log($e->getMessage());
@@ -98,31 +94,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $pageTitle = "Forgot Password";
 
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/../includes/head.php';
 
 ?>
 
-<section class="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-10">
+<section class="min-h-screen flex items-center justify-center px-6 py-12">
 
-    <div class="w-full max-w-md">
-
-        <div class="bg-white rounded-2xl shadow-sm border p-6 md:p-8">
-
-            <!-- Logo -->
+    <div class="w-full max-w-sm">
 
             <div class="text-center mb-8">
 
-                <img
-                    src="<?php echo ASSETS_URL; ?>/public/logo.png"
-                    class="h-20 mx-auto mb-4"
-                    alt="Logo"
-                >
-
-                <h1 class="text-2xl font-bold text-gray-900">
+                <h1 class="text-2xl font-medium text-gray-900">
                     Forgot Password
                 </h1>
 
-                <p class="text-sm text-gray-500 mt-2">
+                <p class="text-[12px] text-gray-500 mt-2">
                     Enter your registered email address
                 </p>
 
@@ -179,15 +165,13 @@ require_once __DIR__ . '/../includes/header.php';
                         name="email"
                         value="<?php echo htmlspecialchars($email); ?>"
                         required
-                        class="w-full h-12 px-4 border border-gray-300 rounded-xl outline-none focus:border-accent"
-                    >
+                        class="w-full h-12 px-4 border border-gray-300 rounded-xl outline-none focus:border-accent">
 
                 </div>
 
                 <button
                     type="submit"
-                    class="w-full h-12 rounded-xl bg-accent text-black font-medium"
-                >
+                    class="w-full h-12 rounded-xl bg-accent text-black font-medium">
                     Send Reset Link
                 </button>
 
@@ -196,9 +180,8 @@ require_once __DIR__ . '/../includes/header.php';
             <div class="mt-6 text-center">
 
                 <a
-                    href="<?php echo BASE_URL; ?>user/login.php"
-                    class="text-sm text-accent hover:underline"
-                >
+                    href="<?php echo BASE_URL; ?>login"
+                    class="text-sm text-accent hover:underline">
                     Back to Login
                 </a>
 
@@ -206,6 +189,15 @@ require_once __DIR__ . '/../includes/header.php';
 
         </div>
 
-    </div>
-
 </section>
+
+<footer class="fixed bottom-0 left-0 right-0 z-50 border-t border-gray-100 bg-green-100 backdrop-blur-sm py-3">
+    <p class="text-center text-xs tracking-wide text-gray-400">
+        🔒 Protected by industry-standard security and privacy practices.
+    </p>
+</footer>
+
+</main>
+</body>
+
+</html>

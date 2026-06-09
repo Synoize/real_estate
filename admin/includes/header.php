@@ -11,7 +11,11 @@ require_once __DIR__ . '/db_connect.php';
 // Get all categories for navigation
 $categories = [];
 try {
-    $stmt = $pdo->query("SELECT * FROM categories ORDER BY name ASC");
+    $stmt = $pdo->query("
+        SELECT id, category_name AS name, category_icon AS image
+        FROM project_categories
+        ORDER BY category_name ASC
+    ");
     $categories = $stmt->fetchAll();
 } catch (PDOException $e) {
     // Categories table might not exist yet
@@ -365,7 +369,7 @@ try {
                     <a href="<?php echo BASE_URL; ?>" class="text-gray-700 hover:text-primary font-medium <?php echo basename($_SERVER['PHP_SELF']) === 'index.php' ? 'text-primary-700 hover:hover:text-primary-700' : ''; ?>">
                         Home
                     </a>
-                    <a href="<?php echo BASE_URL; ?>shop.php" class="text-gray-700 hover:text-primary font-medium <?php echo basename($_SERVER['PHP_SELF']) === 'shop.php' ? 'text-primary-700 hover:hover:text-primary-700' : ''; ?>">
+                    <a href="<?php echo BASE_URL; ?>shop" class="text-gray-700 hover:text-primary font-medium <?php echo basename($_SERVER['PHP_SELF']) === 'shop.php' ? 'text-primary-700 hover:hover:text-primary-700' : ''; ?>">
                         Shop
                     </a>
 
@@ -394,7 +398,7 @@ try {
                             <div class="py-2">
                                 <?php foreach ($categories as $category): ?>
                                     <a
-                                        href="<?php echo BASE_URL; ?>shop.php?category=<?php echo $category['id']; ?>"
+                                        href="<?php echo BASE_URL; ?>shop?category=<?php echo $category['id']; ?>"
                                         class="flex items-center px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-primary-600 transition">
                                         <?php if ($category['image']): ?>
                                             <img
@@ -412,10 +416,10 @@ try {
                         </div>
                     </div>
 
-                    <a href="<?php echo BASE_URL; ?>about-us.php" class="text-gray-700 hover:text-primary font-medium <?php echo basename($_SERVER['PHP_SELF']) === 'about-us.php' ? 'text-primary-700 hover:text-primary-700' : ''; ?>">
+                    <a href="<?php echo BASE_URL; ?>about-us" class="text-gray-700 hover:text-primary font-medium <?php echo basename($_SERVER['PHP_SELF']) === 'about-us.php' ? 'text-primary-700 hover:text-primary-700' : ''; ?>">
                         About Us
                     </a>
-                    <a href="<?php echo BASE_URL; ?>contact-us.php" class="text-gray-700 hover:text-primary font-medium <?php echo basename($_SERVER['PHP_SELF']) === 'contact-us.php' ? 'text-primary-700 hover:text-primary-700' : ''; ?>">
+                    <a href="<?php echo BASE_URL; ?>contact-us" class="text-gray-700 hover:text-primary font-medium <?php echo basename($_SERVER['PHP_SELF']) === 'contact-us.php' ? 'text-primary-700 hover:text-primary-700' : ''; ?>">
                         Contact Us
                     </a>
                 </div>
@@ -423,7 +427,7 @@ try {
                 <!-- Right Side Actions -->
                 <div class="flex items-center space-x-5">
                     <!-- Search -->
-                    <form action="<?php echo BASE_URL; ?>shop.php" method="GET" class="hidden md:flex items-center">
+                    <form action="<?php echo BASE_URL; ?>shop" method="GET" class="hidden md:flex items-center">
 
                         <div class="
         flex items-center w-64 h-10
@@ -467,7 +471,7 @@ try {
 
                     <!-- Wishlist -->
                     <?php if (isLoggedIn()): ?>
-                        <a href="<?php echo BASE_URL; ?>user/wishlist.php"
+                        <a href="<?php echo BASE_URL; ?>wishlist"
                             class="relative text-red-500 hover:text-red-400 transition hidden md:block">
 
                             <i class="fas fa-heart text-xl"></i>
@@ -523,7 +527,7 @@ try {
                                 <div class="py-2 text-sm">
 
                                     <!-- My Profile -->
-                                    <a href="<?php echo BASE_URL; ?>user/profile.php"
+                                    <a href="<?php echo BASE_URL; ?>profile"
                                         class="flex items-center px-4 py-2 transition
         <?php echo basename($_SERVER['PHP_SELF']) === 'profile.php'
                             ? 'bg-primary-50 text-primary-600 font-medium'
@@ -532,7 +536,7 @@ try {
                                     </a>
 
                                     <!-- Wishlist -->
-                                    <a href="<?php echo BASE_URL; ?>user/wishlist.php"
+                                    <a href="<?php echo BASE_URL; ?>wishlist"
                                         class="relative flex items-center px-4 py-2 transition
         <?php echo basename($_SERVER['PHP_SELF']) === 'wishlist.php'
                             ? 'bg-red-50 text-red-500 font-medium'
@@ -550,7 +554,7 @@ try {
                                     </a>
 
                                     <!-- Checkout -->
-                                    <a href="<?php echo BASE_URL; ?>checkout.php"
+                                    <a href="<?php echo BASE_URL; ?>checkout"
                                         class="flex items-center px-4 py-2 transition
         <?php echo basename($_SERVER['PHP_SELF']) === 'checkout.php'
                             ? 'bg-primary-50 text-primary-600 font-medium'
@@ -559,7 +563,7 @@ try {
                                     </a>
 
                                     <!-- Help -->
-                                    <a href="<?php echo BASE_URL; ?>help.php"
+                                    <a href="<?php echo BASE_URL; ?>help"
                                         class="flex items-center px-4 py-2 transition
         <?php echo basename($_SERVER['PHP_SELF']) === 'help.php'
                             ? 'bg-primary-50 text-primary-600 font-medium'
@@ -570,7 +574,7 @@ try {
                                     <div class="border-t border-gray-100 my-1"></div>
 
                                     <!-- Logout -->
-                                    <a href="<?php echo BASE_URL; ?>user/logout.php"
+                                    <a href="<?php echo BASE_URL; ?>logout"
                                         class="flex items-center px-4 py-2 text-red-500 hover:bg-red-50 transition">
                                         <i class="fas fa-sign-out-alt mr-3"></i> Logout
                                     </a>
@@ -581,7 +585,7 @@ try {
                     <?php else: ?>
 
                         <!-- Login Button -->
-                        <a href="<?php echo BASE_URL; ?>user/login.php"
+                        <a href="<?php echo BASE_URL; ?>login"
                             class="hidden md:block
            bg-primary-500 hover:bg-primary-600 
            text-white px-5 py-2.5 rounded-full 
@@ -619,7 +623,7 @@ try {
                 </a>
 
                 <!-- Shop -->
-                <a href="<?php echo BASE_URL; ?>shop.php"
+                <a href="<?php echo BASE_URL; ?>shop"
                     class="flex items-center p-3 rounded-lg transition
         <?php echo basename($_SERVER['PHP_SELF']) === 'shop.php' && !isset($_GET['category'])
             ? 'bg-primary-50 text-primary-700 font-medium'
@@ -649,7 +653,7 @@ try {
 
                             <?php foreach ($categories as $category): ?>
 
-                                <a href="<?php echo BASE_URL; ?>shop.php?category=<?php echo $category['id']; ?>"
+                                <a href="<?php echo BASE_URL; ?>shop?category=<?php echo $category['id']; ?>"
                                     class="flex items-center px-4 py-2 rounded-lg text-sm transition
                         <?php echo (basename($_SERVER['PHP_SELF']) === 'shop.php'
                                     && isset($_GET['category'])
@@ -677,7 +681,7 @@ try {
                     <div>
 
                         <!-- Profile -->
-                        <a href="<?php echo BASE_URL; ?>user/profile.php"
+                        <a href="<?php echo BASE_URL; ?>profile"
                             class="flex items-center p-3 rounded-lg transition
                 <?php echo basename($_SERVER['PHP_SELF']) === 'profile.php'
                         ? 'bg-primary-50 text-primary-600 font-medium'
@@ -686,7 +690,7 @@ try {
                         </a>
 
                         <!-- Wishlist -->
-                        <a href="<?php echo BASE_URL; ?>user/wishlist.php"
+                        <a href="<?php echo BASE_URL; ?>wishlist"
                             class="relative flex items-center p-3 rounded-lg transition
                 <?php echo basename($_SERVER['PHP_SELF']) === 'wishlist.php'
                         ? 'bg-red-50 text-red-500 font-medium'
@@ -706,7 +710,7 @@ try {
                         </a>
 
                         <!-- Checkout -->
-                        <a href="<?php echo BASE_URL; ?>checkout.php"
+                        <a href="<?php echo BASE_URL; ?>checkout"
                             class="flex items-center p-3 rounded-lg transition
                 <?php echo basename($_SERVER['PHP_SELF']) === 'checkout.php'
                         ? 'bg-primary-50 text-primary-600 font-medium'
@@ -715,7 +719,7 @@ try {
                         </a>
 
                         <!-- Help -->
-                        <a href="<?php echo BASE_URL; ?>help.php"
+                        <a href="<?php echo BASE_URL; ?>help"
                             class="flex items-center p-3 rounded-lg transition
                 <?php echo basename($_SERVER['PHP_SELF']) === 'help.php'
                         ? 'bg-primary-50 text-primary-600 font-medium'
@@ -728,7 +732,7 @@ try {
 
 
                 <!-- About -->
-                <a href="<?php echo BASE_URL; ?>about-us.php"
+                <a href="<?php echo BASE_URL; ?>about-us"
                     class="flex items-center p-3 rounded-lg transition
         <?php echo basename($_SERVER['PHP_SELF']) === 'about-us.php'
             ? 'bg-primary-50 text-primary-600 font-medium'
@@ -737,7 +741,7 @@ try {
                 </a>
 
                 <!-- Contact -->
-                <a href="<?php echo BASE_URL; ?>contact-us.php"
+                <a href="<?php echo BASE_URL; ?>contact-us"
                     class="flex items-center p-3 rounded-lg transition
         <?php echo basename($_SERVER['PHP_SELF']) === 'contact-us.php'
             ? 'bg-primary-50 text-primary-600 font-medium'
@@ -747,14 +751,14 @@ try {
 
                 <?php if (isLoggedIn()): ?>
                     <!-- Logout -->
-                    <a href="<?php echo BASE_URL; ?>user/logout.php"
+                    <a href="<?php echo BASE_URL; ?>logout"
                         class="flex items-center p-3 text-red-500 hover:bg-red-50 rounded-lg transition">
                         <i class="fas fa-sign-out-alt w-8"></i> Logout
                     </a>
 
                 <?php else: ?>
                     <div class="border-t border-gray-100 pt-2 mt-2">
-                        <a href="<?php echo BASE_URL; ?>user/login.php"
+                        <a href="<?php echo BASE_URL; ?>login"
                             class="flex items-center justify-center p-3 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition mt-2">
                             Login / Register
                         </a>

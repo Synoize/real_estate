@@ -323,7 +323,7 @@ require_once __DIR__ . '/../includes/header.php';
                     </label>
 
                     <a
-                        href="<?php echo ADMIN_URL; ?>forgot-password.php"
+                        href="<?php echo ADMIN_URL; ?>forgot-password"
                         class="text-sm text-accent hover:underline"
                     >
                         Forgot Password?

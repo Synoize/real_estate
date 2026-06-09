@@ -35,5 +35,5 @@ setFlash(
 /* Redirect */
 
 redirect(
-    MANAGER_URL . 'login.php'
+    MANAGER_URL . 'login'
 );

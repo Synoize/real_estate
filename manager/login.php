@@ -65,6 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     status
                 FROM associate_managers
                 WHERE manager_code = :manager_code
+                   OR email = :manager_code
                 LIMIT 1
             ");
 
@@ -349,7 +350,7 @@ require_once __DIR__ . '/../includes/header.php';
                     </label>
 
                     <a
-                        href="<?php echo MANAGER_URL; ?>forgot-password.php"
+                        href="<?php echo MANAGER_URL; ?>forgot-password"
                         class="text-sm text-accent hover:underline"
                     >
                         Forgot Password?

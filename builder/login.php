@@ -67,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     is_verified
                 FROM builders
                 WHERE company_slug = :company_slug
+                   OR email = :company_slug
                 LIMIT 1
             ");
 
@@ -362,7 +363,7 @@ require_once __DIR__ . '/../includes/header.php';
                     </label>
 
                     <a
-                        href="<?php echo BUILDER_URL; ?>forgot-password.php"
+                        href="<?php echo BUILDER_URL; ?>forgot-password"
                         class="text-sm text-accent hover:underline"
                     >
                         Forgot Password?

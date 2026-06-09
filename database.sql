@@ -389,8 +389,7 @@ CREATE TABLE associate_managers (
     INDEX idx_manager_builder(builder_id),
     INDEX idx_manager_email(email)
 
-) ENGINE=InnoDB
-DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- -------------------------------------------------------------
 -- PROJECT CATEGORIES
@@ -406,8 +405,7 @@ CREATE TABLE project_categories (
 
     category_icon VARCHAR(255) DEFAULT NULL,
 
-    status ENUM('active','inactive')
-    DEFAULT 'active',
+    status ENUM('active','inactive') DEFAULT 'active',
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 
@@ -579,6 +577,8 @@ CREATE TABLE project_images (
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
+    INDEX idx_project_images_project_type(project_id, image_type, sort_order),
+
     FOREIGN KEY (project_id)
     REFERENCES projects(id)
     ON DELETE CASCADE
@@ -604,6 +604,8 @@ CREATE TABLE project_videos (
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
+    INDEX idx_project_videos_project(project_id),
+
     FOREIGN KEY (project_id)
     REFERENCES projects(id)
     ON DELETE CASCADE
@@ -626,6 +628,8 @@ CREATE TABLE project_amenities (
     amenity_icon VARCHAR(255) DEFAULT NULL,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_project_amenities_project(project_id),
 
     FOREIGN KEY (project_id)
     REFERENCES projects(id)
@@ -659,6 +663,9 @@ CREATE TABLE project_unit_plans (
     description TEXT,
 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_unit_plans_project_price(project_id, price),
+    INDEX idx_unit_plans_bhk(bhk_type),
 
     FOREIGN KEY (project_id)
     REFERENCES projects(id)
@@ -766,3 +773,106 @@ CREATE TABLE site_visit_bookings (
 
 ) ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4;
+
+-- -------------------------------------------------------------
+-- INQUIRIES / LEADS
+-- -------------------------------------------------------------
+
+CREATE TABLE inquiries (
+
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    inquiry_id VARCHAR(100) NOT NULL UNIQUE,
+
+    user_id BIGINT UNSIGNED DEFAULT NULL,
+
+    builder_id BIGINT UNSIGNED NOT NULL,
+
+    project_id BIGINT UNSIGNED NOT NULL,
+
+    assigned_manager_id BIGINT UNSIGNED DEFAULT NULL,
+
+    full_name VARCHAR(150) NOT NULL,
+
+    email VARCHAR(150) NOT NULL,
+
+    phone VARCHAR(20) NOT NULL,
+
+    budget VARCHAR(100) DEFAULT NULL,
+
+    preferred_time VARCHAR(100) DEFAULT NULL,
+
+    message TEXT DEFAULT NULL,
+
+    source ENUM(
+        'website',
+        'whatsapp',
+        'call',
+        'facebook',
+        'google_ads'
+    ) DEFAULT 'website',
+
+    inquiry_status ENUM(
+        'New',
+        'Contacted',
+        'Qualified',
+        'Site Visit Planned',
+        'Booked',
+        'Lost'
+    ) DEFAULT 'New',
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ON UPDATE CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE SET NULL,
+
+    FOREIGN KEY (builder_id)
+    REFERENCES builders(id)
+    ON DELETE CASCADE,
+
+    FOREIGN KEY (project_id)
+    REFERENCES projects(id)
+    ON DELETE CASCADE,
+
+    FOREIGN KEY (assigned_manager_id)
+    REFERENCES associate_managers(id)
+    ON DELETE SET NULL,
+
+    INDEX idx_inquiry_project(project_id),
+    INDEX idx_inquiry_status(inquiry_status),
+    INDEX idx_inquiry_created(created_at)
+
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4;
+
+-- -------------------------------------------------------------
+-- ACTIVITY LOGS
+-- -------------------------------------------------------------
+
+CREATE TABLE activity_logs (
+
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    user_type VARCHAR(50) NOT NULL,
+
+    user_id BIGINT UNSIGNED DEFAULT NULL,
+
+    action_title VARCHAR(150) NOT NULL,
+
+    action_description TEXT DEFAULT NULL,
+
+    ip_address VARCHAR(100) DEFAULT NULL,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_activity_user(user_type, user_id),
+    INDEX idx_activity_created(created_at)
+
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4;
+
+COMMIT;
