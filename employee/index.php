@@ -12,17 +12,20 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && ($_POST['action'] ?? '') ==
     $phone = trim($_POST['phone'] ?? '');
     $city = trim($_POST['city'] ?? '');
     $state = trim($_POST['state'] ?? '');
+    $companyLogo = trim($_POST['company_logo'] ?? '');
+    $establishedYear = trim($_POST['established_year'] ?? '');
+    $establishedYearValue = preg_match('/^\d{4}$/', $establishedYear) ? (int)$establishedYear : null;
 
     if ($company && $name && $email && $phone) {
         $stmt = $pdo->prepare("
             INSERT INTO builders (
                 uuid, company_name, company_slug, builder_name,
                 email, phone, whatsapp_number, password, city, state,
-                status, created_by_employee
+                company_logo, established_year, status, created_by_employee
             ) VALUES (
                 UUID(), :company_name, :company_slug, :builder_name,
                 :email, :phone, :phone, :password, :city, :state,
-                'pending', :employee_id
+                :company_logo, :established_year, 'pending', :employee_id
             )
         ");
         $stmt->execute([
@@ -34,6 +37,8 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && ($_POST['action'] ?? '') ==
             ':password' => password_hash('Password@123', PASSWORD_DEFAULT),
             ':city' => $city,
             ':state' => $state,
+            ':company_logo' => $companyLogo,
+            ':established_year' => $establishedYearValue,
             ':employee_id' => $_SESSION['employee_id']
         ]);
         setFlash('Builder added as pending. Default password is Password@123.', 'success');
@@ -90,6 +95,8 @@ require_once __DIR__ . '/../includes/header.php';
                     <input name="phone" required placeholder="Phone" class="h-12 w-full rounded-md border px-3 text-sm">
                     <input name="city" placeholder="City" class="h-12 w-full rounded-md border px-3 text-sm">
                     <input name="state" placeholder="State" class="h-12 w-full rounded-md border px-3 text-sm">
+                    <input name="company_logo" placeholder="Developer logo URL or upload path" class="h-12 w-full rounded-md border px-3 text-sm">
+                    <input name="established_year" type="number" min="1800" max="<?php echo date('Y'); ?>" placeholder="Established year" class="h-12 w-full rounded-md border px-3 text-sm">
                 </div>
                 <button class="mt-4 h-12 w-full rounded-md bg-primary font-bold text-white">Create Builder</button>
             </form>

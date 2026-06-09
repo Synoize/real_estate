@@ -126,7 +126,7 @@ if ($filters['city']) {
 }
 
 $builderSql = "
-    SELECT b.company_name, b.company_slug, b.city, COUNT(p.id) AS total_projects
+    SELECT b.company_name, b.company_slug, b.city, b.company_logo, b.established_year, COUNT(p.id) AS total_projects
     FROM builders b
     LEFT JOIN projects p ON p.builder_id = b.id AND p.status = 'published'
     WHERE b.status = 'active'
@@ -656,9 +656,10 @@ require_once __DIR__ . '/includes/header.php';
         </div>
 
         <?php if (empty($projects)): ?>
-            <div class="h-[40vh] p-4 flex justify-center flex-col items-center">
+            <div class="h-[56vh] p-4 flex justify-center flex-col items-center text-center">
+                <i class="fa-solid fa-building mb-4 text-4xl md:text-6xl text-gray-400"></i>
                 <h3 class="text-xl font-bold text-gray-900">No projects found</h3>
-                <p class="mt-2 text-gray-500">Try a different city, budget, or keyword.</p>
+                <p class="mt-2 text-gray-500 text-sm">Try a different city and budget.</p>
             </div>
         <?php else: ?>
             <div class="swiper propertySwiper overflow-visible">
@@ -671,7 +672,7 @@ require_once __DIR__ . '/includes/header.php';
                         $videoUrl = trim((string)($primaryVideo['video_url'] ?? $project['youtube_video_link'] ?? ''));
                         ?>
                         <article class="swiper-slide">
-                            <div class="bg-white rounded-2xl border border-gray-200 p-3 md:p-4 transition duration-300 hover:-translate-y-1 hover:shadow-lg">
+                            <div class="bg-white rounded-2xl border border-gray-200 p-3 md:p-4 transition duration-300 hover:-translate-y-1 hover:shadow-sm">
                                 <!-- IMAGE -->
                                 <a href="<?php echo BASE_URL . 'project/' . urlencode($project['slug']); ?>" class="relative">
                                     <img src="<?php echo e(projectImage($project)); ?>" alt="<?php echo e($project['project_name']); ?>"
@@ -823,93 +824,439 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </section>
 
-<section class="bg-white py-10">
-    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-        <div class="flex items-end justify-between gap-4">
-            <div>
-                <h2 class="text-2xl md:text-3xl font-black text-primary">
-                    <?php echo $filters['city'] ? 'Popular Localities in ' . e($filters['city']) : 'Popular Cities'; ?>
-                </h2>
-                <p class="mt-1 text-sm text-gray-500">
-                    <?php echo $filters['city'] ? 'Browse neighborhoods with live inventory.' : 'Browse live inventory by city.'; ?>
-                </p>
+<!-- Top Developers Projects -->
+<section class="py-12 md:py-16">
+    <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-20">
+        <!-- TOP BAR -->
+        <div class="flex items-center justify-between">
+            <!-- TITLE -->
+            <h2 class="text-primary text-2xl md:text-3xl font-semibold leading-tight">
+                Top Developers Projects
+            </h2>
+
+            <!-- NAVIGATION -->
+            <div class="flex items-center gap-3">
+                <button
+                    class="developer-prev w-11 h-11 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+
+                <button
+                    class="developer-next w-11 h-11 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
             </div>
-            <a href="<?php echo BASE_URL; ?>" class="hidden sm:inline-flex text-sm font-semibold text-accent">Clear filters</a>
         </div>
 
-        <div class="mt-6 flex gap-3 overflow-x-auto pb-2">
-            <?php if ($filters['city'] && !empty($localities)): ?>
-                <?php foreach ($localities as $locality): ?>
-                    <a href="<?php echo cityUrl($filters['city'], ['q' => $locality['locality']]); ?>"
-                        class="shrink-0 rounded-md border border-gray-200 bg-gray-50 px-5 py-3 hover:border-accent transition">
-                        <span class="block text-sm font-bold text-gray-900"><?php echo e($locality['locality']); ?></span>
-                        <span class="text-xs text-gray-500"><?php echo (int)$locality['total']; ?> projects</span>
-                    </a>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <?php foreach ($cities as $city): ?>
-                    <a href="<?php echo cityUrl($city['city']); ?>"
-                        class="shrink-0 rounded-md border border-gray-200 bg-gray-50 px-5 py-3 hover:border-accent transition">
-                        <span class="block text-sm font-bold text-gray-900"><?php echo e($city['city']); ?></span>
-                        <span class="text-xs text-gray-500"><?php echo (int)$city['total']; ?> projects</span>
-                    </a>
-                <?php endforeach; ?>
-            <?php endif; ?>
-        </div>
-    </div>
-</section>
+        <!-- SWIPER -->
+        <div class="swiper developerSwiper py-8">
+            <div class="swiper-wrapper">
+                <?php foreach ($builders as $builder): ?>
+                    <?php
+                    $logoUrl = !empty($builder['company_logo']) ? getImageUrl($builder['company_logo'], 'uploads') : '';
+                    $establishedYear = (int)($builder['established_year'] ?? 0);
+                    $developerYears = $establishedYear > 0 ? max(0, (int)date('Y') - $establishedYear) : null;
+                    $nameParts = preg_split('/\s+/', trim((string)$builder['company_name']));
+                    $initials = '';
 
-<section class="bg-white py-12">
-    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10 grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-8 items-center">
-        <div>
-            <h2 class="text-2xl md:text-3xl font-black text-primary">Housiey Style Online Site Visit</h2>
-            <p class="mt-3 text-gray-600">Shortlist, schedule, get an associate manager, and complete your visit with direct builder pricing.</p>
-            <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <?php foreach (['Search verified projects', 'Book free visit', 'Deal directly with builder'] as $index => $step): ?>
-                    <div class="rounded-lg border border-gray-200 p-5">
-                        <span class="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-primary font-black"><?php echo $index + 1; ?></span>
-                        <p class="mt-4 text-sm font-bold text-gray-900"><?php echo e($step); ?></p>
+                    foreach ($nameParts as $part) {
+                        if ($part !== '') {
+                            $initials .= strtoupper(substr($part, 0, 1));
+                        }
+
+                        if (strlen($initials) >= 2) {
+                            break;
+                        }
+                    }
+                    ?>
+                    <!-- CARD -->
+                    <div class="swiper-slide">
+                        <div class="group relative bg-white rounded-2xl
+    p-5 shadow-sm border
+    overflow-hidden hover:-translate-y-1 min-h-[260px] transition-all duration-300 hover:shadow-lg">
+
+                            <?php if ($developerYears !== null): ?>
+                                <!-- YEARS -->
+                                <h3 class="text-red-500 text-3xl md:text-4xl font-semibold leading-none">
+                                    <?php echo (int)$developerYears; ?>y+
+                                </h3>
+                            <?php endif; ?>
+
+                            <!-- IMAGE -->
+                            <div class="flex justify-center items-center px-8 py-12 min-h-[150px]">
+                                <?php if ($logoUrl): ?>
+                                    <img src="<?php echo e($logoUrl); ?>"
+                                        alt="<?php echo e($builder['company_name']); ?>" class="max-h-20 object-contain mx-auto transition duration-300 group-hover:scale-105" />
+                                <?php else: ?>
+                                    <span class="h-20 w-20 rounded-full bg-primary text-white flex items-center justify-center text-2xl font-black transition duration-300 group-hover:scale-105">
+                                        <?php echo e($initials ?: substr($builder['company_name'], 0, 1)); ?>
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+
+                            <!-- NAME -->
+                            <!-- <h3 class="text-primary text-lg font-semibold leading-tight mb-4">
+                                <?php echo e($builder['company_name']); ?>
+                            </h3> -->
+
+                            <!-- BOTTOM -->
+                            <div class="w-full flex items-center justify-between">
+
+                                <!-- TEXT -->
+                                <div>
+
+                                    <span class="text-xs
+            uppercase tracking-[2px]
+            text-gray-500 font-medium">
+
+                                        <?php echo e($builder['city'] ?: 'Total'); ?>
+
+                                    </span>
+
+                                    <p class="text-green-600
+            text-base
+            font-semibold leading-tight mt-1">
+
+                                        Projects
+
+                                    </p>
+
+                                </div>
+
+                                <!-- NUMBER -->
+                                <span class="relative w-14 h-14
+          rounded-full
+          bg-green-600
+          text-white
+          flex items-center justify-center
+          shadow-lg font-extrabold text-2xl">
+                                    <?php echo (int)$builder['total_projects']; ?>
+
+                                </span>
+
+                            </div>
+
+                        </div>
                     </div>
                 <?php endforeach; ?>
+
             </div>
         </div>
-
-        <form method="post" action="<?php echo BASE_URL; ?>actions" class="rounded-lg border border-gray-200 bg-gray-50 p-5">
-            <input type="hidden" name="action" value="site_visit">
-            <label class="text-sm font-bold text-gray-800">Pick a project</label>
-            <select name="project_id" required class="mt-2 h-12 w-full rounded-md border border-gray-200 px-3 text-sm">
-                <?php foreach (fetchPublishedProjects($filters['city'] ? ['city' => $filters['city']] : [], 20) as $project): ?>
-                    <option value="<?php echo (int)$project['id']; ?>"><?php echo e($project['project_name']); ?></option>
-                <?php endforeach; ?>
-            </select>
-            <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <input name="full_name" required placeholder="Full name" class="h-12 rounded-md border border-gray-200 px-3 text-sm">
-                <input name="phone" required placeholder="Mobile number" class="h-12 rounded-md border border-gray-200 px-3 text-sm">
-                <input name="email" required type="email" placeholder="Email address" class="h-12 rounded-md border border-gray-200 px-3 text-sm">
-                <input name="visit_date" required type="date" min="<?php echo date('Y-m-d'); ?>" class="h-12 rounded-md border border-gray-200 px-3 text-sm">
-                <input name="preferred_time" placeholder="Preferred time" class="h-12 rounded-md border border-gray-200 px-3 text-sm">
-                <input name="budget" placeholder="Budget" class="h-12 rounded-md border border-gray-200 px-3 text-sm">
-            </div>
-            <button class="mt-4 h-12 w-full rounded-md bg-accent font-black text-primary hover:bg-accent-600">
-                Book Free Site Visit
-            </button>
-        </form>
     </div>
 </section>
 
-<section class="bg-gray-50 py-12">
-    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-        <h2 class="text-2xl md:text-3xl font-black text-primary">Top Developers</h2>
-        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            <?php foreach ($builders as $builder): ?>
-                <div class="rounded-lg border border-gray-200 bg-white p-5">
-                    <p class="text-lg font-black text-gray-950"><?php echo e($builder['company_name']); ?></p>
-                    <p class="mt-1 text-sm text-gray-500"><?php echo e($builder['city'] ?: 'India'); ?></p>
-                    <p class="mt-4 text-sm font-bold text-accent"><?php echo (int)$builder['total_projects']; ?> live projects</p>
+<!-- SCHEDULE NOW -->
+<section
+    class="relative bg-cover bg-center bg-no-repeat overflow-hidden py-12"
+    style="background-image:url('https://i.ibb.co/fVyWWqgx/online-Presentation.webp');">
+
+    <div class="relative z-10 max-w-[1450px] mx-auto px-4 sm:px-6 lg:px-10">
+
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_0.4fr] gap-8 items-center">
+
+            <!-- LEFT -->
+            <div class="max-w-4xl">
+
+                <!-- HEADING -->
+                <h2 class="text-white
+        text-4xl md:text-6xl
+        leading-[1.15]
+        font-semibold
+        tracking-[-1px]">
+
+                    Discover Your Dream Home
+
+                </h2>
+
+                <!-- SUBTEXT -->
+                <p class="mt-3 md:mt-4
+        text-white/90
+        text-xs sm:text-sm md:text-base
+        leading-[1.7]">
+
+                    Directly by Builder | Exclusive Offers | Live Virtual Tour
+                </p>
+
+                <div class="mt-10 md:mt-20 grid grid-cols-3 gap-2 md:gap-4 max-w-2xl ">
+
+                    <?php foreach (
+                        [
+                            'Search verified projects',
+                            'Book free visit',
+                            'Deal directly with builder'
+                        ] as $index => $step
+                    ): ?>
+
+                        <div
+                            class="bg-white border rounded-2xl p-3 md:p-5">
+
+                            <div
+                                class="h-8 w-8 md:h-11 md:w-11 rounded-full bg-accent text-white flex items-center justify-center font-semibold">
+                                <?php echo $index + 1; ?>
+                            </div>
+
+                            <p class="mt-4 text-gray-800 text-[10px] md:text-sm">
+                                <?php echo e($step); ?>
+                            </p>
+
+                        </div>
+
+                    <?php endforeach; ?>
+
                 </div>
-            <?php endforeach; ?>
+
+            </div>
+
+            <!-- RIGHT FORM -->
+            <div
+                class="bg-white rounded-2xl p-6 md:p-8 shadow-sm">
+
+                <h3 class="text-xl md:text-2xl font-medium text-gray-900">
+                    Book Free Site Visit
+                </h3>
+
+                <p class="mt-2 text-gray-500 text-xs md:text-sm">
+                    Fill your details and we will contact you shortly.
+                </p>
+
+                <form
+                    method="post"
+                    action="<?php echo BASE_URL; ?>actions"
+                    class="mt-6">
+
+                    <!-- HIDDEN INPUT -->
+                    <input type="hidden" name="project_id" id="project_id" required>
+
+                    <div class="relative w-full">
+
+                        <!-- BUTTON -->
+                        <button
+                            type="button"
+                            id="dropdownBtn"
+                            class="w-full h-10 md:h-11 px-4 rounded-lg border border-gray-200 bg-white
+        flex items-center justify-between
+        focus:border-green-500
+        transition-all duration-300">
+
+                            <span
+                                id="selectedText"
+                                class="text-xs md:text-sm text-gray-500">
+                                Select Project
+                            </span>
+
+                            <svg
+                                id="dropdownArrow"
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="w-5 h-5 transition-transform duration-300"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor">
+
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M19 9l-7 7-7-7" />
+
+                            </svg>
+
+                        </button>
+
+                        <!-- DROPDOWN -->
+                        <div
+                            id="dropdownMenu"
+                            class="absolute left-0 top-full mt-2 w-full
+        bg-white rounded-xl border border-gray-200
+        shadow-sm overflow-hidden z-50
+
+        max-h-0 opacity-0 -translate-y-2
+
+        transition-all duration-500 ease-in-out">
+
+                            <div class="max-h-54 overflow-y-auto">
+
+                                <?php foreach (fetchPublishedProjects($filters['city'] ? ['city' => $filters['city']] : [], 20) as $project): ?>
+
+                                    <div
+                                        class="px-4 py-3 text-xs cursor-pointer
+                    hover:bg-green-50
+                    hover:text-green-600
+                    transition-colors duration-200"
+
+                                        onclick="selectProject(
+                    '<?php echo (int)$project['id']; ?>',
+                    '<?php echo htmlspecialchars($project['project_name'], ENT_QUOTES); ?>'
+                )">
+
+                                        <?php echo e($project['project_name']); ?>
+
+                                    </div>
+
+                                <?php endforeach; ?>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <script>
+                        const dropdownBtn = document.getElementById("dropdownBtn");
+                        const dropdownMenu = document.getElementById("dropdownMenu");
+                        const dropdownArrow = document.getElementById("dropdownArrow");
+                        const selectedText = document.getElementById("selectedText");
+                        const projectInput = document.getElementById("project_id");
+
+                        let isOpen = false;
+
+                        // OPEN & CLOSE
+                        dropdownBtn.addEventListener("click", function(e) {
+
+                            e.stopPropagation();
+
+                            if (isOpen) {
+
+                                closeDropdown();
+
+                            } else {
+
+                                openDropdown();
+
+                            }
+
+                        });
+
+                        // OPEN
+                        function openDropdown() {
+
+                            dropdownMenu.classList.remove(
+                                "max-h-0",
+                                "opacity-0",
+                                "-translate-y-2"
+                            );
+
+                            dropdownMenu.classList.add(
+                                "max-h-72",
+                                "opacity-100",
+                                "translate-y-0"
+                            );
+
+                            dropdownArrow.classList.add("rotate-90");
+
+                            isOpen = true;
+
+                        }
+
+                        // CLOSE
+                        function closeDropdown() {
+
+                            dropdownMenu.classList.remove(
+                                "max-h-72",
+                                "opacity-100",
+                                "translate-y-0"
+                            );
+
+                            dropdownMenu.classList.add(
+                                "max-h-0",
+                                "opacity-0",
+                                "-translate-y-2"
+                            );
+
+                            dropdownArrow.classList.remove("rotate-90");
+
+                            isOpen = false;
+
+                        }
+
+                        // SELECT
+                        function selectProject(id, name) {
+
+                            projectInput.value = id;
+                            selectedText.innerText = name;
+
+                            closeDropdown();
+
+                        }
+
+                        // CLICK OUTSIDE
+                        document.addEventListener("click", function(e) {
+
+                            if (
+                                !dropdownBtn.contains(e.target) &&
+                                !dropdownMenu.contains(e.target)
+                            ) {
+                                closeDropdown();
+                            }
+
+                        });
+
+                        // ESC CLOSE
+                        document.addEventListener("keydown", function(e) {
+
+                            if (e.key === "Escape") {
+                                closeDropdown();
+                            }
+
+                        });
+                    </script>
+
+                    <div class="grid grid-cols-2 gap-3 mt-4 text-xs md:text-sm">
+
+                        <input
+                            name="full_name"
+                            required
+                            placeholder="Full Name"
+                            class="h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
+
+                        <input
+                            name="phone"
+                            required
+                            placeholder="Mobile Number"
+                            class="h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
+
+                        <input
+                            type="email"
+                            name="email"
+                            required
+                            placeholder="Email Address"
+                            class="col-span-2 h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
+
+                        <input
+                            type="time"
+                            name="preferred_time"
+                            required
+                            class="h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
+
+
+                        <input
+                            type="date"
+                            name="visit_date"
+                            min="<?php echo date('Y-m-d'); ?>"
+                            required
+                            class="h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
+
+                        <input
+                            name="budget"
+                            placeholder="Budget"
+                            class="col-span-2 h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
+
+                    </div>
+
+                    <button
+                        class="mt-3 md:mt-6 w-full h-10 md:h-12 rounded-lg bg-green-600 hover:bg-green-700 transition text-white font-semibold text-xs md:text-sm">
+
+                        Book Free Site Visit
+
+                    </button>
+
+                </form>
+
+            </div>
+
         </div>
+
     </div>
+
 </section>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

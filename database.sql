@@ -240,6 +240,8 @@ CREATE TABLE builders (
 
     company_banner VARCHAR(255) DEFAULT NULL,
 
+    established_year YEAR DEFAULT NULL,
+
     rera_number VARCHAR(100) DEFAULT NULL,
 
     gst_number VARCHAR(100) DEFAULT NULL,
@@ -313,6 +315,7 @@ CREATE TABLE builders (
     ON DELETE SET NULL,
 
     INDEX idx_builder_company(company_name),
+    INDEX idx_builder_established_year(established_year),
     INDEX idx_builder_city(city),
     INDEX idx_builder_status(status)
 
