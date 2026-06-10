@@ -60,11 +60,14 @@ require_once __DIR__ . '/head.php';
                 </a>
 
                 <form
+                    id="desktopSearchBar"
                     action="<?php echo BASE_URL; ?>"
                     method="get"
                     data-city-search
                     data-current-city="<?php echo e($currentSearchCity); ?>"
-                    class="w-[60%] hidden md:flex items-center gap-4">
+                    class="w-[60%] hidden md:flex items-center gap-4
+    opacity-0 pointer-events-none -translate-y-5
+    transition-all duration-300">
 
                     <!-- LOCATION DROPDOWN -->
                     <div class="relative hidden lg:block">
@@ -205,8 +208,42 @@ require_once __DIR__ . '/head.php';
                     </div>
 
                 </form>
+
                 <script>
                     document.addEventListener('DOMContentLoaded', () => {
+                        const desktopSearchBar = document.getElementById('desktopSearchBar');
+
+                        window.addEventListener('scroll', () => {
+
+                            if (window.scrollY > 340) {
+
+                                desktopSearchBar.classList.remove(
+                                    'opacity-0',
+                                    'pointer-events-none',
+                                    '-translate-y-5'
+                                );
+
+                                desktopSearchBar.classList.add(
+                                    'opacity-100',
+                                    'translate-y-0'
+                                );
+
+                            } else {
+
+                                desktopSearchBar.classList.add(
+                                    'opacity-0',
+                                    'pointer-events-none',
+                                    '-translate-y-5'
+                                );
+
+                                desktopSearchBar.classList.remove(
+                                    'opacity-100',
+                                    'translate-y-0'
+                                );
+                            }
+
+                        });
+
 
                         const btn = document.getElementById('locationBtn');
                         const dropdown = document.getElementById('locationDropdown');
@@ -297,7 +334,7 @@ require_once __DIR__ . '/head.php';
                         </svg>
 
                         <!-- COUNT -->
-                        <span class="absolute -top-1 -right-1
+                        <span data-wishlist-count class="absolute -top-1 -right-1
         min-w-[18px] h-[18px]
         px-1 rounded-full
         bg-red-500 text-white
@@ -318,7 +355,7 @@ require_once __DIR__ . '/head.php';
                                     <?= strtoupper(substr($_SESSION['user']['name'] ?? 'U', 0, 1)); ?>
                                 </div>
 
-                                <span>My Account</span>
+                                <span class="hidden sm:inline">My Account</span>
                             </div>
 
                         <?php else: ?>

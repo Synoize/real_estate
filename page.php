@@ -95,62 +95,49 @@ $pageTitle = $page['title'];
 require_once __DIR__ . '/includes/header.php';
 ?>
 
-<section class="mt-20 bg-primary text-white">
-    <div class="mx-auto max-w-[1200px] px-4 py-14 sm:px-6 lg:px-10">
-        <p class="text-sm font-black uppercase tracking-[2px] text-accent"><?php echo e($page['eyebrow']); ?></p>
-        <h1 class="mt-3 text-4xl font-black md:text-5xl"><?php echo e($page['title']); ?></h1>
+<section class="mt-20 pt-6 md:pt-12">
+    <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-20">
+        <div class="flex flex-col items-start justify-start">
+
+            <div class="flex items-center gap-2 text-green-500 uppercase font-semibold text-xs md:text-sm mb-3">
+                <i class="fa-solid fa-building"></i>
+                <span><?php echo e($page['eyebrow']); ?></span>
+            </div>
+            <h1 class="text-primary text-3xl md:text-4xl font-semibold leading-tight">
+                <?php echo e($page['title']); ?>
+            </h1>
+
+            <p class="mt-3 text-sm md:text-base text-gray-500">
+                <?php foreach ($page['body'] as $paragraph): ?>
+            <p><?php echo e($paragraph); ?></p>
+        <?php endforeach; ?>
+        </p>
+        </div>
     </div>
 </section>
 
-<section class="bg-gray-50 py-12">
-    <div class="mx-auto max-w-[1200px] px-4 sm:px-6 lg:px-10">
-        <div class="rounded-lg border border-gray-200 bg-white p-6 md:p-8">
-            <div class="space-y-4 text-base leading-8 text-gray-600">
-                <?php foreach ($page['body'] as $paragraph): ?>
-                    <p><?php echo e($paragraph); ?></p>
-                <?php endforeach; ?>
+
+<section class="py-6 md:py-12">
+    <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-20">
+
+        <?php if (!empty($page['calculator'])): ?>
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-stretch">
+                <div class="h-full">
+                    <?php require_once __DIR__ . '/includes/tools/calculator.php'; ?>
+                </div>
+
+                <div class="h-full">
+                    <?php require_once __DIR__ . '/includes/tools/area-converter.php'; ?>
+                </div>
+
+                <div class="h-full">
+                    <?php require_once __DIR__ . '/includes/tools/emi.php'; ?>
+                </div>
             </div>
 
-            <?php if (!empty($page['calculator'])): ?>
-                <div class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-4">
-                    <label class="block text-sm font-bold text-gray-700">
-                        Loan Amount
-                        <input id="loanAmount" type="number" value="5000000" class="mt-2 h-12 w-full rounded-md border border-gray-200 px-3">
-                    </label>
-                    <label class="block text-sm font-bold text-gray-700">
-                        Interest %
-                        <input id="loanRate" type="number" step="0.1" value="8.5" class="mt-2 h-12 w-full rounded-md border border-gray-200 px-3">
-                    </label>
-                    <label class="block text-sm font-bold text-gray-700">
-                        Years
-                        <input id="loanYears" type="number" value="20" class="mt-2 h-12 w-full rounded-md border border-gray-200 px-3">
-                    </label>
-                    <div class="rounded-md bg-primary p-4 text-white">
-                        <p class="text-sm text-white/70">Estimated EMI</p>
-                        <p id="emiResult" class="mt-2 text-2xl font-black">Rs. 0</p>
-                    </div>
-                </div>
-                <script>
-                    document.addEventListener('DOMContentLoaded', () => {
-                        const amount = document.getElementById('loanAmount');
-                        const rate = document.getElementById('loanRate');
-                        const years = document.getElementById('loanYears');
-                        const result = document.getElementById('emiResult');
 
-                        function calculateEmi() {
-                            const p = Number(amount.value || 0);
-                            const r = Number(rate.value || 0) / 12 / 100;
-                            const n = Number(years.value || 0) * 12;
-                            const emi = r > 0 && n > 0 ? p * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1) : 0;
-                            result.textContent = 'Rs. ' + Math.round(emi).toLocaleString('en-IN');
-                        }
+        <?php endif; ?>
 
-                        [amount, rate, years].forEach(input => input.addEventListener('input', calculateEmi));
-                        calculateEmi();
-                    });
-                </script>
-            <?php endif; ?>
-        </div>
     </div>
 </section>
 

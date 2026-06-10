@@ -123,7 +123,41 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (label) {
                         label.textContent = "Saved Project";
                     }
+                } else {
+                    icon?.classList.remove("fa-solid", "text-red-500");
+                    icon?.classList.add("fa-regular");
+                    button?.setAttribute("aria-label", "Add to wishlist");
+
+                    if (label) {
+                        label.textContent = "Save Project";
+                    }
                 }
+
+                document.querySelectorAll("[data-wishlist-count]").forEach((count) => {
+                    count.textContent = data.wishlist_count ?? count.textContent;
+                });
+
+                document.querySelectorAll(`[data-wishlist-project-id="${form.querySelector('input[name="project_id"]')?.value}"]`).forEach((matchingForm) => {
+                    if (matchingForm === form) {
+                        return;
+                    }
+
+                    const matchingButton = matchingForm.querySelector("[data-wishlist-button]");
+                    const matchingIcon = matchingForm.querySelector("[data-wishlist-icon]");
+                    const matchingLabel = matchingForm.querySelector("[data-wishlist-label]");
+
+                    if (data.saved) {
+                        matchingIcon?.classList.remove("fa-regular");
+                        matchingIcon?.classList.add("fa-solid", "text-red-500");
+                        matchingButton?.setAttribute("aria-label", "Saved in wishlist");
+                        matchingLabel && (matchingLabel.textContent = "Saved Project");
+                    } else {
+                        matchingIcon?.classList.remove("fa-solid", "text-red-500");
+                        matchingIcon?.classList.add("fa-regular");
+                        matchingButton?.setAttribute("aria-label", "Add to wishlist");
+                        matchingLabel && (matchingLabel.textContent = "Save Project");
+                    }
+                });
             } catch (error) {
                 form.submit();
             } finally {
@@ -176,12 +210,35 @@ window.addEventListener("load", () => {
                 nextEl: ".testimonial-next",
                 prevEl: ".testimonial-prev",
             },
-            breakpoints: {
-                0: { slidesPerView: 1.1, spaceBetween: 16 },
-                640: { slidesPerView: 1.5, spaceBetween: 18 },
-                768: { slidesPerView: 2.2, spaceBetween: 20 },
-                1024: { slidesPerView: 3, spaceBetween: 24 },
-                1280: { slidesPerView: 4, spaceBetween: 24 },
+           breakpoints: {
+                0: {
+                    slidesPerView: 1.2,
+                    spaceBetween: 12,
+                },
+                576: {
+                    slidesPerView: 1.5,
+                    spaceBetween: 14,
+                },
+                768: {
+                    slidesPerView: 2.2,
+                    spaceBetween: 16,
+                },
+                992: {
+                    slidesPerView: 3,
+                    spaceBetween: 20,
+                },
+                1200: {
+                    slidesPerView: 3.5,
+                    spaceBetween: 22,
+                },
+                1400: {
+                    slidesPerView: 4.5,
+                    spaceBetween: 24,
+                },
+                1720: {
+                    slidesPerView: 5,
+                    spaceBetween: 24,
+                },
             },
         });
     }

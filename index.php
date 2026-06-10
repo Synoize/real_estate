@@ -652,7 +652,7 @@ require_once __DIR__ . '/includes/header.php';
         </div>
 
         <!-- GRID -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 md:gap-5">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-5">
             <div class="bg-white rounded-3xl px-3 py-6 md:px-6 md:py-12 min-h-[200px] duration-300 hover:-translate-y-1 border">
                 <div class="mb-4 md:mb-8 flex justify-center">
                     <div class="text-3xl md:text-6xl flex items-center justify-center text-primary">
@@ -765,14 +765,14 @@ require_once __DIR__ . '/includes/header.php';
                         $savedInWishlist = isLoggedIn() && isInWishlist((int)$project['id']);
                         ?>
                         <article class="swiper-slide">
-                            <div class="relative bg-white rounded-2xl border border-gray-200 p-3 md:p-4 transition duration-300 hover:-translate-y-1 hover:shadow-sm">
+                            <div class="relative bg-white rounded-2xl border border-gray-200 p-3 transition duration-300 hover:-translate-y-1 hover:shadow-sm">
                                 <!-- IMAGE -->
                                 <a href="<?php echo BASE_URL . 'project/' . urlencode($project['slug']); ?>" class="relative">
                                     <img src="<?php echo e(projectImage($project)); ?>" alt="<?php echo e($project['project_name']); ?>"
                                         class="w-full h-[220px] object-cover rounded-2xl overflow-hidden" />
 
                                     <?php if ($saleBadge): ?>
-                                        <button class="absolute top-0 left-4 inline-flex items-center gap-2 mt-3 bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs">
+                                        <button class="absolute top-3 left-4 inline-flex items-center gap-2 bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs">
                                             <!-- BLINK DOT -->
                                             <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
                                             <?php echo e($saleBadge); ?>
@@ -789,11 +789,11 @@ require_once __DIR__ . '/includes/header.php';
                                 </a>
 
                                 <!-- HEART -->
-                                <form method="post" action="<?php echo BASE_URL; ?>actions" class="absolute top-2 right-4 z-20" data-wishlist-form>
+                                <form method="post" action="<?php echo BASE_URL; ?>actions" class="absolute top-4.5 right-6 z-20" data-wishlist-form data-wishlist-project-id="<?php echo (int)$project['id']; ?>">
                                     <input type="hidden" name="action" value="wishlist">
                                     <input type="hidden" name="project_id" value="<?php echo (int)$project['id']; ?>">
                                     <input type="hidden" name="redirect_to" value="<?php echo e(getCurrentPageUrl()); ?>">
-                                    <button type="submit" class="text-white text-xl md:text-2xl drop-shadow" aria-label="<?php echo $savedInWishlist ? 'Saved in wishlist' : 'Add to wishlist'; ?>" data-wishlist-button>
+                                    <button type="submit" class="text-white text-xl drop-shadow" aria-label="<?php echo $savedInWishlist ? 'Saved in wishlist' : 'Add to wishlist'; ?>" data-wishlist-button>
                                         <i class="<?php echo $savedInWishlist ? 'fa-solid text-red-500' : 'fa-regular'; ?> fa-heart" data-wishlist-icon></i>
                                     </button>
                                 </form>
@@ -840,7 +840,7 @@ require_once __DIR__ . '/includes/header.php';
 
                                     <?php if (!empty($unitPlans)): ?>
                                         <!-- TABLE -->
-                                        <div class="mt-5 border border-gray-300 rounded-lg overflow-hidden">
+                                        <div class="mt-2 md:mt-4 border border-gray-300 rounded-lg overflow-hidden">
 
                                             <!-- SCROLLABLE AREA -->
                                             <div class="max-h-[80px] overflow-y-auto scrollbar-thin">
@@ -1415,7 +1415,88 @@ require_once __DIR__ . '/includes/header.php';
                         <div class="swiper-slide">
 
                             <div
-                                class="overflow-hidden rounded-2xl min-w-[280px] max-w-[340px] h-[380px] sm:h-[440px] md:h-[480px] bg-black border border-gray-200 shadow-lg">
+                                class="overflow-hidden
+    rounded-2xl
+    w-full
+    h-[360px]
+    sm:h-[400px]
+    md:h-[440px]
+    lg:h-[460px]
+    bg-black
+    border border-gray-200
+    shadow-lg">
+
+                                <iframe class="w-full h-full" src="<?php echo e($embedUrl); ?>"
+                                    title="<?php echo e($video['video_title'] ?: $video['project_name']); ?>" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen>
+                                </iframe>
+
+                            </div>
+
+                        </div>
+
+                        <div class="swiper-slide">
+
+                            <div
+                                class="overflow-hidden
+    rounded-2xl
+    w-full
+    h-[360px]
+    sm:h-[400px]
+    md:h-[440px]
+    lg:h-[460px]
+    bg-black
+    border border-gray-200
+    shadow-lg">
+
+                                <iframe class="w-full h-full" src="<?php echo e($embedUrl); ?>"
+                                    title="<?php echo e($video['video_title'] ?: $video['project_name']); ?>" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen>
+                                </iframe>
+
+                            </div>
+
+                        </div>
+
+                        <div class="swiper-slide">
+
+                            <div
+                                class="overflow-hidden
+    rounded-2xl
+    w-full
+    h-[360px]
+    sm:h-[400px]
+    md:h-[440px]
+    lg:h-[460px]
+    bg-black
+    border border-gray-200
+    shadow-lg">
+
+                                <iframe class="w-full h-full" src="<?php echo e($embedUrl); ?>"
+                                    title="<?php echo e($video['video_title'] ?: $video['project_name']); ?>" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen>
+                                </iframe>
+
+                            </div>
+
+                        </div>
+
+                        <div class="swiper-slide">
+
+                            <div
+                                class="overflow-hidden
+    rounded-2xl
+    w-full
+    h-[360px]
+    sm:h-[400px]
+    md:h-[440px]
+    lg:h-[460px]
+    bg-black
+    border border-gray-200
+    shadow-lg">
 
                                 <iframe class="w-full h-full" src="<?php echo e($embedUrl); ?>"
                                     title="<?php echo e($video['video_title'] ?: $video['project_name']); ?>" frameborder="0"
@@ -1451,6 +1532,96 @@ require_once __DIR__ . '/includes/header.php';
 
     <!-- FAQ Container -->
     <div class="mt-10 space-y-4">
+
+        <!-- ITEM -->
+        <div class="faq-item border rounded-xl overflow-hidden bg-white">
+
+            <button
+                class="faq-btn w-full flex items-center justify-between px-5 py-4 text-left font-medium text-xs md:text-base">
+
+                What products do you offer on your platform?
+
+                <!-- SVG ICON -->
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    class="faq-icon w-5 h-5 transition-transform duration-300" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+
+                </svg>
+
+            </button>
+
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+
+                <p class="px-5 py-5 text-xs md:text-sm bg-gray-50 text-gray-600 leading-relaxed">
+                    We offer electronics, fashion, home essentials, beauty products,
+                    lifestyle accessories, and many trending collections from trusted sellers.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ITEM -->
+        <div class="faq-item border rounded-xl overflow-hidden bg-white">
+
+            <button
+                class="faq-btn w-full flex items-center justify-between px-5 py-4 text-left font-medium text-xs md:text-base">
+
+                How long does delivery take?
+
+                <!-- SVG ICON -->
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    class="faq-icon w-5 h-5 transition-transform duration-300" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+
+                </svg>
+
+            </button>
+
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+
+                <p class="px-5 py-5 text-xs md:text-sm bg-gray-50 text-gray-600 leading-relaxed">
+                    Delivery usually takes between 2–7 business days depending on your
+                    location and shipping option selected.
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- ITEM -->
+        <div class="faq-item border rounded-xl overflow-hidden bg-white">
+
+            <button
+                class="faq-btn w-full flex items-center justify-between px-5 py-4 text-left font-medium text-xs md:text-base">
+
+                What payment methods are available?
+
+                <!-- SVG ICON -->
+                <svg xmlns="http://www.w3.org/2000/svg"
+                    class="faq-icon w-5 h-5 transition-transform duration-300" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor" stroke-width="2">
+
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+
+                </svg>
+
+            </button>
+
+            <div class="faq-content max-h-0 overflow-hidden transition-all duration-500 ease-in-out">
+
+                <p class="px-5 py-5 text-xs md:text-sm bg-gray-50 text-gray-600 leading-relaxed">
+                    We support UPI, debit cards, credit cards, net banking, wallets,
+                    and cash on delivery for eligible orders.
+                </p>
+
+            </div>
+
+        </div>
 
         <!-- ITEM -->
         <div class="faq-item border rounded-xl overflow-hidden bg-white">

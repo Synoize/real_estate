@@ -49,28 +49,36 @@ try {
             requireLogin();
         }
 
-        $stmt = $pdo->prepare("
-            INSERT IGNORE INTO wishlist (user_id, project_id)
-            VALUES (:user_id, :project_id)
-        ");
-        $stmt->execute([
-            ':user_id' => $_SESSION['user_id'],
-            ':project_id' => $projectId
-        ]);
+        $wishlistCheck = $pdo->prepare('SELECT id FROM wishlist WHERE user_id = ? AND project_id = ? LIMIT 1');
+        $wishlistCheck->execute([$_SESSION['user_id'], $projectId]);
+        $wishlistItem = $wishlistCheck->fetch();
 
-        if ($stmt->rowCount() > 0) {
-            $pdo->prepare('UPDATE projects SET total_wishlist = total_wishlist + 1 WHERE id = ?')->execute([$projectId]);
-            $message = 'Project saved to your wishlist.';
+        if ($wishlistItem) {
+            $stmt = $pdo->prepare('DELETE FROM wishlist WHERE user_id = ? AND project_id = ?');
+            $stmt->execute([$_SESSION['user_id'], $projectId]);
+            $pdo->prepare('UPDATE projects SET total_wishlist = GREATEST(total_wishlist - 1, 0) WHERE id = ?')->execute([$projectId]);
+            $saved = false;
+            $message = 'Project removed from your wishlist.';
             setFlash($message, 'success');
         } else {
-            $message = 'Project is already in your wishlist.';
+            $stmt = $pdo->prepare("
+                INSERT INTO wishlist (user_id, project_id)
+                VALUES (:user_id, :project_id)
+            ");
+            $stmt->execute([
+                ':user_id' => $_SESSION['user_id'],
+                ':project_id' => $projectId
+            ]);
+            $pdo->prepare('UPDATE projects SET total_wishlist = total_wishlist + 1 WHERE id = ?')->execute([$projectId]);
+            $saved = true;
+            $message = 'Project saved to your wishlist.';
             setFlash($message, 'success');
         }
 
         if ($isAjax) {
             jsonActionResponse([
                 'success' => true,
-                'saved' => true,
+                'saved' => $saved,
                 'message' => $message,
                 'wishlist_count' => getWishlistCount()
             ]);
