@@ -43,6 +43,7 @@ RewriteRule ^forgot-password/?$ user/forgot-password.php [L,QSA]
 RewriteRule ^reset-password/?$ user/reset-password.php [L,QSA]
 RewriteRule ^wishlist/?$ user/wishlist.php [L,QSA]
 RewriteRule ^actions/?$ actions.php [L,QSA]
+RewriteRule ^projects/?$ projects.php [L,QSA]
 RewriteRule ^project/([^/]+)/?$ project.php?slug=$1 [L,QSA,B]
 RewriteRule ^(about-us|contact-us|calculator|privacy-policy|terms|disclaimer|blogs|careers|help)/?$ page.php?slug=$1 [L,QSA]
 

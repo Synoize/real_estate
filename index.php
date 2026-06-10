@@ -229,6 +229,15 @@ $builderStmt = $pdo->prepare($builderSql);
 $builderStmt->execute($builderParams);
 $builders = $builderStmt->fetchAll();
 
+$projectsPageParams = array_filter([
+    'city' => $filters['city'],
+    'type' => $filters['type'],
+    'q' => $filters['q'],
+    'budget' => $selectedBudget
+], static function ($value) {
+    return $value !== null && $value !== '';
+});
+
 require_once __DIR__ . '/includes/header.php';
 ?>
 
@@ -719,10 +728,10 @@ require_once __DIR__ . '/includes/header.php';
 
             <!-- RIGHT -->
             <div class="flex items-center justify-between md:flex-col md:items-end gap-4">
-                <button
+                <a href="<?php echo BASE_URL; ?>projects<?php echo $projectsPageParams ? '?' . http_build_query($projectsPageParams) : ''; ?>"
                     class="bg-primary-50 text-primary-500 px-5 md:px-6 py-3 rounded-xl font-medium text-xs md:text-sm hover:opacity-90 duration-300">
-                    View More
-                </button>
+                    See All Projects
+                </a>
 
                 <div class="flex gap-3">
                     <button
@@ -1310,12 +1319,12 @@ require_once __DIR__ . '/includes/header.php';
                             placeholder="Email Address"
                             class="col-span-2 h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
 
+                        <p class="col-span-2 text-xs">Booking Date & Time</p>
                         <input
                             type="time"
                             name="preferred_time"
                             required
                             class="h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
-
 
                         <input
                             type="date"
@@ -1350,82 +1359,82 @@ require_once __DIR__ . '/includes/header.php';
 
 <!-- Client Testimonials -->
 <?php if (!empty($testimonialVideos)): ?>
-<section class="py-12 md:py-16 overflow-hidden">
+    <section class="py-12 md:py-16 overflow-hidden">
 
-    <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-20">
+        <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-20">
 
-        <!-- TOP BAR -->
-        <div class="flex items-center justify-between mb-8">
+            <!-- TOP BAR -->
+            <div class="flex items-center justify-between mb-8">
 
-            <div>
-                <div
-                    class="flex items-center gap-2 text-red-500 uppercase font-semibold text-xs md:text-sm mb-3">
-                    <i class="fa-solid fa-video"></i>
-                    <span>Client Testimonials</span>
+                <div>
+                    <div
+                        class="flex items-center gap-2 text-red-500 uppercase font-semibold text-xs md:text-sm mb-3">
+                        <i class="fa-solid fa-video"></i>
+                        <span>Client Testimonials</span>
+                    </div>
+
+                    <h2 class="text-primary text-2xl md:text-3xl font-semibold leading-tight mb-3">
+                        Hear What Our Happy Clients Say
+                    </h2>
+
+                    <p class="text-gray-500 text-xs md:text-base">
+                        Watch real experiences and success stories shared by our valued clients
+                    </p>
                 </div>
 
-                <h2 class="text-primary text-2xl md:text-3xl font-semibold leading-tight mb-3">
-                    Hear What Our Happy Clients Say
-                </h2>
+                <!-- NAVIGATION -->
+                <div class="hidden md:flex items-center gap-3">
 
-                <p class="text-gray-500 text-xs md:text-base">
-                    Watch real experiences and success stories shared by our valued clients
-                </p>
-            </div>
+                    <button
+                        class="testimonial-prev w-11 h-11 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
 
-            <!-- NAVIGATION -->
-            <div class="hidden md:flex items-center gap-3">
+                    <button
+                        class="testimonial-next w-11 h-11 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
 
-                <button
-                    class="testimonial-prev w-11 h-11 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
-                    <i class="fa-solid fa-chevron-left"></i>
-                </button>
-
-                <button
-                    class="testimonial-next w-11 h-11 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </button>
+                </div>
 
             </div>
 
-        </div>
+            <!-- SWIPER -->
+            <div class="swiper testimonialSwiper overflow-visible">
 
-        <!-- SWIPER -->
-        <div class="swiper testimonialSwiper overflow-visible">
+                <div class="swiper-wrapper">
 
-            <div class="swiper-wrapper">
+                    <?php foreach ($testimonialVideos as $video): ?>
+                        <?php
+                        $embedUrl = videoEmbedUrl($video['video_url']);
 
-                <?php foreach ($testimonialVideos as $video): ?>
-                    <?php
-                    $embedUrl = videoEmbedUrl($video['video_url']);
+                        if ($embedUrl === '') {
+                            continue;
+                        }
+                        ?>
+                        <div class="swiper-slide">
 
-                    if ($embedUrl === '') {
-                        continue;
-                    }
-                    ?>
-                    <div class="swiper-slide">
+                            <div
+                                class="overflow-hidden rounded-2xl min-w-[280px] max-w-[340px] h-[380px] sm:h-[440px] md:h-[480px] bg-black border border-gray-200 shadow-lg">
 
-                        <div
-                            class="overflow-hidden rounded-2xl min-w-[280px] max-w-[340px] h-[380px] sm:h-[440px] md:h-[480px] bg-black border border-gray-200 shadow-lg">
+                                <iframe class="w-full h-full" src="<?php echo e($embedUrl); ?>"
+                                    title="<?php echo e($video['video_title'] ?: $video['project_name']); ?>" frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                    allowfullscreen>
+                                </iframe>
 
-                            <iframe class="w-full h-full" src="<?php echo e($embedUrl); ?>"
-                                title="<?php echo e($video['video_title'] ?: $video['project_name']); ?>" frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowfullscreen>
-                            </iframe>
+                            </div>
 
                         </div>
+                    <?php endforeach; ?>
 
-                    </div>
-                <?php endforeach; ?>
+                </div>
 
             </div>
 
         </div>
 
-    </div>
-
-</section>
+    </section>
 <?php endif; ?>
 
 <!-- FAQ's -->

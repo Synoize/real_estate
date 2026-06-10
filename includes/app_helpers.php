@@ -342,7 +342,7 @@ function projectSaleBadge($project)
     return (int)($project['is_verified'] ?? 0) === 1 ? 'Verified' : '';
 }
 
-function fetchPublishedProjects($filters = [], $limit = 12)
+function fetchPublishedProjects($filters = [], $limit = 12, $offset = 0)
 {
     global $pdo;
 
@@ -384,8 +384,11 @@ function fetchPublishedProjects($filters = [], $limit = 12)
         FROM projects p
         INNER JOIN builders b ON b.id = p.builder_id
         WHERE " . implode(' AND ', $where) . "
-        ORDER BY p.is_featured DESC, p.created_at DESC
-        LIMIT " . (int)$limit;
+        ORDER BY p.is_featured DESC, p.created_at DESC";
+
+    if ($limit !== null) {
+        $sql .= " LIMIT " . (int)$limit . " OFFSET " . max(0, (int)$offset);
+    }
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);

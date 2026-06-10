@@ -8,7 +8,7 @@ $relativePath = $basePath && strpos($currentPath, $basePath) === 0
 
 $navLinks = [
     ['label' => 'Home', 'url' => BASE_URL],
-    ['label' => 'Projects', 'url' => BASE_URL . '#projects'],
+    ['label' => 'Projects', 'url' => BASE_URL . 'projects'],
     ['label' => 'About', 'url' => BASE_URL . 'about-us'],
     ['label' => 'Contact', 'url' => BASE_URL . 'contact-us'],
 ];
