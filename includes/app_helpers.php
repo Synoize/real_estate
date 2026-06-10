@@ -249,6 +249,46 @@ function fetchProjectPrimaryVideosForProjects($projectIds)
     return $videosByProject;
 }
 
+function fetchHomepageProjectVideos($limit = 8)
+{
+    global $pdo;
+
+    $stmt = $pdo->prepare("
+        SELECT v.*, p.project_name, p.slug, p.city, p.locality, b.company_name
+        FROM project_videos v
+        INNER JOIN projects p ON p.id = v.project_id
+        INNER JOIN builders b ON b.id = p.builder_id
+        WHERE p.status = 'published'
+          AND p.deleted_at IS NULL
+          AND v.video_url IS NOT NULL
+          AND v.video_url <> ''
+        ORDER BY p.is_featured DESC, v.created_at DESC, v.id DESC
+        LIMIT " . (int)$limit
+    );
+    $stmt->execute();
+
+    return $stmt->fetchAll();
+}
+
+function videoEmbedUrl($url)
+{
+    $url = trim((string)$url);
+
+    if ($url === '') {
+        return '';
+    }
+
+    if (preg_match('~(?:youtube\.com/watch\?v=|youtu\.be/|youtube\.com/shorts/|youtube\.com/embed/)([A-Za-z0-9_-]{6,})~', $url, $matches)) {
+        return 'https://www.youtube.com/embed/' . $matches[1];
+    }
+
+    if (preg_match('~vimeo\.com/(?:video/)?(\d+)~', $url, $matches)) {
+        return 'https://player.vimeo.com/video/' . $matches[1];
+    }
+
+    return preg_match('~^https?://~i', $url) ? $url : '';
+}
+
 function projectAreaRange($project, $unitPlans = [])
 {
     $areas = [];

@@ -20,13 +20,7 @@ $footerLinks = [
         'Privacy Policy' => BASE_URL . 'privacy-policy',
         'Terms' => BASE_URL . 'terms',
         'Disclaimer' => BASE_URL . 'disclaimer',
-    ],
-    'Role Access' => [
-        'Admin Login' => ADMIN_URL . 'login',
-        'Builder Login' => BUILDER_URL . 'login',
-        'Employee Login' => EMPLOYEE_URL . 'login',
-        'Manager Login' => MANAGER_URL . 'login',
-    ],
+    ]
 ];
 ?>
 <footer class="bg-primary text-white">
@@ -50,17 +44,32 @@ $footerLinks = [
             </div>
 
             <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                <div>
-                    <h3 class="text-base font-black">Top Localities</h3>
-                    <ul class="mt-4 space-y-3">
+                <div class="col-span-2">
+
+                    <h3 class="text-base font-black">
+                        Top Localities
+                    </h3>
+
+                    <ul class="mt-4 grid grid-cols-2 md:grid-cols-3 gap-x-6 gap-y-3">
+
                         <?php foreach ($footerLocalities as $locality): ?>
+
                             <li>
-                                <a href="<?php echo e(cityUrl($locality['city'], ['q' => $locality['locality'], '_locality_path' => true])); ?>" class="text-sm text-white/70 hover:text-white">
+
+                                <a
+                                    href="<?php echo e(cityUrl($locality['city'], ['q' => $locality['locality'], '_locality_path' => true])); ?>"
+                                    class="text-sm text-white/70 hover:text-white transition-colors duration-300">
+
                                     <?php echo e($locality['locality']); ?> Projects
+
                                 </a>
+
                             </li>
+
                         <?php endforeach; ?>
+
                     </ul>
+
                 </div>
 
                 <?php foreach ($footerLinks as $heading => $links): ?>

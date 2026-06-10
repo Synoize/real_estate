@@ -177,6 +177,9 @@ $projects = fetchPublishedProjects($filters, 9);
 $projectIds = array_column($projects, 'id');
 $projectUnitPlans = fetchProjectUnitPlansForProjects($projectIds, 5);
 $projectVideos = fetchProjectPrimaryVideosForProjects($projectIds);
+$testimonialVideos = array_values(array_filter(fetchHomepageProjectVideos(8), static function ($video) {
+    return videoEmbedUrl($video['video_url'] ?? '') !== '';
+}));
 $featured = $projects[0] ?? null;
 $projectCount = $filters['city']
     ? tableCount('projects', "status = 'published' AND deleted_at IS NULL AND city = ?", [$filters['city']])
@@ -1346,6 +1349,7 @@ require_once __DIR__ . '/includes/header.php';
 </section>
 
 <!-- Client Testimonials -->
+<?php if (!empty($testimonialVideos)): ?>
 <section class="py-12 md:py-16 overflow-hidden">
 
     <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-20">
@@ -1391,85 +1395,29 @@ require_once __DIR__ . '/includes/header.php';
 
             <div class="swiper-wrapper">
 
-                <!-- CARD 1 -->
-                <div class="swiper-slide">
+                <?php foreach ($testimonialVideos as $video): ?>
+                    <?php
+                    $embedUrl = videoEmbedUrl($video['video_url']);
 
-                    <div
-                        class="overflow-hidden rounded-2xl min-w-[280px] max-w-[340px] h-[380px] sm:h-[440px] md:h-[480px] bg-black border border-gray-200 shadow-lg">
+                    if ($embedUrl === '') {
+                        continue;
+                    }
+                    ?>
+                    <div class="swiper-slide">
 
-                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/jNQXAC9IVRw"
-                            title="YouTube video" frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                        </iframe>
+                        <div
+                            class="overflow-hidden rounded-2xl min-w-[280px] max-w-[340px] h-[380px] sm:h-[440px] md:h-[480px] bg-black border border-gray-200 shadow-lg">
 
-                    </div>
+                            <iframe class="w-full h-full" src="<?php echo e($embedUrl); ?>"
+                                title="<?php echo e($video['video_title'] ?: $video['project_name']); ?>" frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                            </iframe>
 
-                </div>
-
-                <!-- CARD 2 -->
-                <div class="swiper-slide">
-
-                    <div
-                        class="overflow-hidden rounded-2xl min-w-[280px] max-w-[340px] h-[380px] sm:h-[440px] md:h-[480px] bg-black border border-gray-200 shadow-lg">
-
-                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/jNQXAC9IVRw"
-                            title="YouTube video" frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                        </iframe>
+                        </div>
 
                     </div>
-
-                </div>
-
-                <!-- CARD 3 -->
-                <div class="swiper-slide">
-
-                    <div
-                        class="overflow-hidden rounded-2xl min-w-[280px] max-w-[340px] h-[380px] sm:h-[440px] md:h-[480px] bg-black border border-gray-200 shadow-lg">
-
-                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/jNQXAC9IVRw"
-                            title="YouTube video" frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                        </iframe>
-
-                    </div>
-
-                </div>
-
-                <!-- CARD 4 -->
-                <div class="swiper-slide">
-
-                    <div
-                        class="overflow-hidden rounded-2xl min-w-[280px] max-w-[340px] h-[380px] sm:h-[440px] md:h-[480px] bg-black border border-gray-200 shadow-lg">
-
-                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/jNQXAC9IVRw"
-                            title="YouTube video" frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                        </iframe>
-
-                    </div>
-
-                </div>
-
-                <!-- CARD 5 -->
-                <div class="swiper-slide">
-
-                    <div
-                        class="overflow-hidden rounded-2xl min-w-[280px] max-w-[340px] h-[380px] sm:h-[440px] md:h-[480px] bg-black border border-gray-200 shadow-lg">
-
-                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/jNQXAC9IVRw"
-                            title="YouTube video" frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                        </iframe>
-
-                    </div>
-
-                </div>
+                <?php endforeach; ?>
 
             </div>
 
@@ -1478,6 +1426,7 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 
 </section>
+<?php endif; ?>
 
 <!-- FAQ's -->
 <section class="mx-auto max-w-3xl px-4 pb-12 md:pb-16">
