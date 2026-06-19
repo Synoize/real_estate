@@ -46,19 +46,17 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
         if ($name && $city && $state) {
             $slug = makeSlug($name) . '-' . random_int(100, 999);
-            $postedMinPrice = (float)($_POST['min_price'] ?? 0);
-            $postedMaxPrice = (float)($_POST['max_price'] ?? 0);
             $stmt = $pdo->prepare("
                 INSERT INTO projects (
                     uuid, builder_id, assigned_manager_id, project_type,
                     project_name, slug, project_code, city, state, locality,
                     overview, amenities, thumbnail_image, featured_image,
-                    youtube_video_link, min_price, max_price, is_verified, project_status, status
+                    youtube_video_link, is_verified, project_status, status
                 ) VALUES (
                     UUID(), :builder_id, :manager_id, :project_type,
                     :project_name, :slug, :project_code, :city, :state, :locality,
                     :overview, :amenities, :thumbnail_image, :featured_image,
-                    :youtube_video_link, :min_price, :max_price, 0, :project_status, 'pending'
+                    :youtube_video_link, 0, :project_status, 'pending'
                 )
             ");
             $stmt->execute([
@@ -76,8 +74,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 ':thumbnail_image' => trim($_POST['image'] ?? ''),
                 ':featured_image' => trim($_POST['image'] ?? ''),
                 ':youtube_video_link' => trim($_POST['video_url'] ?? ''),
-                ':min_price' => $postedMinPrice,
-                ':max_price' => $postedMaxPrice,
                 ':project_status' => $_POST['project_status'] ?? 'Upcoming'
             ]);
 
@@ -95,7 +91,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             $bhkTypes = $_POST['bhk_type'] ?? [];
             $areas = $_POST['area'] ?? [];
             $prices = $_POST['price'] ?? [];
-            $unitPrices = [];
             $planStmt = $pdo->prepare("
                 INSERT INTO project_unit_plans (
                     project_id, unit_name, bhk_type, area, price
@@ -121,15 +116,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                     ':area' => $area,
                     ':price' => $price
                 ]);
-
-                if ($price > 0) {
-                    $unitPrices[] = $price;
-                }
-            }
-
-            if (!empty($unitPrices) && ($postedMinPrice <= 0 || $postedMaxPrice <= 0)) {
-                $pdo->prepare('UPDATE projects SET min_price = ?, max_price = ? WHERE id = ?')
-                    ->execute([min($unitPrices), max($unitPrices), $projectId]);
             }
 
             setFlash('Project submitted for admin approval.', 'success');
@@ -193,8 +179,6 @@ require_once __DIR__ . '/../includes/header.php';
                         <option value="">No manager assigned</option>
                         <?php foreach ($managers as $manager): ?><option value="<?php echo (int)$manager['id']; ?>"><?php echo e($manager['full_name']); ?></option><?php endforeach; ?>
                     </select>
-                    <input name="min_price" type="number" placeholder="Min price" class="h-12 rounded-md border px-3 text-sm">
-                    <input name="max_price" type="number" placeholder="Max price" class="h-12 rounded-md border px-3 text-sm">
                     <input name="image" placeholder="Image URL" class="h-12 rounded-md border px-3 text-sm md:col-span-2">
                     <input name="video_url" placeholder="Video URL" class="h-12 rounded-md border px-3 text-sm md:col-span-2">
                     <textarea name="overview" placeholder="Overview" class="min-h-24 rounded-md border px-3 py-3 text-sm md:col-span-2"></textarea>

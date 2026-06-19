@@ -69,7 +69,7 @@ INSERT IGNORE INTO projects (
   address, overview, amenities, brochure_file, thumbnail_image,
   featured_image, youtube_video_link, total_towers, total_units,
   total_floors, total_area, possession_date, launch_date,
-  min_price, max_price, is_featured, is_verified, project_status, status
+  is_featured, is_verified, project_status, status
 ) VALUES
 (
   UUID(), 1, 1, 1, 'Apartment', 'Skyline Marina Residences',
@@ -82,7 +82,7 @@ INSERT IGNORE INTO projects (
   'https://images.unsplash.com/photo-1605146769289-440113cc3d00?auto=format&fit=crop&w=900&q=80',
   'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80',
   NULL, 3, 420, 42, '2.4 acres', '2028-12-31', '2025-04-01',
-  12500000, 38500000, 1, 1, 'Ongoing', 'published'
+  1, 1, 'Ongoing', 'published'
 ),
 (
   UUID(), 2, NULL, 1, 'Apartment', 'Green Vista Heights',
@@ -95,7 +95,7 @@ INSERT IGNORE INTO projects (
   'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80',
   'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1600&q=80',
   NULL, 5, 760, 35, '4.8 acres', '2027-06-30', '2024-11-01',
-  7200000, 16500000, 1, 1, 'Ongoing', 'published'
+  1, 1, 'Ongoing', 'published'
 ),
 (
   UUID(), 1, 1, 2, 'Plot', 'Skyline Garden Plots',
@@ -108,7 +108,7 @@ INSERT IGNORE INTO projects (
   'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=900&q=80',
   'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1600&q=80',
   NULL, 0, 120, 0, '12 acres', '2028-03-31', '2025-01-15',
-  4500000, 12500000, 0, 1, 'Upcoming', 'published'
+  0, 1, 'Upcoming', 'published'
 );
 
 INSERT INTO project_unit_plans (

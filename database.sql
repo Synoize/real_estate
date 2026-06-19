@@ -496,10 +496,6 @@ CREATE TABLE projects (
 
     launch_date DATE DEFAULT NULL,
 
-    min_price DECIMAL(15,2) DEFAULT 0,
-
-    max_price DECIMAL(15,2) DEFAULT 0,
-
     meta_title VARCHAR(255) DEFAULT NULL,
 
     meta_keywords TEXT DEFAULT NULL,
@@ -551,7 +547,6 @@ CREATE TABLE projects (
     INDEX idx_project_city(city),
     INDEX idx_project_status(status),
     INDEX idx_project_type(project_type),
-    INDEX idx_project_price(min_price, max_price),
     FULLTEXT(project_name, overview)
 
 ) ENGINE=InnoDB

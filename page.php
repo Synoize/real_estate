@@ -92,6 +92,16 @@ if (!$page) {
 }
 
 $pageTitle = $page['title'];
+$pageDescription = trim(implode(' ', array_slice($page['body'], 0, 2)));
+$pageKeywords = implode(', ', array_filter([
+    $page['title'],
+    $page['eyebrow'],
+    '1HousingKey',
+    'real estate',
+    'property'
+]));
+$pageCanonical = BASE_URL . $slug;
+
 require_once __DIR__ . '/includes/header.php';
 ?>
 

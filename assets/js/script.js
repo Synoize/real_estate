@@ -32,6 +32,57 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    document.querySelectorAll("[data-project-gallery]").forEach((gallery) => {
+        const images = Array.from(gallery.querySelectorAll("[data-gallery-image]"));
+        const dots = Array.from(gallery.querySelectorAll("[data-gallery-dot]"));
+        const prevButton = gallery.querySelector("[data-gallery-prev]");
+        const nextButton = gallery.querySelector("[data-gallery-next]");
+        let activeIndex = 0;
+
+        if (images.length <= 1) {
+            return;
+        }
+
+        function showImage(index) {
+            activeIndex = (index + images.length) % images.length;
+
+            images.forEach((image, imageIndex) => {
+                image.classList.toggle("hidden", imageIndex !== activeIndex);
+            });
+
+            dots.forEach((dot, dotIndex) => {
+                const isCompact = dot.classList.contains("h-1");
+
+                dot.classList.toggle("w-5", dotIndex === activeIndex && !isCompact);
+                dot.classList.toggle("w-3", dotIndex === activeIndex && isCompact);
+                dot.classList.toggle("w-1.5", dotIndex !== activeIndex && !isCompact);
+                dot.classList.toggle("w-1", dotIndex !== activeIndex && isCompact);
+                dot.classList.toggle("bg-white", dotIndex === activeIndex);
+                dot.classList.toggle("bg-white/70", dotIndex !== activeIndex);
+            });
+        }
+
+        prevButton?.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            showImage(activeIndex - 1);
+        });
+
+        nextButton?.addEventListener("click", (event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            showImage(activeIndex + 1);
+        });
+
+        dots.forEach((dot) => {
+            dot.addEventListener("click", (event) => {
+                event.preventDefault();
+                event.stopPropagation();
+                showImage(Number(dot.dataset.galleryDot || 0));
+            });
+        });
+    });
+
     document.querySelectorAll(".faq-item").forEach((item) => {
         const btn = item.querySelector(".faq-btn");
         const content = item.querySelector(".faq-content");

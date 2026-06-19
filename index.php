@@ -177,6 +177,7 @@ $projects = fetchPublishedProjects($filters, 9);
 $projectIds = array_column($projects, 'id');
 $projectUnitPlans = fetchProjectUnitPlansForProjects($projectIds, 5);
 $projectVideos = fetchProjectPrimaryVideosForProjects($projectIds);
+$projectGalleries = fetchProjectGalleryImagesForProjects($projectIds);
 $testimonialVideos = array_values(array_filter(fetchHomepageProjectVideos(8), static function ($video) {
     return videoEmbedUrl($video['video_url'] ?? '') !== '';
 }));
@@ -237,6 +238,31 @@ $projectsPageParams = array_filter([
 ], static function ($value) {
     return $value !== null && $value !== '';
 });
+
+$metaLocation = trim(($localityFromPath ? $localityFromPath . ', ' : '') . ($filters['city'] ?? ''), ', ');
+$pageDescription = $metaLocation !== ''
+    ? 'Explore verified residential projects in ' . $metaLocation . ', compare builder prices, amenities, and book free site visits with 1HousingKey.'
+    : 'Find verified residential projects from trusted builders, compare prices, amenities, and book free site visits with 1HousingKey.';
+$pageKeywords = implode(', ', array_filter([
+    'real estate',
+    'property projects',
+    'verified builders',
+    'homes',
+    'apartments',
+    $filters['city'] ?? '',
+    $localityFromPath ?: ($filters['q'] ?? ''),
+    $filters['type'] ?? ''
+]));
+$canonicalParams = $projectsPageParams;
+
+if ($localityFromPath) {
+    $canonicalParams['_locality_path'] = true;
+}
+
+$pageCanonical = $filters['city']
+    ? cityUrl($filters['city'], $canonicalParams)
+    : BASE_URL . ($projectsPageParams ? '?' . http_build_query($projectsPageParams) : '');
+$pageImage = $featured ? projectImage($featured) : null;
 
 require_once __DIR__ . '/includes/header.php';
 ?>
@@ -728,7 +754,7 @@ require_once __DIR__ . '/includes/header.php';
 
             <!-- RIGHT -->
             <div class="flex items-center justify-between md:flex-col md:items-end gap-4">
-                <a href="<?php echo BASE_URL; ?>projects<?php echo $projectsPageParams ? '?' . http_build_query($projectsPageParams) : ''; ?>"
+                <a target="_blank" href="<?php echo BASE_URL; ?>projects<?php echo $projectsPageParams ? '?' . http_build_query($projectsPageParams) : ''; ?>"
                     class="bg-primary-50 text-primary-500 px-5 md:px-6 py-3 rounded-xl font-medium text-xs md:text-sm hover:opacity-90 duration-300">
                     See All Projects
                 </a>
@@ -763,16 +789,34 @@ require_once __DIR__ . '/includes/header.php';
                         $primaryVideo = $projectVideos[(int)$project['id']] ?? [];
                         $videoUrl = trim((string)($primaryVideo['video_url'] ?? $project['youtube_video_link'] ?? ''));
                         $savedInWishlist = isLoggedIn() && isInWishlist((int)$project['id']);
+                        $galleryImages = projectGalleryImages($project, $projectGalleries ?? []);
                         ?>
                         <article class="swiper-slide">
                             <div class="relative bg-white rounded-2xl border border-gray-200 p-3 transition duration-300 hover:-translate-y-1 hover:shadow-sm">
                                 <!-- IMAGE -->
-                                <a href="<?php echo BASE_URL . 'project/' . urlencode($project['slug']); ?>" class="relative">
-                                    <img src="<?php echo e(projectImage($project)); ?>" alt="<?php echo e($project['project_name']); ?>"
-                                        class="w-full h-[220px] object-cover rounded-2xl overflow-hidden" />
+                                <a target="_blank" href="<?php echo BASE_URL . 'project/' . urlencode($project['slug']); ?>" class="relative block overflow-hidden rounded-2xl" data-project-gallery>
+                                    <?php foreach ($galleryImages as $imageIndex => $imageUrl): ?>
+                                        <img src="<?php echo e($imageUrl); ?>" alt="<?php echo e($project['project_name']); ?>"
+                                            class="w-full h-[220px] object-cover <?php echo $imageIndex === 0 ? '' : 'hidden'; ?>"
+                                            data-gallery-image />
+                                    <?php endforeach; ?>
+
+                                    <?php if (count($galleryImages) > 1): ?>
+                                        <button type="button" data-gallery-prev onclick="event.preventDefault(); event.stopPropagation();" class="absolute left-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur hover:bg-black/60" aria-label="Previous image">
+                                            <i class="fa-solid fa-chevron-left text-xs"></i>
+                                        </button>
+                                        <button type="button" data-gallery-next onclick="event.preventDefault(); event.stopPropagation();" class="absolute right-3 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/45 text-white backdrop-blur hover:bg-black/60" aria-label="Next image">
+                                            <i class="fa-solid fa-chevron-right text-xs"></i>
+                                        </button>
+                                        <div class="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 gap-1.5">
+                                            <?php foreach ($galleryImages as $imageIndex => $imageUrl): ?>
+                                                <button type="button" data-gallery-dot="<?php echo (int)$imageIndex; ?>" onclick="event.preventDefault(); event.stopPropagation();" class="h-1.5 rounded-full bg-white/70 transition-all <?php echo $imageIndex === 0 ? 'w-5' : 'w-1.5'; ?>" aria-label="Show image <?php echo (int)$imageIndex + 1; ?>"></button>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
 
                                     <?php if ($saleBadge): ?>
-                                        <button class="absolute top-3 left-4 inline-flex items-center gap-2 bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs">
+                                        <button class="absolute top-3 left-4 z-20 inline-flex items-center gap-2 bg-green-600 text-white px-3 py-1.5 rounded-lg text-xs">
                                             <!-- BLINK DOT -->
                                             <span class="w-2 h-2 rounded-full bg-white animate-pulse"></span>
                                             <?php echo e($saleBadge); ?>
@@ -783,7 +827,7 @@ require_once __DIR__ . '/includes/header.php';
                                     <button
                                         type="button"
                                         onclick="event.preventDefault(); window.location.href='<?php echo e($videoUrl ?: BASE_URL . 'project/' . urlencode($project['slug'])); ?>';"
-                                        class="absolute bottom-4 right-4 bg-accent w-10 h-10 rounded-full text-white flex items-center justify-center">
+                                        class="absolute bottom-4 right-4 z-20 bg-accent w-10 h-10 rounded-full text-white flex items-center justify-center">
                                         <i class="fa-solid fa-play"></i>
                                     </button>
                                 </a>
@@ -825,7 +869,7 @@ require_once __DIR__ . '/includes/header.php';
                                         <!-- RIGHT -->
                                         <div class="xl:text-right">
                                             <h4 class="text-base text-nowrap font-semibold text-green-500 leading-tight">
-                                                <?php echo e(projectPriceRange($project)); ?>
+                                                <?php echo e(projectPriceRange($project, $unitPlans)); ?>
                                             </h4>
 
                                             <p class="text-gray-500 text-xs">(All inc)</p>
@@ -857,7 +901,7 @@ require_once __DIR__ . '/includes/header.php';
 
                                                         <span><?php echo e($planTitle); ?></span>
                                                         <span><?php echo e($planArea); ?></span>
-                                                        <span><?php echo e($planPrice > 0 ? formatCurrency($planPrice) : projectPriceRange($project)); ?></span>
+                                                        <span><?php echo e($planPrice > 0 ? formatCurrency($planPrice) : projectPriceRange($project, $unitPlans)); ?></span>
 
                                                     </div>
                                                 <?php endforeach; ?>
@@ -871,7 +915,7 @@ require_once __DIR__ . '/includes/header.php';
                                     <div class="grid grid-cols-2 gap-3 mt-4">
 
                                         <!-- TOUR BUTTON -->
-                                        <a href="<?php echo BASE_URL . 'project/' . urlencode($project['slug']); ?>" class="flex items-center justify-center gap-2
+                                        <a target="_blank" href="<?php echo BASE_URL . 'project/' . urlencode($project['slug']); ?>" class="flex items-center justify-center gap-2
         bg-primary text-white
         py-3 rounded-lg text-sm
         hover:opacity-90 duration-300">
@@ -895,8 +939,8 @@ require_once __DIR__ . '/includes/header.php';
                                         </a>
 
                                         <!-- LIVE CHAT BUTTON -->
-                                        <a href="https://wa.me/<?php echo preg_replace('/\D+/', '', $project['whatsapp_number'] ?: $project['builder_phone']); ?>?text=<?php echo urlencode('I am interested in ' . $project['project_name']); ?>" class="flex items-center justify-center gap-2
-        bg-accent text-white
+                                        <a target="_blank" href="https://wa.me/<?php echo preg_replace('/\D+/', '', $project['whatsapp_number'] ?: $project['builder_phone']); ?>?text=<?php echo urlencode('I am interested in ' . $project['project_name']); ?>" class="flex items-center justify-center gap-2
+        bg-green-600 text-white
         py-3 rounded-lg text-sm
         hover:opacity-90 duration-300">
 

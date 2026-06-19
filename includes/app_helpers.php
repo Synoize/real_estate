@@ -111,28 +111,29 @@ function fetchAvailableProjectBudgets($filters = [], $limit = 20)
     global $pdo;
 
     $where = [
-        "status = 'published'",
-        "deleted_at IS NULL",
-        "min_price IS NOT NULL",
-        "min_price > 0"
+        "p.status = 'published'",
+        "p.deleted_at IS NULL",
+        "up.price IS NOT NULL",
+        "up.price > 0"
     ];
     $params = [];
 
     if (!empty($filters['city'])) {
-        $where[] = 'city = :city';
+        $where[] = 'p.city = :city';
         $params[':city'] = $filters['city'];
     }
 
     if (!empty($filters['type'])) {
-        $where[] = 'project_type = :type';
+        $where[] = 'p.project_type = :type';
         $params[':type'] = $filters['type'];
     }
 
     $stmt = $pdo->prepare("
-        SELECT DISTINCT min_price AS value
-        FROM projects
+        SELECT DISTINCT up.price AS value
+        FROM project_unit_plans up
+        INNER JOIN projects p ON p.id = up.project_id
         WHERE " . implode(' AND ', $where) . "
-        ORDER BY min_price ASC
+        ORDER BY up.price ASC
         LIMIT " . (int)$limit
     );
     $stmt->execute($params);
@@ -165,17 +166,93 @@ function projectImage($project)
     return 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80';
 }
 
-function projectPriceRange($project)
+function fetchProjectGalleryImagesForProjects($projectIds, $limitPerProject = 8)
 {
-    $min = (float)($project['min_price'] ?? 0);
-    $max = (float)($project['max_price'] ?? 0);
+    global $pdo;
 
-    if ($min > 0 && $max > 0 && $max > $min) {
-        return formatCurrency($min) . ' - ' . formatCurrency($max);
+    $projectIds = array_values(array_unique(array_filter(array_map('intval', $projectIds))));
+
+    if (empty($projectIds)) {
+        return [];
     }
 
-    if ($min > 0) {
-        return 'From ' . formatCurrency($min);
+    $placeholders = implode(',', array_fill(0, count($projectIds), '?'));
+    $stmt = $pdo->prepare("
+        SELECT project_id, image
+        FROM project_images
+        WHERE project_id IN ($placeholders)
+          AND image_type IN ('gallery', 'banner')
+        ORDER BY project_id ASC, image_type = 'banner' DESC, sort_order ASC, id ASC
+    ");
+    $stmt->execute($projectIds);
+
+    $imagesByProject = [];
+
+    foreach ($stmt->fetchAll() as $image) {
+        $projectId = (int)$image['project_id'];
+
+        if (!isset($imagesByProject[$projectId])) {
+            $imagesByProject[$projectId] = [];
+        }
+
+        if (count($imagesByProject[$projectId]) < $limitPerProject) {
+            $imagesByProject[$projectId][] = getImageUrl($image['image']);
+        }
+    }
+
+    return $imagesByProject;
+}
+
+function projectGalleryImages($project, $imagesByProject = [])
+{
+    $projectId = (int)($project['id'] ?? 0);
+    $images = [projectImage($project)];
+
+    foreach (($imagesByProject[$projectId] ?? []) as $image) {
+        $images[] = $image;
+    }
+
+    return array_values(array_unique(array_filter($images)));
+}
+
+function projectPriceRange($project, $unitPlans = [])
+{
+    $prices = [];
+
+    foreach ($unitPlans as $plan) {
+        $price = (float)($plan['price'] ?? 0);
+        if ($price > 0) {
+            $prices[] = $price;
+        }
+    }
+
+    if (empty($prices) && !empty($project['id'])) {
+        global $pdo;
+        $stmt = $pdo->prepare("
+            SELECT MIN(price) AS min_price, MAX(price) AS max_price
+            FROM project_unit_plans
+            WHERE project_id = ? AND price > 0
+        ");
+        $stmt->execute([(int)$project['id']]);
+        $row = $stmt->fetch();
+        if ($row && (float)$row['min_price'] > 0) {
+            $min = (float)$row['min_price'];
+            $max = (float)$row['max_price'];
+            if ($max > $min) {
+                return formatCurrency($min) . ' - ' . formatCurrency($max);
+            }
+            return formatCurrency($min);
+        }
+        return 'Price on request';
+    }
+
+    if (!empty($prices)) {
+        $min = min($prices);
+        $max = max($prices);
+        if ($max > $min) {
+            return formatCurrency($min) . ' - ' . formatCurrency($max);
+        }
+        return formatCurrency($min);
     }
 
     return 'Price on request';
@@ -374,7 +451,10 @@ function fetchPublishedProjects($filters = [], $limit = 12, $offset = 0)
     }
 
     if (!empty($filters['budget_max'])) {
-        $where[] = 'p.min_price <= :budget_max';
+        $where[] = 'EXISTS (
+            SELECT 1 FROM project_unit_plans up
+            WHERE up.project_id = p.id AND up.price > 0 AND up.price <= :budget_max
+        )';
         $params[':budget_max'] = (float)$filters['budget_max'];
     }
 

@@ -1,0 +1,3097 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Housiey Clone Hero Section</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
+
+
+
+  <!-- SWIPER JS -->
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+  <!-- SWIPER CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+  <link rel="stylesheet" href="style.css" />
+  <script src="script.js"></script>
+</head>
+
+<body>
+  <!-- =========================
+PROPERTY GALLERY SECTION
+========================== -->
+
+  <!-- =========================
+PROPERTY GALLERY SECTION
+FIXED LAYOUT
+========================== -->
+  <!-- BREADCRUMB -->
+  <div class="hidden md:flex items-center flex-wrap gap-2 text-[12px] text-[#1f2937] mb-3 ml-4">
+    <a href="#" class="hover:text-[#0f4c81] transition"> Home </a>
+
+    <span>></span>
+
+    <a href="#" class="hover:text-[#0f4c81] transition"> Pune </a>
+
+    <span>></span>
+
+    <a href="#" class="text-[#0b8f4d] font-medium"> Kharadi </a>
+  </div>
+
+  <section class="md:block bg-[#F4F4F5] p-6">
+    <div class="bg-[#FFFFFF] py-5">
+      <div class="max-w-[1850px] mx-auto px-4">
+        <!-- TOP AREA -->
+        <div class="flex flex-col xl:flex-row xl:items-start xl:justify-between gap-6 mb-6">
+          <!-- LEFT -->
+          <div>
+            <!-- TITLE -->
+            <h1 class="text-[42px] md:text-[30px] font-black text-[#0f4c81] leading-none tracking-[-2px]">
+              VTP Aurelia Kharadi
+            </h1>
+
+            <!-- LOCATION -->
+            <div class="flex flex-wrap items-center gap-2 mt-5 text-[12px] text-[#374151]">
+              <span class="text-[#0f4c81]"> 🏢 </span>
+
+              <a href="#" class="underline hover:text-[#0f4c81]">
+                By VTP Realty
+              </a>
+
+              <span>|</span>
+
+              <span> VTP Pegasus Township, </span>
+
+              <a href="#" class="underline hover:text-[#0f4c81]"> Kharadi </a>
+            </div>
+          </div>
+
+          <!-- RIGHT -->
+          <div class="flex flex-col items-start xl:items-end gap-2">
+            <!-- UPDATED -->
+            <!-- <p class="text-[14px] text-[#4b5563]">
+                  Last updated: Apr 18, 2026
+                </p> -->
+
+            <!-- PRICE ROW -->
+            <div class="flex items-center gap-5">
+              <!-- SHARE -->
+              <!-- <button class="w-12 h-12 rounded-lg border border-[#c7c7c7] bg-white flex items-center justify-center hover:bg-[#f5f5f5] transition shrink-0">
+
+                    <svg xmlns="http://www.w3.org/2000/svg" 
+                        class="w-5 h-5 text-[#374151]" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor" 
+                        stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C9.046 12.67 9.75 12.2 10.563 12.2c.813 0 1.517.47 1.879 1.142M15 8a3 3 0 11-6 0 3 3 0 016 0zm6 11a8.963 8.963 0 01-9 0A8.963 8.963 0 013 19"/>
+                    </svg>
+
+                  </button> -->
+
+              <!-- PRICE -->
+              <div class="flex items-center gap-2 text-left xl:text-right relative xl:right-6">
+                <h2
+                  class="text-[34px] md:text-[27px] font-black text-[#0f4c81] leading-none tracking-[-1px] whitespace-nowrap">
+                  ₹ 85.00 Lacs - 1.92 Cr
+                </h2>
+
+                <p class="text-[10px] font-bold text-[#1f2937] whitespace-nowrap relative top-1">
+                  All inc.
+                </p>
+              </div>
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="flex flex-wrap gap-2">
+              <!-- TOUR -->
+              <button
+                class="bg-primary hover:opacity-90 text-white px-4 h-[38px] rounded-md flex items-center gap-1 font-medium text-[13px] transition">
+                <i class="fa-solid fa-bed text-[11px]"></i>
+
+                <span class="text-[10px]">|</span>
+
+                <i class="fa-solid fa-car text-[11px]"></i>
+
+                Tour
+              </button>
+
+              <!-- CHAT -->
+              <button
+                class="bg-green-600 hover:opacity-90 text-white px-4 h-[38px] rounded-md flex items-center gap-1 font-medium text-[13px] transition">
+                <i class="fa-brands fa-whatsapp text-[12px]"></i>
+
+                Live Chat
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- IMAGE GRID -->
+        <!-- =========================
+        PROPERTY IMAGE GALLERY
+        ========================== -->
+
+        <div class="grid grid-cols-1 lg:grid-cols-[1.02fr_1fr] gap-4">
+          <!-- LEFT BIG IMAGE -->
+          <div class="relative rounded-[8px] overflow-hidden h-[420px] group">
+            <img src="https://i.ibb.co/4wcSyqKn/vtp-aurelia-1754826762716-51893605.webp" alt=""
+              class="w-full h-full object-cover group-hover:scale-105 transition duration-500" />
+
+            <!-- HEART -->
+            <button
+              class="absolute top-5 right-5 w-[42px] h-[42px] rounded-full bg-black/20 backdrop-blur-md text-white flex items-center justify-center text-[18px] hover:bg-[#0f4c81] transition">
+              ❤
+            </button>
+
+            <!-- BOTTOM ICONS -->
+            <div class="absolute bottom-5 right-5 flex items-center gap-2">
+              <button
+                class="w-[38px] h-[38px] rounded-full bg-[#0f4c81] text-white flex items-center justify-center text-[15px] hover:scale-110 transition">
+                ⛶
+              </button>
+
+              <button
+                class="w-[38px] h-[38px] rounded-full bg-[#0f4c81] text-white flex items-center justify-center text-[15px] hover:scale-110 transition">
+                ▶
+              </button>
+            </div>
+          </div>
+
+          <!-- RIGHT SIDE -->
+          <div class="grid grid-cols-2 gap-4 h-[420px]">
+            <!-- IMG -->
+            <div class="rounded-[8px] overflow-hidden">
+              <img src="https://i.ibb.co/Vc8wq90D/vtp-aurelia-1754826763923-857134622.webp" alt=""
+                class="w-full h-[200px] object-cover" />
+            </div>
+
+            <!-- IMG -->
+            <div class="rounded-[8px] overflow-hidden">
+              <img src="https://i.ibb.co/Vc8wq90D/vtp-aurelia-1754826763923-857134622.webp" alt=""
+                class="w-full h-[200px] object-cover" />
+            </div>
+
+            <!-- IMG -->
+            <div class="rounded-[8px] overflow-hidden">
+              <img src="https://i.ibb.co/Vc8wq90D/vtp-aurelia-1754826763923-857134622.webp" alt=""
+                class="w-full h-[200px] object-cover" />
+            </div>
+
+            <!-- LAST -->
+            <div class="relative rounded-[8px] overflow-hidden">
+              <img src="https://i.ibb.co/Vc8wq90D/vtp-aurelia-1754826763923-857134622.webp" alt=""
+                class="w-full h-[200px] object-cover brightness-[0.45]" />
+
+              <!-- OVERLAY -->
+              <div class="absolute inset-0 flex items-center justify-center">
+                <h3 class="text-white text-[24px] font-black">13+ more</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="bg-[#f3f3f3] py-4">
+    <div class="max-w-[1880px] mx-auto px-4">
+      <!-- TOP NAV -->
+      <div class="sticky top-0 z-50 bg-gradient-to-r from-[#1d4f7a] to-[#00863d] shadow-md">
+        <div class="flex items-center justify-between">
+          <!-- NAV LINKS -->
+          <div class="flex items-center w-full">
+            <a href="#overview"
+              class="nav-link active text-white text-[15px] px-7 py-4 font-medium transition-all duration-300">
+              Overview
+            </a>
+
+            <a href="#location"
+              class="nav-link text-white text-[15px] px-7 py-4 opacity-90 hover:opacity-100 transition-all duration-300">
+              Location
+            </a>
+
+            <a href="#video"
+              class="nav-link text-white text-[15px] px-7 py-4 opacity-90 hover:opacity-100 transition-all duration-300">
+              Video
+            </a>
+
+            <a href="#proscons"
+              class="nav-link text-white text-[15px] px-7 py-4 opacity-90 hover:opacity-100 transition-all duration-300">
+              Pros & Cons
+            </a>
+
+            <a href="#amenities"
+              class="nav-link text-white text-[15px] px-7 py-4 opacity-90 hover:opacity-100 transition-all duration-300">
+              Amenities
+            </a>
+
+            <a href="#plans"
+              class="nav-link text-white text-[15px] px-7 py-4 opacity-90 hover:opacity-100 transition-all duration-300">
+              Master & Floor Plans
+            </a>
+
+            <a href="#pricing"
+              class="nav-link text-white text-[15px] px-7 py-4 opacity-90 hover:opacity-100 transition-all duration-300">
+              Pricing & Unit Plans
+            </a>
+
+            <a href="#payment"
+              class="nav-link text-white text-[15px] px-7 py-4 opacity-90 hover:opacity-100 transition-all duration-300">
+              Payment Scheme
+            </a>
+
+            <a href="#litigation"
+              class="nav-link text-white text-[15px] px-7 py-4 opacity-90 hover:opacity-100 transition-all duration-300">
+              Litigation
+            </a>
+
+            <a href="#legal"
+              class="nav-link text-white text-[15px] px-7 py-4 opacity-90 hover:opacity-100 transition-all duration-300">
+              Legal
+            </a>
+
+            <a href="#banks"
+              class="nav-link text-white text-[15px] px-7 py-4 opacity-90 hover:opacity-100 transition-all duration-300">
+              Banks
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTIONS -->
+      <section class="py-5">
+        <div class="max-w-[1650px] mx-auto px-0">
+          <!-- MAIN GRID -->
+          <div class="grid grid-cols-1 xl:grid-cols-[1fr_390px] gap-5">
+
+            <!-- LEFT SIDE -->
+            <div>
+              <!-- OVERVIEW -->
+              <div id="overview" class="bg-white border border-gray-300 rounded-2xl overflow-hidden">
+                <!-- HEADER -->
+                <div class="bg-[#dfe5eb] px-4 md:px-5 py-4 border-b border-gray-300 flex items-center justify-between">
+                  <h2 class="text-[16px] md:text-[24px] font-bold text-[#1f4f79]">
+                    Overview
+                  </h2>
+
+                  <button
+                    class="bg-green-600 hover:bg-green-700 duration-300 text-white text-[12px] md:text-sm px-3 md:px-5 py-2 rounded-lg font-semibold">
+                    Brochure
+                    <i class="fa-solid fa-download ml-1"></i>
+                  </button>
+                </div>
+
+                <!-- CONTENT -->
+                <div class="p-3 md:p-5">
+
+                  <!-- ALL CARDS -->
+                  <div class="grid grid-cols-2 lg:grid-cols-5 gap-3">
+
+                    <!-- 1 -->
+                    <div
+                      class="bg-white border border-[#d9dee3] border shadow-[0px_0px_11.3px_0px_rgba(0,0,0,0.12)] rounded-md p-3 flex items-center gap-3">
+                      <i class="fa-solid fa-location-dot text-[#1f4f79] text-[18px]"></i>
+                      <div>
+                        <h3 class="text-[#008d4f] text-[13px] md:text-[16px] font-bold">5 acres</h3>
+                        <p class="text-[11px] md:text-[13px] text-gray-500">Land Parcel</p>
+                      </div>
+                    </div>
+
+                    <!-- 2 -->
+                    <div
+                      class="bg-white border border-[#d9dee3] shadow-[0px_0px_11.3px_0px_rgba(0,0,0,0.12)] rounded-md p-3 flex items-center gap-3">
+                      <i class="fa-regular fa-building text-[#1f4f79] text-[18px]"></i>
+                      <div>
+                        <h3 class="text-[#008d4f] text-[13px] md:text-[16px] font-bold">4</h3>
+                        <p class="text-[11px] md:text-[13px] text-gray-500">Towers</p>
+                      </div>
+                    </div>
+
+                    <!-- 3 -->
+                    <div
+                      class="bg-white border border-[#d9dee3]  shadow-[0px_0px_11.3px_0px_rgba(0,0,0,0.12)] rounded-md p-3 flex items-center gap-3">
+                      <i class="fa-solid fa-building-circle-check text-[#1f4f79] text-[18px]"></i>
+                      <div>
+                        <h3 class="text-[#008d4f] text-[13px] md:text-[16px] font-bold">
+                          2B+G+P+36
+                        </h3>
+                        <p class="text-[11px] md:text-[13px] text-gray-500">Floors</p>
+                      </div>
+                    </div>
+
+                    <!-- 4 -->
+                    <div
+                      class="bg-white border border-[#d9dee3]  shadow-[0px_0px_11.3px_0px_rgba(0,0,0,0.12)] rounded-md p-3 flex items-center gap-3">
+                      <i class="fa-solid fa-table-cells-large text-[#1f4f79] text-[18px]"></i>
+                      <div>
+                        <h3 class="text-[#008d4f] text-[13px] md:text-[16px] font-bold truncate">
+                          2, 3 BHK
+                        </h3>
+                        <p class="text-[11px] md:text-[13px] text-gray-500">Config</p>
+                      </div>
+                    </div>
+
+                    <!-- 5 -->
+                    <div
+                      class="bg-white border border-[#d9dee3]  shadow-[0px_0px_11.3px_0px_rgba(0,0,0,0.12)] rounded-md p-3 flex items-center gap-3">
+                      <i class="fa-regular fa-file-lines text-[#1f4f79] text-[18px]"></i>
+                      <div>
+                        <h3 class="text-[#008d4f] text-[13px] md:text-[16px] font-bold">
+                          671-1462 sqft
+                        </h3>
+                        <p class="text-[11px] md:text-[13px] text-gray-500">Carpet Area</p>
+                      </div>
+                    </div>
+
+                    <!-- 6 -->
+                    <div
+                      class="bg-white border border-[#d9dee3]  shadow-[0px_0px_11.3px_0px_rgba(0,0,0,0.12)] rounded-md p-3 flex items-center gap-3">
+                      <i class="fa-regular fa-file-lines text-[#1f4f79] text-[18px]"></i>
+                      <div class="min-w-0">
+                        <h3 class="text-[#1f4f79] text-[13px] md:text-[16px] font-bold truncate">
+                          PM126000250...
+                        </h3>
+                        <p class="text-[11px] md:text-[13px] text-gray-500">RERA NO.</p>
+                      </div>
+                    </div>
+
+                    <!-- 7 -->
+                    <div
+                      class="bg-white border border-[#d9dee3]  shadow-[0px_0px_11.3px_0px_rgba(0,0,0,0.12)] rounded-md p-3 flex items-center gap-3">
+                      <i class="fa-solid fa-person-digging text-[#1f4f79] text-[18px]"></i>
+                      <div>
+                        <h3 class="text-[#008d4f] text-[13px] md:text-[16px] font-bold">
+                          New Launch
+                        </h3>
+                        <p class="text-[11px] md:text-[13px] text-gray-500">
+                          Possession Status
+                        </p>
+                      </div>
+                    </div>
+
+                    <!-- 8 -->
+                    <div
+                      class="bg-white border border-[#d9dee3]  shadow-[0px_0px_11.3px_0px_rgba(0,0,0,0.12)] rounded-md p-3 flex items-center gap-3">
+                      <i class="fa-regular fa-calendar text-[#1f4f79] text-[18px]"></i>
+                      <div>
+                        <h3 class="text-[#008d4f] text-[13px] md:text-[16px] font-bold">
+                          Sep 2029
+                        </h3>
+                        <p class="text-[11px] md:text-[13px] text-gray-500">
+                          Target Possession
+                        </p>
+                      </div>
+                    </div>
+
+                    <!-- 9 -->
+                    <div
+                      class="bg-white border border-[#d9dee3]  shadow-[0px_0px_11.3px_0px_rgba(0,0,0,0.12)] rounded-md p-3 flex items-center gap-3">
+                      <i class="fa-regular fa-file-lines text-[#1f4f79] text-[18px]"></i>
+                      <div>
+                        <h3 class="text-[#008d4f] text-[13px] md:text-[16px] font-bold">
+                          Sep 2030
+                        </h3>
+                        <p class="text-[11px] md:text-[13px] text-gray-500">
+                          RERA Possession
+                        </p>
+                      </div>
+                    </div>
+
+                    <!-- 10 -->
+                    <div
+                      class="bg-white border border-[#d9dee3]  shadow-[0px_0px_11.3px_0px_rgba(0,0,0,0.12)] rounded-md p-3 flex items-center gap-3">
+                      <i class="fa-solid fa-gavel text-[#1f4f79] text-[18px]"></i>
+                      <div>
+                        <span class="bg-[#e8f7ef] text-[#008d4f] text-[11px] px-2 py-[2px] rounded-full font-semibold">
+                          No
+                        </span>
+
+                        <p class="text-[11px] md:text-[13px] text-gray-500 mt-1">
+                          Litigation
+                        </p>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <!-- ABOUT -->
+                  <div class="mt-6 md:mt-8">
+                    <h3 class="text-[18px] font-semibold text-[#374151]">
+                      About VTP Aurelia
+                    </h3>
+
+                    <p class="mt-3 text-[14px] text-gray-700 leading-7">
+                      VTP Kharadi Project Overview
+                      <br>
+                      VTP Aurelia will be constructed on 5 Acres of land parcel
+                      consisting of 4 Towers of 2B+G+P+36 floors having 2 BHK,
+                      3BHK, 3BHK Simplex & 3BHK Duplex premium residences.
+                    </p>
+
+                    <button class="text-[#008d4f] font-semibold text-[14px] mt-4">
+                      Read More...
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- LOCATION -->
+              <div id="location" class="bg-white border border-gray-300 rounded-2xl overflow-hidden mt-5">
+                <!-- HEADING -->
+                <div class="bg-[#dfe5eb] px-5 py-4 border-b border-gray-300">
+                  <h2 class="text-[16px] md:text-[24px] font-bold text-[#1f4f79]">
+                    VTP Aurelia Location
+                  </h2>
+                </div>
+
+                <!-- CONTENT -->
+                <div class="p-5">
+                  <p class="text-[14px] text-gray-700 mb-4">
+                    Near IT Park, Nagpur, Maharashtra.
+                  </p>
+
+                  <ul class="space-y-2 md:space-y-4 text-[14px] font-semibold text-black mb-6">
+                    <li>• Sitabuldi Metro Station - 2.1 km</li>
+                    <li>• Nagpur Railway Station - 4.3 km</li>
+                    <li>• Dr. Babasaheb Ambedkar Airport - 7.5 km</li>
+                  </ul>
+
+                  <!-- MAP + IMAGE -->
+                  <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    <!-- MAP -->
+                    <div class="relative rounded-2xl overflow-hidden border border-gray-300">
+                      <!-- <button class="absolute top-4 left-4 z-10 bg-[#2c4c6d] text-white text-[10px] px-4 py-2 rounded-md font-semibold">
+                Satellite View
+              </button> -->
+
+                      <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3722.6305457181193!2d79.09660819999999!3d21.0874133!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bd4bf5c8fff275f%3A0xff0af61ef494a10c!2sWebsolvit!5e0!3m2!1sen!2sin!4v1778741628562!5m2!1sen!2sin"
+                        class="w-full h-[220px] md:h-[320px]" style="border: 0" allowfullscreen="" loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                      </iframe>
+                    </div>
+
+                    <!-- IMAGE -->
+                    <div class="relative rounded-2xl overflow-hidden">
+                      <img
+                        src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=1600&auto=format&fit=crop"
+                        class="w-full h-[220px] md:h-[320px] object-cover" alt="" />
+
+                      <div class="absolute inset-0 bg-black/35"></div>
+
+                      <!-- LOGO -->
+                      <!-- <div class="absolute top-5 left-5 z-10">
+                          <h2 class="text-white text-[38px] font-bold">
+                            HOUSIEY
+                          </h2>
+
+                          <p class="text-white text-[13px] tracking-[3px]">
+                            HOME BUYING SIMPLIFIED
+                          </p>
+                        </div> -->
+
+                      <!-- 360 -->
+                      <div class="absolute inset-0 flex items-center justify-center z-10">
+                        <div
+                          class="w-[80px] h-[80px] rounded-full border-4 border-white flex items-center justify-center bg-white/10 backdrop-blur-sm">
+                          <div class="text-center">
+                            <h2 class="text-white text-[22px] font-bold leading-none">
+                              360°
+                            </h2>
+
+                            <i class="fa-solid fa-rotate text-white text-[24px] mt-2"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- VIDEOS SECTION -->
+              <section id="video" class="mt-5">
+                <div class="bg-white border border-gray-300 rounded-2xl overflow-hidden">
+                  <!-- HEADING -->
+                  <div class="bg-[#dfe5eb] border-b border-gray-300 px-5 py-4">
+                    <h2 class="text-[16px] md:text-[24px] font-bold text-[#1f4f79]">
+                      VTP Aurelia Videos
+                    </h2>
+                  </div>
+
+                  <!-- CONTENT -->
+                  <div class="p-5">
+                    <!-- TAB -->
+                    <button
+                      class="text-[#008d4f] text-[13px] md:text-[20px] font-bold border-b-2 border-[#008d4f] pb-2">
+                      Teaser
+                    </button>
+
+                    <!-- VIDEO BOX -->
+                    <div class="flex justify-center mt-8">
+                      <div class="relative w-full max-w-[620px] rounded-2xl overflow-hidden group cursor-pointer">
+                        <!-- THUMBNAIL -->
+                        <img src="https://i.ytimg.com/vi/ScMzIvxBSi4/maxresdefault.jpg" alt="Video Thumbnail"
+                          class="w-full h-auto object-cover" />
+
+                        <!-- DARK OVERLAY -->
+                        <div class="absolute inset-0 bg-black/10 group-hover:bg-black/20 duration-300"></div>
+
+                        <!-- PLAY BUTTON -->
+                        <div class="absolute inset-0 flex items-center justify-center">
+                          <div
+                            class="w-[90px] h-[65px] bg-[#ff0000] rounded-[18px] flex items-center justify-center shadow-2xl group-hover:scale-110 duration-300">
+                            <i class="fa-solid fa-play text-white text-[30px] ml-1"></i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- AMENITIES SECTION -->
+              <section id="amenities" class="mt-5">
+                <div class="bg-white border border-gray-300 rounded-2xl overflow-hidden">
+                  <!-- HEADING -->
+                  <div class="bg-[#dfe5eb] border-b border-gray-300 px-5 py-4">
+                    <h2 class="text-[16px] md:text-[24px] font-bold text-[#1f4f79]">
+                      VTP Aurelia Amenities
+                    </h2>
+                  </div>
+
+                  <!-- CONTENT -->
+                  <div class="p-5">
+                    <!-- INTERNAL -->
+                    <div>
+                      <h3 class="text-[#1f4f79] text-[18px] font-bold mb-4">
+                        Internal Amenities
+                      </h3>
+
+                      <div class="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-2 md:gap-3">
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-[6px] md:rounded-xl h-[75px] md:h-[110px] flex flex-col items-center justify-center text-center px-1 md:px-2 hover:shadow-md duration-300 overflow-hidden">
+                          <img src="https://cdn-icons-png.flaticon.com/128/1048/1048941.png"
+                            class="w-[28px] h-[28px] md:w-[40px] md:h-[40px] object-contain mb-2 md:mb-3" />
+
+                          <p
+                            class="w-full truncate text-[11px] sm:text-[12px] md:text-[14px] font-semibold md:font-medium leading-[14px] md:leading-[18px] text-[#2d3748]">
+                            Home Automation
+                          </p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-[6px] md:rounded-xl h-[75px] md:h-[110px] flex flex-col items-center justify-center text-center px-1 md:px-2 hover:shadow-md duration-300 overflow-hidden">
+                          <img src="https://cdn-icons-png.flaticon.com/128/3064/3064155.png"
+                            class="w-[28px] h-[28px] md:w-[40px] md:h-[40px] object-contain mb-2 md:mb-3" />
+
+                          <p
+                            class="w-full truncate text-[11px] sm:text-[12px] md:text-[14px] font-semibold md:font-medium leading-[14px] md:leading-[18px] text-[#2d3748]">
+                            Digital Lock
+                          </p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-[6px] md:rounded-xl h-[75px] md:h-[110px] flex flex-col items-center justify-center text-center px-1 md:px-2 hover:shadow-md duration-300 overflow-hidden">
+                          <img src="https://cdn-icons-png.flaticon.com/128/942/942799.png"
+                            class="w-[28px] h-[28px] md:w-[40px] md:h-[40px] object-contain mb-2 md:mb-3" />
+
+                          <p
+                            class="w-full truncate text-[11px] sm:text-[12px] md:text-[14px] font-semibold md:font-medium leading-[14px] md:leading-[18px] text-[#2d3748]">
+                            Motion Sensor
+                          </p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-[6px] md:rounded-xl h-[75px] md:h-[110px] flex flex-col items-center justify-center text-center px-1 md:px-2 hover:shadow-md duration-300 overflow-hidden">
+                          <img src="https://cdn-icons-png.flaticon.com/128/1041/1041916.png"
+                            class="w-[28px] h-[28px] md:w-[40px] md:h-[40px] object-contain mb-2 md:mb-3" />
+
+                          <p
+                            class="w-full truncate text-[11px] sm:text-[12px] md:text-[14px] font-semibold md:font-medium leading-[14px] md:leading-[18px] text-[#2d3748]">
+                            Video Door Phone
+                          </p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-[6px] md:rounded-xl h-[75px] md:h-[110px] flex flex-col items-center justify-center text-center px-1 md:px-2 hover:shadow-md duration-300 overflow-hidden">
+                          <img src="https://cdn-icons-png.flaticon.com/128/1041/1041916.png"
+                            class="w-[28px] h-[28px] md:w-[40px] md:h-[40px] object-contain mb-2 md:mb-3" />
+
+                          <p
+                            class="w-full truncate text-[11px] sm:text-[12px] md:text-[14px] font-semibold md:font-medium leading-[14px] md:leading-[18px] text-[#2d3748]">
+                            Video Door Phone
+                          </p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-[6px] md:rounded-xl h-[75px] md:h-[110px] flex flex-col items-center justify-center text-center px-1 md:px-2 hover:shadow-md duration-300 overflow-hidden">
+                          <img src="https://cdn-icons-png.flaticon.com/128/809/809957.png"
+                            class="w-[28px] h-[28px] md:w-[40px] md:h-[40px] object-contain mb-2 md:mb-3" />
+
+                          <p
+                            class="w-full truncate text-[11px] sm:text-[12px] md:text-[14px] font-semibold md:font-medium leading-[14px] md:leading-[18px] text-[#2d3748]">
+                            Vitrified Tiles
+                          </p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-[6px] md:rounded-xl h-[75px] md:h-[110px] flex flex-col items-center justify-center text-center px-1 md:px-2 hover:shadow-md duration-300 overflow-hidden">
+                          <img src="https://cdn-icons-png.flaticon.com/128/1046/1046857.png"
+                            class="w-[28px] h-[28px] md:w-[40px] md:h-[40px] object-contain mb-2 md:mb-3" />
+
+                          <p
+                            class="w-full truncate text-[11px] sm:text-[12px] md:text-[14px] font-semibold md:font-medium leading-[14px] md:leading-[18px] text-[#2d3748]">
+                            Granite Kitchen
+                          </p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-[6px] md:rounded-xl h-[75px] md:h-[110px] flex flex-col items-center justify-center text-center px-1 md:px-2 hover:shadow-md duration-300 overflow-hidden">
+                          <img src="https://cdn-icons-png.flaticon.com/128/2933/2933245.png"
+                            class="w-[28px] h-[28px] md:w-[40px] md:h-[40px] object-contain mb-2 md:mb-3" />
+
+                          <p
+                            class="w-full truncate text-[11px] sm:text-[12px] md:text-[14px] font-semibold md:font-medium leading-[14px] md:leading-[18px] text-[#2d3748]">
+                            Stainless Steel
+                          </p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <!-- <div
+                            class="border border-gray-300 rounded-[6px] md:rounded-xl h-[75px] md:h-[110px] flex flex-col items-center justify-center text-center px-1 md:px-2 hover:shadow-md duration-300 overflow-hidden"
+                          >
+                            <img
+                              src="https://cdn-icons-png.flaticon.com/128/942/942748.png"
+                              class="w-[28px] h-[28px] md:w-[40px] md:h-[40px] object-contain mb-2 md:mb-3"
+                            />
+
+                            <p
+                              class="w-full truncate text-[11px] sm:text-[12px] md:text-[14px] font-semibold md:font-medium leading-[14px] md:leading-[18px] text-[#2d3748]"
+                            >
+                              Alexa Enabled Homes
+                            </p>
+                          </div> -->
+
+                        <!-- MORE BUTTON -->
+                        <div onclick="openAmenitiesPopup()"
+                          class="bg-[#dfe5eb] rounded-[6px] md:rounded-xl h-[75px] md:h-[110px] flex items-center justify-center hover:bg-[#cfd7df] duration-300 cursor-pointer">
+                          <p class="text-[16px] md:text-[18px] font-medium text-[#1f1f1f]">
+                            +3 More
+                          </p>
+                        </div>
+
+                        <!-- POPUP -->
+                        <div id="amenitiesPopup"
+                          class="fixed inset-0 bg-black/50 z-[9999] hidden items-center justify-center p-4">
+                          <!-- BOX -->
+                          <div
+                            class="bg-white w-full max-w-[1100px] rounded-2xl overflow-hidden relative animate-popup">
+                            <!-- HEADER -->
+                            <div
+                              class="bg-[#dfe5eb] px-6 py-4 border-b border-gray-300 flex items-center justify-between">
+                              <h2 class="text-[20px] md:text-[24px] font-bold text-[#1f4f79]">
+                                Amenities
+                              </h2>
+
+                              <!-- CLOSE -->
+                              <button onclick="closeAmenitiesPopup()"
+                                class="text-gray-400 hover:text-black text-[32px] leading-none duration-300">
+                                &times;
+                              </button>
+                            </div>
+
+                            <!-- CONTENT -->
+                            <div class="p-6">
+                              <!-- TITLE -->
+                              <h3 class="text-[18px] md:text-[20px] font-bold text-[#2d3748] mb-8">
+                                Internal Amenities
+                              </h3>
+
+                              <!-- GRID -->
+                              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6">
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/1048/1048941.png"
+                                    class="w-[42px] h-[42px] object-contain" />
+
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Home Automation
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/3064/3064155.png"
+                                    class="w-[42px] h-[42px] object-contain" />
+
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Digital Lock
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/942/942799.png"
+                                    class="w-[42px] h-[42px] object-contain" />
+
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Motion Sensor Lights
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/1041/1041916.png"
+                                    class="w-[42px] h-[42px] object-contain" />
+
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Video Door Phone
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/809/809957.png"
+                                    class="w-[42px] h-[42px] object-contain" />
+
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Vitrified Tiles
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/1046/1046857.png"
+                                    class="w-[42px] h-[42px] object-contain" />
+
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Granite Kitchen Platform
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/2933/2933245.png"
+                                    class="w-[42px] h-[42px] object-contain" />
+
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Stainless Steel Sink
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/942/942748.png"
+                                    class="w-[42px] h-[42px] object-contain" />
+
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Alexa Enabled Homes
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/3135/3135715.png"
+                                    class="w-[42px] h-[42px] object-contain" />
+
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    D.G Backup
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/3064/3064197.png"
+                                    class="w-[42px] h-[42px] object-contain" />
+
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    3 Tier Security
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/619/619034.png"
+                                    class="w-[42px] h-[42px] object-contain" />
+
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Mosquito Mesh Windows
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- EXTERNAL -->
+                    <div class="mt-7">
+                      <h3 class="text-[#1f4f79] text-[18px] font-bold mb-4">
+                        External Amenities
+                      </h3>
+
+                      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-8 gap-3">
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-xl h-[110px] flex flex-col items-center justify-center text-center px-2">
+                          <img src="https://cdn-icons-png.flaticon.com/128/2784/2784593.png"
+                            class="w-[40px] h-[40px] object-contain mb-3" />
+
+                          <p class="text-[14px] font-medium">Swimming Pool</p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-xl h-[110px] flex flex-col items-center justify-center text-center px-2">
+                          <img src="https://cdn-icons-png.flaticon.com/128/484/484167.png"
+                            class="w-[40px] h-[40px] object-contain mb-3" />
+
+                          <p class="text-[14px] font-medium">Club House</p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-xl h-[110px] flex flex-col items-center justify-center text-center px-2">
+                          <img src="https://cdn-icons-png.flaticon.com/128/3048/3048122.png"
+                            class="w-[40px] h-[40px] object-contain mb-3" />
+
+                          <p class="text-[14px] font-medium">
+                            Kids Play Area
+                          </p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-xl h-[110px] flex flex-col items-center justify-center text-center px-2">
+                          <img src="https://cdn-icons-png.flaticon.com/128/888/888879.png"
+                            class="w-[40px] h-[40px] object-contain mb-3" />
+
+                          <p class="text-[14px] font-medium">Jogging Track</p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-xl h-[110px] flex flex-col items-center justify-center text-center px-2">
+                          <img src="https://cdn-icons-png.flaticon.com/128/2972/2972185.png"
+                            class="w-[40px] h-[40px] object-contain mb-3" />
+
+                          <p class="text-[14px] font-medium">
+                            Multipurpose Hall
+                          </p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-xl h-[110px] flex flex-col items-center justify-center text-center px-2">
+                          <img src="https://cdn-icons-png.flaticon.com/128/4320/4320371.png"
+                            class="w-[40px] h-[40px] object-contain mb-3" />
+
+                          <p class="text-[14px] font-medium">
+                            Senior Citizen
+                          </p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-xl h-[110px] flex flex-col items-center justify-center text-center px-2">
+                          <img src="https://cdn-icons-png.flaticon.com/128/2965/2965567.png"
+                            class="w-[40px] h-[40px] object-contain mb-3" />
+
+                          <p class="text-[14px] font-medium">Kids Pool</p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-xl h-[110px] flex flex-col items-center justify-center text-center px-2">
+                          <img src="https://cdn-icons-png.flaticon.com/128/857/857455.png"
+                            class="w-[40px] h-[40px] object-contain mb-3" />
+
+                          <p class="text-[14px] font-medium">Squash Court</p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-xl h-[110px] flex flex-col items-center justify-center text-center px-2">
+                          <img src="https://cdn-icons-png.flaticon.com/128/857/857418.png"
+                            class="w-[40px] h-[40px] object-contain mb-3" />
+
+                          <p class="text-[14px] font-medium">Net Cricket</p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-xl h-[110px] flex flex-col items-center justify-center text-center px-2">
+                          <img src="https://cdn-icons-png.flaticon.com/128/857/857681.png"
+                            class="w-[40px] h-[40px] object-contain mb-3" />
+
+                          <p class="text-[14px] font-medium">Skating Rink</p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-xl h-[110px] flex flex-col items-center justify-center text-center px-2">
+                          <img src="https://cdn-icons-png.flaticon.com/128/857/857512.png"
+                            class="w-[40px] h-[40px] object-contain mb-3" />
+
+                          <p class="text-[14px] font-medium">Cricket Pitch</p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-xl h-[110px] flex flex-col items-center justify-center text-center px-2">
+                          <img src="https://cdn-icons-png.flaticon.com/128/2965/2965879.png"
+                            class="w-[40px] h-[40px] object-contain mb-3" />
+
+                          <p class="text-[14px] font-medium">Amphitheater</p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-xl h-[110px] flex flex-col items-center justify-center text-center px-2">
+                          <img src="https://cdn-icons-png.flaticon.com/128/4320/4320337.png"
+                            class="w-[40px] h-[40px] object-contain mb-3" />
+
+                          <p class="text-[14px] font-medium">
+                            Meditation Zone
+                          </p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-xl h-[110px] flex flex-col items-center justify-center text-center px-2">
+                          <img src="https://cdn-icons-png.flaticon.com/128/888/888857.png"
+                            class="w-[40px] h-[40px] object-contain mb-3" />
+
+                          <p class="text-[14px] font-medium">Cycling Track</p>
+                        </div>
+
+                        <!-- ITEM -->
+                        <div
+                          class="border border-gray-300 rounded-xl h-[110px] flex flex-col items-center justify-center text-center px-2">
+                          <img src="https://cdn-icons-png.flaticon.com/128/4320/4320376.png"
+                            class="w-[40px] h-[40px] object-contain mb-3" />
+
+                          <p class="text-[14px] font-medium">
+                            Acupressure Path
+                          </p>
+                        </div>
+
+                        <!-- +7 MORE BUTTON -->
+                        <div onclick="openExternalPopup()"
+                          class="bg-[#dfe5eb] rounded-xl h-[110px] flex items-center justify-center hover:bg-[#cfd7df] duration-300 cursor-pointer">
+                          <p class="text-[18px] font-medium text-[#1f1f1f]">
+                            +7 More
+                          </p>
+                        </div>
+
+                        <!-- POPUP -->
+                        <div id="externalAmenitiesPopup"
+                          class="fixed inset-0 bg-black/50 z-[9999] hidden items-center justify-center p-4">
+                          <!-- BOX -->
+                          <div
+                            class="bg-white w-full max-w-[1100px] rounded-2xl overflow-hidden relative animate-popup">
+                            <!-- HEADER -->
+                            <div
+                              class="bg-[#dfe5eb] px-6 py-4 border-b border-gray-300 flex items-center justify-between">
+                              <h2 class="text-[20px] md:text-[24px] font-bold text-[#1f4f79]">
+                                Amenities
+                              </h2>
+
+                              <!-- CLOSE -->
+                              <button onclick="closeExternalPopup()"
+                                class="text-gray-400 hover:text-black text-[32px] leading-none duration-300">
+                                &times;
+                              </button>
+                            </div>
+
+                            <!-- CONTENT -->
+                            <div class="p-6">
+                              <!-- TITLE -->
+                              <h3 class="text-[18px] md:text-[20px] font-bold text-[#2d3748] mb-8">
+                                External Amenities
+                              </h3>
+
+                              <!-- GRID -->
+                              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-y-10 gap-x-6">
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/2784/2784593.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Swimming Pool
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/484/484167.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Club House
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/3048/3048122.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Kids Play Area
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/888/888879.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Jogging Track
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/2972/2972185.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Multi Purpose Court
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/4320/4320371.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Senior Citizen Area
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/2965/2965567.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Kids Pool
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/857/857455.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Squash Court
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/857/857418.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Net Cricket
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/857/857681.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Skating Rink
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/857/857512.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Cricket Pitch
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/2965/2965879.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Amphitheater
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/4320/4320337.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Meditation Zone
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/888/888857.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Cycling Track
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/4320/4320376.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Acupressure Pathway
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/619/619153.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Fire Tender Ramp
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/1046/1046874.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Party Lawn
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/4320/4320337.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Yoga Deck
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/857/857681.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Badminton Court
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/1998/1998610.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Horse Riding Academy
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/857/857512.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Football Academy
+                                  </p>
+                                </div>
+
+                                <!-- ITEM -->
+                                <div class="flex items-center gap-4">
+                                  <img src="https://cdn-icons-png.flaticon.com/128/2965/2965878.png"
+                                    class="w-[42px] h-[42px]" />
+                                  <p class="text-[16px] md:text-[18px] text-[#4a5568] font-medium">
+                                    Lawn Tennis Academy
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- MASTER & FLOOR PLAN SECTION -->
+              <section id="plans" class="mt-5">
+                <div class="bg-white border border-gray-300 rounded-2xl overflow-hidden">
+                  <!-- HEADING -->
+                  <div class="bg-[#dfe5eb] border-b border-gray-300 px-5 py-4 flex items-center justify-between">
+                    <h2 class="text-[20px] md:text-[24px] font-bold text-[#1f4f79]">
+                      VTP Aurelia Master & Floor Plan
+                    </h2>
+
+                    <!-- BUTTON -->
+                    <button
+                      class="bg-[#0b9444] hover:bg-[#087536] duration-300 text-white text-[16px] font-semibold px-5 py-2 rounded-lg">
+                      Plan Kit
+
+                      <i class="fa-solid fa-download ml-1"></i>
+                    </button>
+                  </div>
+
+                  <!-- CONTENT -->
+                  <div class="p-5">
+                    <!-- GRID -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                      <!-- MASTER PLAN -->
+                      <div>
+                        <!-- TITLE -->
+                        <h3 class="text-[#1f4f79] text-[18px] md:text-[20px] font-bold mb-4">
+                          Master Plan
+                        </h3>
+
+                        <!-- IMAGE BOX -->
+                        <div class="relative border border-gray-300 rounded-xl overflow-hidden group bg-white">
+                          <!-- IMAGE -->
+                          <img src="https://i.ibb.co/TMmvtXDd/vtp-aurelia-1762422887615-948882738.webp"
+                            alt="Master Plan"
+                            class="w-full h-[400px] object-cover group-hover:scale-105 duration-500" />
+
+                          <!-- EXPAND -->
+                          <button
+                            class="absolute top-4 right-4 w-[34px] h-[34px] rounded-md bg-[#0b9444] text-white flex items-center justify-center shadow-lg hover:scale-110 duration-300">
+                            <i class="fa-solid fa-expand"></i>
+                          </button>
+                        </div>
+                      </div>
+
+                      <!-- FLOOR PLAN -->
+                      <div>
+                        <!-- TITLE -->
+                        <h3 class="text-[#1f4f79] text-[18px] md:text-[20px] font-bold mb-4">
+                          Floor Plan
+                        </h3>
+
+                        <!-- IMAGE BOX -->
+                        <div class="relative border border-gray-300 rounded-xl overflow-hidden group bg-white">
+                          <!-- IMAGE -->
+                          <img src="https://i.ibb.co/jvjHQdRD/vtp-aurelia-1762422862541-480408166.webp" alt="Floor Plan"
+                            class="w-full h-[400px] object-cover group-hover:scale-105 duration-500" />
+
+                          <!-- LEFT ARROW -->
+                          <button
+                            class="absolute left-4 top-1/2 -translate-y-1/2 w-[42px] h-[42px] rounded-full bg-white shadow-lg flex items-center justify-center hover:scale-110 duration-300">
+                            <i class="fa-solid fa-chevron-left text-[#1f4f79]"></i>
+                          </button>
+
+                          <!-- RIGHT ARROW -->
+                          <button
+                            class="absolute right-4 top-1/2 -translate-y-1/2 w-[42px] h-[42px] rounded-full bg-white shadow-lg flex items-center justify-center hover:scale-110 duration-300">
+                            <i class="fa-solid fa-chevron-right text-[#1f4f79]"></i>
+                          </button>
+
+                          <!-- EXPAND -->
+                          <button
+                            class="absolute top-4 right-4 w-[34px] h-[34px] rounded-md bg-[#0b9444] text-white flex items-center justify-center shadow-lg hover:scale-110 duration-300">
+                            <i class="fa-solid fa-expand"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <!-- Pricing & Unit Plans -->
+
+              <section class="bg-[#f5f5f5] py-6 md:py-10 overflow-hidden">
+                <div
+                  class="max-w-[1450px] mx-auto bg-white rounded-[14px] shadow-sm border border-[#e5e7eb] overflow-hidden">
+                  <!-- HEADER -->
+                  <div
+                    class="flex items-center justify-between gap-4 px-4 md:px-6 py-4 bg-[#edf1f5] border-b border-[#d1d5db]">
+                    <h2 class="text-[22px] md:text-[24px] font-extrabold text-[#1f4e79]">
+                      VTP Aurelia Pricing & Unit Plans
+                    </h2>
+
+                    <button
+                      class="bg-[#0b8f4d] hover:bg-[#08753f] transition text-white text-[13px] md:text-[16px] font-medium px-4 py-2 rounded-[6px] flex items-center gap-2">
+                      Price Sheet
+
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1M8 12l4 4m0 0l4-4m-4 4V4" />
+                      </svg>
+                    </button>
+                  </div>
+
+                  <!-- TABS -->
+                  <div
+                    class="flex gap-6 md:gap-10 px-4 md:px-6 pt-4 overflow-x-auto whitespace-nowrap [&::-webkit-scrollbar]:hidden">
+                    <button onclick="showTab('tab1', this)"
+                      class="pricing-tab text-[#0b8f4d] border-b-[3px] border-[#0b8f4d] text-[15px] md:text-[16px] font-medium pb-2 shrink-0">
+                      2BHK
+                    </button>
+
+                    <button onclick="showTab('tab2', this)"
+                      class="pricing-tab text-black border-b-[3px] border-transparent text-[15px] md:text-[16px] font-medium pb-2 shrink-0">
+                      3BHK
+                    </button>
+
+                    <button onclick="showTab('tab3', this)"
+                      class="pricing-tab text-black border-b-[3px] border-transparent text-[15px] md:text-[16px] font-medium pb-2 shrink-0">
+                      3BHK Simplex
+                    </button>
+
+                    <button onclick="showTab('tab4', this)"
+                      class="pricing-tab text-black border-b-[3px] border-transparent text-[15px] md:text-[16px] font-medium pb-2 shrink-0">
+                      3BHK Duplex
+                    </button>
+                  </div>
+
+                  <!-- TAB 1 -->
+                  <div id="tab1" class="pricing-content block">
+                    <div class="overflow-x-auto">
+                      <table class="w-full min-w-[1000px] border-collapse mt-4">
+                        <!-- HEAD -->
+                        <thead>
+                          <tr class="bg-[#f8f8f8]">
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                Carpet Area
+                              </h3>
+                            </th>
+
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                All Inc. Price
+                              </h3>
+
+                              <p class="text-[11px] md:text-[15px] text-[#6b7280] mt-1">
+                                (Inc. of Taxes & Charges)
+                              </p>
+                            </th>
+
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                Min Downpayment
+                              </h3>
+
+                              <p class="text-[11px] md:text-[15px] text-[#6b7280] mt-1">
+                                (Inc. Taxes)
+                              </p>
+                            </th>
+
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                Parking
+                              </h3>
+                            </th>
+
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                Unit Plan
+                              </h3>
+                            </th>
+                          </tr>
+                        </thead>
+
+                        <!-- BODY -->
+                        <tbody>
+                          <tr>
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              671 sqft
+                            </td>
+
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              85.00 Lacs All In
+                            </td>
+
+                            <td class="border border-[#d1d5db] px-4 py-6 text-center">
+                              <div class="flex items-center justify-center gap-3">
+                                <span class="text-[14px] md:text-[15px] text-[#6b7280]">
+                                  13.00 Lacs
+                                </span>
+
+                                <button
+                                  class="bg-[#0b8f4d] text-white text-[11px] md:text-[15px] px-3 py-1 rounded flex items-center gap-1">
+                                  EMI
+
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </td>
+
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              1
+                            </td>
+
+                            <td class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <!-- CLICK IMAGE -->
+                              <img onclick="openPopup(this.src)" src="https://i.ibb.co/9kJ6g4N/floorplan.jpg" alt=""
+                                class="w-[130px] md:w-[85px] h-[85px] md:h-[70px] object-cover rounded-[12px] mx-auto cursor-pointer hover:scale-105 duration-300" />
+                            </td>
+                          </tr>
+                        </tbody>
+
+                        <!-- BODY -->
+                        <tbody>
+                          <tr>
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              671 sqft
+                            </td>
+
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              85.00 Lacs All In
+                            </td>
+
+                            <td class="border border-[#d1d5db] px-4 py-6 text-center">
+                              <div class="flex items-center justify-center gap-3">
+                                <span class="text-[14px] md:text-[15px] text-[#6b7280]">
+                                  13.00 Lacs
+                                </span>
+
+                                <button
+                                  class="bg-[#0b8f4d] text-white text-[11px] md:text-[15px] px-3 py-1 rounded flex items-center gap-1">
+                                  EMI
+
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </td>
+
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              1
+                            </td>
+
+                            <td class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <!-- CLICK IMAGE -->
+                              <img onclick="openPopup(this.src)" src="https://i.ibb.co/9kJ6g4N/floorplan.jpg" alt=""
+                                class="w-[130px] md:w-[85px] h-[85px] md:h-[70px] object-cover rounded-[12px] mx-auto cursor-pointer hover:scale-105 duration-300" />
+                            </td>
+                          </tr>
+                        </tbody>
+
+
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- TAB 2 -->
+                  <div id="tab2" class="pricing-content hidden">
+                    <div class="overflow-x-auto">
+                      <table class="w-full min-w-[1000px] border-collapse mt-4">
+                        <!-- HEAD -->
+                        <thead>
+                          <tr class="bg-[#f8f8f8]">
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                Carpet Area
+                              </h3>
+                            </th>
+
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                All Inc. Price
+                              </h3>
+
+                              <p class="text-[11px] md:text-[15px] text-[#6b7280] mt-1">
+                                (Inc. of Taxes & Charges)
+                              </p>
+                            </th>
+
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                Min Downpayment
+                              </h3>
+
+                              <p class="text-[11px] md:text-[15px] text-[#6b7280] mt-1">
+                                (Inc. Taxes)
+                              </p>
+                            </th>
+
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                Parking
+                              </h3>
+                            </th>
+
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                Unit Plan
+                              </h3>
+                            </th>
+                          </tr>
+                        </thead>
+
+                        <!-- BODY -->
+                        <tbody>
+                          <tr>
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              671 sqft
+                            </td>
+
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              85.00 Lacs All In
+                            </td>
+
+                            <td class="border border-[#d1d5db] px-4 py-6 text-center">
+                              <div class="flex items-center justify-center gap-3">
+                                <span class="text-[14px] md:text-[15px] text-[#6b7280]">
+                                  13.00 Lacs
+                                </span>
+
+                                <button
+                                  class="bg-[#0b8f4d] text-white text-[11px] md:text-[15px] px-3 py-1 rounded flex items-center gap-1">
+                                  EMI
+
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </td>
+
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              1
+                            </td>
+
+                            <td class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <!-- CLICK IMAGE -->
+                              <img onclick="openPopup(this.src)" src="https://i.ibb.co/9kJ6g4N/floorplan.jpg" alt=""
+                                class="w-[130px] md:w-[85px] h-[85px] md:h-[70px] object-cover rounded-[12px] mx-auto cursor-pointer hover:scale-105 duration-300" />
+                            </td>
+                          </tr>
+                        </tbody>
+
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- TAB 3 -->
+                  <div id="tab3" class="pricing-content hidden">
+                    <div class="overflow-x-auto">
+                      <table class="w-full min-w-[1000px] border-collapse mt-4">
+                        <!-- HEAD -->
+                        <thead>
+                          <tr class="bg-[#f8f8f8]">
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                Carpet Area
+                              </h3>
+                            </th>
+
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                All Inc. Price
+                              </h3>
+
+                              <p class="text-[11px] md:text-[15px] text-[#6b7280] mt-1">
+                                (Inc. of Taxes & Charges)
+                              </p>
+                            </th>
+
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                Min Downpayment
+                              </h3>
+
+                              <p class="text-[11px] md:text-[15px] text-[#6b7280] mt-1">
+                                (Inc. Taxes)
+                              </p>
+                            </th>
+
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                Parking
+                              </h3>
+                            </th>
+
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                Unit Plan
+                              </h3>
+                            </th>
+                          </tr>
+                        </thead>
+
+                        <!-- BODY -->
+                        <tbody>
+                          <tr>
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              671 sqft
+                            </td>
+
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              85.00 Lacs All In
+                            </td>
+
+                            <td class="border border-[#d1d5db] px-4 py-6 text-center">
+                              <div class="flex items-center justify-center gap-3">
+                                <span class="text-[14px] md:text-[15px] text-[#6b7280]">
+                                  13.00 Lacs
+                                </span>
+
+                                <button
+                                  class="bg-[#0b8f4d] text-white text-[11px] md:text-[15px] px-3 py-1 rounded flex items-center gap-1">
+                                  EMI
+
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </td>
+
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              1
+                            </td>
+
+                            <td class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <!-- CLICK IMAGE -->
+                              <img onclick="openPopup(this.src)" src="https://i.ibb.co/9kJ6g4N/floorplan.jpg" alt=""
+                                class="w-[130px] md:w-[85px] h-[85px] md:h-[70px] object-cover rounded-[12px] mx-auto cursor-pointer hover:scale-105 duration-300" />
+                            </td>
+                          </tr>
+                        </tbody>
+
+
+                      </table>
+                    </div>
+                  </div>
+
+                  <!-- TAB 4 -->
+                  <div id="tab4" class="pricing-content hidden">
+                    <div class="overflow-x-auto">
+                      <table class="w-full min-w-[1000px] border-collapse mt-4">
+                        <!-- HEAD -->
+                        <thead>
+                          <tr class="bg-[#f8f8f8]">
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                Carpet Area
+                              </h3>
+                            </th>
+
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                All Inc. Price
+                              </h3>
+
+                              <p class="text-[11px] md:text-[15px] text-[#6b7280] mt-1">
+                                (Inc. of Taxes & Charges)
+                              </p>
+                            </th>
+
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                Min Downpayment
+                              </h3>
+
+                              <p class="text-[11px] md:text-[15px] text-[#6b7280] mt-1">
+                                (Inc. Taxes)
+                              </p>
+                            </th>
+
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                Parking
+                              </h3>
+                            </th>
+
+                            <th class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <h3 class="text-[#1f4e79] text-[14px] md:text-[15px] font-bold">
+                                Unit Plan
+                              </h3>
+                            </th>
+                          </tr>
+                        </thead>
+
+                        <!-- BODY -->
+                        <tbody>
+                          <tr>
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              671 sqft
+                            </td>
+
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              85.00 Lacs All In
+                            </td>
+
+                            <td class="border border-[#d1d5db] px-4 py-6 text-center">
+                              <div class="flex items-center justify-center gap-3">
+                                <span class="text-[14px] md:text-[15px] text-[#6b7280]">
+                                  13.00 Lacs
+                                </span>
+
+                                <button
+                                  class="bg-[#0b8f4d] text-white text-[11px] md:text-[15px] px-3 py-1 rounded flex items-center gap-1">
+                                  EMI
+
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </td>
+
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              1
+                            </td>
+
+                            <td class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <!-- CLICK IMAGE -->
+                              <img onclick="openPopup(this.src)" src="https://i.ibb.co/9kJ6g4N/floorplan.jpg" alt=""
+                                class="w-[130px] md:w-[85px] h-[85px] md:h-[70px] object-cover rounded-[12px] mx-auto cursor-pointer hover:scale-105 duration-300" />
+                            </td>
+                          </tr>
+                        </tbody>
+
+                        <!-- BODY -->
+                        <tbody>
+                          <tr>
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              671 sqft
+                            </td>
+
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              85.00 Lacs All In
+                            </td>
+
+                            <td class="border border-[#d1d5db] px-4 py-6 text-center">
+                              <div class="flex items-center justify-center gap-3">
+                                <span class="text-[14px] md:text-[15px] text-[#6b7280]">
+                                  13.00 Lacs
+                                </span>
+
+                                <button
+                                  class="bg-[#0b8f4d] text-white text-[11px] md:text-[15px] px-3 py-1 rounded flex items-center gap-1">
+                                  EMI
+
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                  </svg>
+                                </button>
+                              </div>
+                            </td>
+
+                            <td
+                              class="border border-[#d1d5db] px-4 py-6 text-center text-[14px] md:text-[15px] text-[#6b7280]">
+                              1
+                            </td>
+
+                            <td class="border border-[#d1d5db] px-4 py-5 text-center">
+                              <!-- CLICK IMAGE -->
+                              <img onclick="openPopup(this.src)" src="https://i.ibb.co/9kJ6g4N/floorplan.jpg" alt=""
+                                class="w-[130px] md:w-[85px] h-[85px] md:h-[70px] object-cover rounded-[12px] mx-auto cursor-pointer hover:scale-105 duration-300" />
+                            </td>
+                          </tr>
+                        </tbody>
+
+                      </table>
+                    </div>
+                  </div>
+
+
+
+                </div>
+              </section>
+
+
+
+              <!-- IMAGE POPUP -->
+              <div id="imagePopup"
+                class="fixed inset-0 bg-black/80 z-[9999] hidden items-center justify-center p-3 md:p-5">
+                <!-- POPUP BOX -->
+                <div class="relative bg-[#f8f8f8] rounded-[20px] overflow-hidden w-full max-w-[950px]">
+                  <!-- CLOSE -->
+                  <button onclick="closePopup()"
+                    class="absolute top-4 right-4 w-[44px] h-[44px] rounded-full bg-white shadow-md flex items-center justify-center z-50 hover:scale-105 duration-300">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#4b5563]" fill="none"
+                      viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+
+                  <!-- IMAGE -->
+                  <div class="relative flex items-center justify-center p-4 md:p-6">
+                    <img id="popupImage" src="https://i.ibb.co/bgZ0bCrZ/image-0-1762423491067-390469751.webp" alt=""
+                      class="w-full h-auto max-h-[88vh] object-contain rounded-[10px]" />
+
+                    <!-- ZOOM BUTTONS -->
+                    <div class="absolute bottom-4 right-4 flex items-center gap-3">
+                      <!-- ZOOM IN -->
+                      <button
+                        class="w-[46px] h-[46px] rounded-full bg-white shadow-lg flex items-center justify-center hover:scale-105 duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#1f4e79]" fill="none"
+                          viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                      </button>
+
+                      <!-- ZOOM OUT -->
+                      <button
+                        class="w-[46px] h-[46px] rounded-full bg-white shadow-lg flex items-center justify-center hover:scale-105 duration-300">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-[#1f4e79]" fill="none"
+                          viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- DOCUMENTS SECTION -->
+              <section class="py-6 md:py-10 bg-[#f5f5f5]">
+
+                <div
+                  class="max-w-[1450px] mx-auto bg-white rounded-[16px] border border-[#e5e7eb] shadow-sm overflow-hidden">
+
+                  <!-- HEADER -->
+                  <div class="bg-[#edf1f5] px-5 md:px-7 py-4">
+
+                    <h2 class="text-[22px] md:text-[24px] font-extrabold text-[#1f4e79]">
+                      Documents For VTP Aurelia
+                    </h2>
+
+                  </div>
+
+                  <div class="p-5 md:p-7">
+
+                    <!-- RERA -->
+                    <div>
+
+                      <h3
+                        class="inline-block text-[#0b8f4d] text-[13px] md:text-[15px] font-bold border-b-[4px] border-[#0b8f4d] pb-2">
+
+                        PM1260002500280
+
+                      </h3>
+
+                    </div>
+
+                    <!-- DOCUMENT 1 -->
+                    <div
+                      class="flex flex-col md:flex-row md:items-center justify-between gap-4 py-5 border-b border-[#d1d5db]">
+
+                      <div class="flex items-start gap-4">
+
+                        <i class="fa-regular fa-file-lines text-[#1f4e79] text-[20px] md:text-[25px]"></i>
+
+                        <div>
+
+                          <h4 class="text-sm md:text-[18px] font-bold text-black">
+                            Commencement Certificate
+                          </h4>
+
+                          <div class="flex items-center gap-3 mt-3">
+
+                            <i class="fa-regular fa-file-pdf text-red-500 text-[24px]"></i>
+
+                            <span class="text-[#1f4e79]  text-xs">
+                              VTP Aurelia Commencement Certificate
+                            </span>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                      <button
+                        class="bg-[#edf1f5] hover:bg-[#dfe6eb] px-4 py-2 rounded-[8px] text-[#1f4e79] flex items-center gap-2">
+                        Preview <i class="fa-regular fa-eye"></i>
+                      </button>
+
+                    </div>
+
+                    <!-- DOCUMENT 2 -->
+                    <div
+                      class="flex flex-col md:flex-row md:items-center justify-between gap-4 py-5 border-b border-[#d1d5db]">
+
+                      <div class="flex items-start gap-4">
+
+                        <i class="fa-regular fa-file-lines text-[#1f4e79] text-[20px] md:text-[25px]"></i>
+
+                        <div>
+
+                          <h4 class="text-sm md:text-[18px] font-bold text-black">
+                            Legal Title Report
+                          </h4>
+
+                          <div class="flex items-center gap-3 mt-3">
+
+                            <i class="fa-regular fa-file-pdf text-red-500 text-[24px]"></i>
+
+                            <span class="text-[#1f4e79]  text-xs">
+                              VTP Aurelia Legal Title Report
+                            </span>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                      <button
+                        class="bg-[#edf1f5] hover:bg-[#dfe6eb] px-4 py-2 rounded-[8px] text-[#1f4e79] flex items-center gap-2">
+                        Preview <i class="fa-regular fa-eye"></i>
+                      </button>
+
+                    </div>
+
+                    <!-- DOCUMENT 3 -->
+                    <div
+                      class="flex flex-col md:flex-row md:items-center justify-between gap-4 py-5 border-b border-[#d1d5db]">
+
+                      <div class="flex items-start gap-4">
+
+                        <i class="fa-regular fa-file-lines text-[#1f4e79] text-[20px] md:text-[25px]"></i>
+
+                        <div>
+
+                          <h4 class="text-sm md:text-[18px] font-bold text-black">
+                            Layout Plan
+                          </h4>
+
+                          <div class="flex items-center gap-3 mt-3">
+
+                            <i class="fa-regular fa-file-pdf text-red-500 text-[24px]"></i>
+
+                            <span class="text-[#1f4e79] text-xs ">
+                              VTP Aurelia Building Plan
+                            </span>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+
+                      <button
+                        class="bg-[#edf1f5] hover:bg-[#dfe6eb] px-4 py-2 rounded-[8px] text-[#1f4e79] flex items-center gap-2">
+                        Preview <i class="fa-regular fa-eye"></i>
+                      </button>
+
+                    </div>
+
+                    <!-- HIDDEN DOCUMENTS -->
+                    <div id="moreDocuments" class="hidden">
+
+                      <!-- DOCUMENT 4 -->
+                      <div
+                        class="flex flex-col md:flex-row md:items-center justify-between gap-4 py-5 border-b border-[#d1d5db]">
+
+                        <div class="flex items-start gap-4">
+
+                          <i class="fa-regular fa-file-lines text-[#1f4e79] text-[20px] md:text-[25px]"></i>
+
+                          <div>
+
+                            <h4 class="text-sm md:text-[18px] font-bold text-black">
+                              Proforma Allotment Letter
+                            </h4>
+
+                            <div class="flex items-center gap-3 mt-3">
+
+                              <i class="fa-regular fa-file-pdf text-red-500 text-[24px]"></i>
+
+                              <span class="text-[#1f4e79] text-xs ">
+                                VTP Aurelia Proforma Allotment Letter
+                              </span>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                        <button
+                          class="bg-[#edf1f5] hover:bg-[#dfe6eb] px-4 py-2 rounded-[8px] text-[#1f4e79] flex items-center gap-2">
+                          Preview <i class="fa-regular fa-eye"></i>
+                        </button>
+
+                      </div>
+
+                      <!-- DOCUMENT 5 -->
+                      <div
+                        class="flex flex-col md:flex-row md:items-center justify-between gap-4 py-5 border-b border-[#d1d5db]">
+
+                        <div class="flex items-start gap-4">
+
+                          <i class="fa-regular fa-file-lines text-[#1f4e79] text-[20px] md:text-[25px]"></i>
+
+                          <div>
+
+                            <h4 class="text-sm md:text-[18px] font-bold text-black">
+                              Proforma Sale Agreement
+                            </h4>
+
+                            <div class="flex items-center gap-3 mt-3">
+
+                              <i class="fa-regular fa-file-pdf text-red-500 text-[24px]"></i>
+
+                              <span class="text-[#1f4e79] text-xs ">
+                                VTP Aurelia Proforma Sale Agreement
+                              </span>
+
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                        <button
+                          class="bg-[#edf1f5] hover:bg-[#dfe6eb] px-4 py-2 rounded-[8px] text-[#1f4e79] flex items-center gap-2">
+                          Preview <i class="fa-regular fa-eye"></i>
+                        </button>
+
+                      </div>
+
+                    </div>
+
+                    <!-- VIEW MORE BUTTON -->
+                    <div class="flex justify-center mt-6">
+
+                      <button id="viewMoreBtn" onclick="toggleDocuments()"
+                        class="bg-[#0b8f4d] hover:bg-[#08753f] transition text-white px-5 py-2 rounded-[8px] flex items-center gap-2 font-medium">
+
+                        <i id="viewMoreIcon" class="fa-solid fa-chevron-down text-[12px]"></i>
+
+                        <span id="viewMoreText">
+                          View More (2)
+                        </span>
+
+                      </button>
+
+                    </div>
+
+                    <!-- NOTE -->
+                    <!-- <div class="mt-6">
+
+                  <p class="text-[12px] md:text-[15px] text-black">
+
+                    <span class="font-bold">Note:</span>
+
+                    You can download more detailed documents by following this
+
+                    <a href="#" class="text-[#0b8f4d] font-semibold underline">
+                      link
+                    </a>
+
+                  </p>
+
+                </div> -->
+
+                  </div>
+
+                </div>
+
+              </section>
+
+
+              <!-- PAYMENT SCHEME -->
+              <section class="py-4 md:py-6 bg-[#f5f5f5]">
+
+                <div
+                  class="max-w-[1450px] mx-auto bg-white border border-[#e5e7eb] rounded-[16px] overflow-hidden shadow-sm">
+
+                  <!-- HEADER -->
+                  <div class="bg-[#edf1f5] px-4 md:px-6 py-4 flex items-center justify-between">
+
+                    <h2 class="text-[22px] md:text-[24px] font-extrabold text-[#1f4e79]">
+                      VTP Aurelia Payment Scheme
+                    </h2>
+
+                    <button
+                      class="bg-[#0b8f4d] hover:bg-[#08753f] transition text-white text-[12px] md:text-[16px] px-4 md:px-5 py-2 rounded-[8px] flex items-center gap-2">
+
+                      Payment Schedule
+
+                      <i class="fa-solid fa-download text-[12px]"></i>
+
+                    </button>
+
+                  </div>
+
+                  <!-- ACCORDION -->
+                  <div class="p-4 md:p-5">
+
+                    <!-- TITLE -->
+                    <button onclick="toggleScheme()"
+                      class="w-full bg-[#f8f9fb] border border-[#dbe1e8] rounded-[14px] px-5 md:px-2 py-5 md:py-2 flex items-center justify-between">
+
+                      <span class="text-sm md:text-base  font-semibold text-black text-left">
+                        CLP ( Construction Link plan )
+                      </span>
+
+                      <span id="schemeIcon" class="text-[#0b8f4d] text-[40px] leading-none">
+
+                        −
+
+                      </span>
+
+                    </button>
+
+                    <!-- CONTENT -->
+                    <div id="schemeContent" class="pt-4 px-3 md:px-5">
+
+                      <p class="text-[12px] md:text-[14px] text-[#6b7280] leading-[1.8]">
+
+                        Regular Standard Slabwise Payment as per construction,
+                        Maximum loan possible up to 90%
+
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </section>
+
+              <!-- ABOUT BUILDER -->
+              <section class="py-6 md:py-10 bg-[#f5f5f5]">
+
+                <div
+                  class="max-w-[1450px] mx-auto bg-white border border-[#e5e7eb] rounded-[16px] overflow-hidden shadow-sm">
+
+                  <!-- HEADER -->
+                  <div class="bg-[#edf1f5] px-4 md:px-6 py-4">
+
+                    <h2 class="text-[22px] md:text-[24px] font-extrabold text-[#1f4e79]">
+
+                      About VTP Realty
+
+                    </h2>
+
+                  </div>
+
+                  <!-- CONTENT -->
+                  <div class="p-4 md:p-6">
+
+                    <div class="grid md:grid-cols-[180px_1fr] gap-6 md:gap-8">
+
+                      <!-- LEFT -->
+                      <div>
+
+                        <h3 class="text-[20px] md:text-[22px] font-bold text-[#1f4e79] mb-4">
+
+                          VTP Realty
+
+                        </h3>
+
+                        <div class="bg-white border border-[#d1d5db] rounded-[10px] p-4 shadow-sm">
+
+                          <img src="https://i.ibb.co/FkM4P9w/vtp-logo.webp" alt="VTP Realty"
+                            class="w-full h-auto object-contain">
+
+                        </div>
+
+                      </div>
+
+                      <!-- RIGHT -->
+                      <div>
+
+                        <!-- LOCATION -->
+                        <div>
+
+                          <h3 class="text-[20px] md:text-[22px] font-bold text-[#1f4e79] mb-4">
+
+                            Locations
+
+                          </h3>
+
+                          <span
+                            class="inline-flex items-center px-4 py-2 rounded-[8px] border border-[#d1d5db] bg-[#f8f9fb] text-[#1f4e79] text-[15px] md:text-[16px]">
+
+                            Pune
+
+                          </span>
+
+                        </div>
+
+                        <!-- STATS -->
+                        <div class="flex flex-wrap gap-4 mt-6">
+
+                          <div class="bg-[#f8f9fb] rounded-full px-4 md:px-5 py-3">
+
+                            <span class="text-[#1f4e79] text-[16px] md:text-[18px]">
+                              Experience:
+                            </span>
+
+                            <span class="text-[#0b8f4d] font-bold text-[16px] md:text-[18px]">
+                              39 years
+                            </span>
+
+                          </div>
+
+                          <div class="bg-[#f8f9fb] rounded-full px-4 md:px-5 py-3">
+
+                            <span class="text-[#1f4e79] text-[16px] md:text-[18px]">
+                              Total Projects:
+                            </span>
+
+                            <span class="text-[#0b8f4d] font-bold text-[16px] md:text-[18px]">
+                              30
+                            </span>
+
+                          </div>
+
+                          <div class="bg-[#f8f9fb] rounded-full px-4 md:px-5 py-3">
+
+                            <span class="text-[#1f4e79] text-[16px] md:text-[18px]">
+                              Happy Families:
+                            </span>
+
+                            <span class="text-[#0b8f4d] font-bold text-[16px] md:text-[18px]">
+                              20K+
+                            </span>
+
+                          </div>
+
+                        </div>
+
+                        <!-- DESCRIPTION -->
+                        <div class="mt-6">
+
+                          <p id="builderText"
+                            class="text-[#374151] text-[15px] md:text-[18px] leading-[1.9] line-clamp-4">
+
+                            A legacy that is redefining Pune’s real estate. Today, VTP Realty is Pune’s leading Real
+                            Estate Brand. A feat made possible due to the tremendous goodwill of decades and the
+                            well-earned reputation of being a trust-worthy turn-around specialist who has taken over
+                            large stuck projects and made them viable and successful.
+
+                            The case in point being Codename Township Pegasus and Codename Township Blue Waters in East
+                            and West Pune respectively. They also benefit from the 35-years legacy of their group in the
+                            construction industry.
+
+                            VTP Realty sources 70% of construction materials through backward integration, enabling
+                            better quality homes in a shorter time span. The company has successfully established
+                            leadership in every industry they operate in.
+
+                          </p>
+
+                        </div>
+
+                        <!-- READ MORE -->
+                        <div class="mt-8">
+
+                          <button id="readToggle" onclick="toggleReadMore()"
+                            class="mt-6 text-[#0b8f4d] text-[16px] md:text-[18px] font-medium">
+
+                            Read More
+
+                          </button>
+
+                        </div>
+
+                        <!-- BUTTON -->
+                        <div class="mt-6">
+
+                          <a href="#"
+                            class="inline-flex items-center justify-center bg-[#0b8f4d] hover:bg-[#08753f] transition text-white text-[18px] md:text-[22px] font-medium px-8 py-4 rounded-[14px]">
+
+                            View All Projects Now !
+
+                          </a>
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </section>
+
+
+
+              <!-- FAQ SECTION -->
+              <section class="py-6 md:py-10 bg-[#f5f5f5]">
+
+                <div
+                  class="max-w-[1450px] mx-auto bg-white border border-[#e5e7eb] rounded-[12px] shadow-sm overflow-hidden">
+
+                  <!-- HEADER -->
+                  <div class="bg-[#edf1f5] px-4 md:px-6 py-4">
+
+                    <h2 class="text-[22px] md:text-[40px] font-extrabold text-[#1f4e79]">
+                      Frequently Asked Question
+                    </h2>
+
+                  </div>
+
+                  <!-- FAQ LIST -->
+                  <div class="p-4 md:p-6 max-h-[550px] overflow-y-auto space-y-3">
+
+                    <!-- FAQ 1 -->
+                    <div class="border border-[#dbe1e8] rounded-[6px] overflow-hidden">
+
+                      <button onclick="toggleFaq(1)"
+                        class="w-full bg-[#edf1f5] px-5 py-4 flex items-center justify-between text-left">
+
+                        <span class="text-[#1f4e79] text-[16px] md:text-[18px] font-medium">
+                          Can I see the sample flat of VTP Aurelia? Is it ready?
+                        </span>
+
+                        <i id="icon1" class="fa-solid fa-chevron-up text-[#1f4e79] text-[14px]"></i>
+
+                      </button>
+
+                      <div id="faq1" class="px-5 py-4 bg-white">
+
+                        <p class="text-[#4b5563] text-[15px] md:text-[17px] leading-[1.9]">
+                          Yes, a sample flat is available for viewing in VTP Aurelia.
+                          Currently, the 2BHK/3BHK/3BHK Simplex/3BHK Duplex show flat is
+                          ready and can be visited with prior appointment.
+                        </p>
+
+                        <p class="mt-4 text-[#4b5563] text-[15px] md:text-[17px] leading-[1.9]">
+                          If you are interested in another BHK type, our team can share
+                          3D walkthroughs, layouts, or give you a live virtual tour.
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="border border-[#dbe1e8] rounded-[6px] overflow-hidden">
+
+                      <button onclick="toggleFaq(2)"
+                        class="w-full bg-[#edf1f5] px-5 py-4 flex items-center justify-between text-left">
+
+                        <span class="text-[#1f4e79] text-[16px] md:text-[18px] font-medium">
+                          When is the expected possession of VTP Aurelia?
+                        </span>
+
+                        <i id="icon2" class="fa-solid fa-chevron-down text-[#1f4e79] text-[14px]"></i>
+
+                      </button>
+
+                      <div id="faq2" class="hidden px-5 py-4 bg-white">
+
+                        <p class="text-[#4b5563] leading-[1.8]">
+                          Possession details vary by tower and phase. Please contact our
+                          sales team for updated information.
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="border border-[#dbe1e8] rounded-[6px] overflow-hidden">
+
+                      <button onclick="toggleFaq(3)"
+                        class="w-full bg-[#edf1f5] px-5 py-4 flex items-center justify-between text-left">
+
+                        <span class="text-[#1f4e79] text-[16px] md:text-[18px] font-medium">
+                          Is VTP Aurelia RERA registered? What is the RERA number?
+                        </span>
+
+                        <i id="icon3" class="fa-solid fa-chevron-down text-[#1f4e79] text-[14px]"></i>
+
+                      </button>
+
+                      <div id="faq3" class="hidden px-5 py-4 bg-white">
+
+                        <p class="text-[#4b5563] leading-[1.8]">
+                          Yes, VTP Aurelia is RERA registered. Please refer to the official
+                          RERA portal for the latest registration details.
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="border border-[#dbe1e8] rounded-[6px] overflow-hidden">
+
+                      <button onclick="toggleFaq(4)"
+                        class="w-full bg-[#edf1f5] px-5 py-4 flex items-center justify-between text-left">
+
+                        <span class="text-[#1f4e79] text-[16px] md:text-[18px] font-medium">
+                          What amenities are offered at VTP Aurelia?
+                        </span>
+
+                        <i id="icon4" class="fa-solid fa-chevron-down text-[#1f4e79] text-[14px]"></i>
+
+                      </button>
+
+                      <div id="faq4" class="hidden px-5 py-4 bg-white">
+
+                        <p class="text-[#4b5563] leading-[1.8]">
+                          Clubhouse, Swimming Pool, Gymnasium, Kids Play Area, Jogging
+                          Track, Landscaped Garden and many more amenities.
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <!-- FAQ 5 -->
+                    <div class="border border-[#dbe1e8] rounded-[6px] overflow-hidden">
+
+                      <button onclick="toggleFaq(5)"
+                        class="w-full bg-[#edf1f5] px-5 py-4 flex items-center justify-between text-left">
+
+                        <span class="text-[#1f4e79] text-[16px] md:text-[18px] font-medium">
+                          What is the carpet area of a 2BHK in VTP Aurelia?
+                        </span>
+
+                        <i id="icon5" class="fa-solid fa-chevron-down text-[#1f4e79] text-[14px]"></i>
+
+                      </button>
+
+                      <div id="faq5" class="hidden px-5 py-4 bg-white">
+
+                        <p class="text-[#4b5563] leading-[1.8]">
+                          Carpet area depends on the selected unit. Please refer to the
+                          latest floor plan for exact details.
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <!-- FAQ 6 -->
+                    <div class="border border-[#dbe1e8] rounded-[6px] overflow-hidden">
+
+                      <button onclick="toggleFaq(6)"
+                        class="w-full bg-[#edf1f5] px-5 py-4 flex items-center justify-between text-left">
+
+                        <span class="text-[#1f4e79] text-[16px] md:text-[18px] font-medium">
+                          What is the carpet area of a 3BHK in VTP Aurelia?
+                        </span>
+
+                        <i id="icon6" class="fa-solid fa-chevron-down text-[#1f4e79] text-[14px]"></i>
+
+                      </button>
+
+                      <div id="faq6" class="hidden px-5 py-4 bg-white">
+
+                        <p class="text-[#4b5563] leading-[1.8]">
+                          Carpet area varies based on configuration and layout selection.
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <!-- FAQ 7 -->
+                    <div class="border border-[#dbe1e8] rounded-[6px] overflow-hidden">
+
+                      <button onclick="toggleFaq(7)"
+                        class="w-full bg-[#edf1f5] px-5 py-4 flex items-center justify-between text-left">
+
+                        <span class="text-[#1f4e79] text-[16px] md:text-[18px] font-medium">
+                          Is bank loan available for this project?
+                        </span>
+
+                        <i id="icon7" class="fa-solid fa-chevron-down text-[#1f4e79] text-[14px]"></i>
+
+                      </button>
+
+                      <div id="faq7" class="hidden px-5 py-4 bg-white">
+
+                        <p class="text-[#4b5563] leading-[1.8]">
+                          Yes, major banks and financial institutions provide home loan
+                          facilities for this project.
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <!-- FAQ 8 -->
+                    <div class="border border-[#dbe1e8] rounded-[6px] overflow-hidden">
+
+                      <button onclick="toggleFaq(8)"
+                        class="w-full bg-[#edf1f5] px-5 py-4 flex items-center justify-between text-left">
+
+                        <span class="text-[#1f4e79] text-[16px] md:text-[18px] font-medium">
+                          Can I schedule a site visit online?
+                        </span>
+
+                        <i id="icon8" class="fa-solid fa-chevron-down text-[#1f4e79] text-[14px]"></i>
+
+                      </button>
+
+                      <div id="faq8" class="hidden px-5 py-4 bg-white">
+
+                        <p class="text-[#4b5563] leading-[1.8]">
+                          Yes, you can schedule an online or physical site visit through
+                          our sales team.
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <!-- FAQ 8 -->
+                    <div class="border border-[#dbe1e8] rounded-[6px] overflow-hidden">
+
+                      <button onclick="toggleFaq(8)"
+                        class="w-full bg-[#edf1f5] px-5 py-4 flex items-center justify-between text-left">
+
+                        <span class="text-[#1f4e79] text-[16px] md:text-[18px] font-medium">
+                          Can I schedule a site visit online?
+                        </span>
+
+                        <i id="icon8" class="fa-solid fa-chevron-down text-[#1f4e79] text-[14px]"></i>
+
+                      </button>
+
+                      <div id="faq8" class="hidden px-5 py-4 bg-white">
+
+                        <p class="text-[#4b5563] leading-[1.8]">
+                          Yes, you can schedule an online or physical site visit through
+                          our sales team.
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <!-- FAQ 8 -->
+                    <div class="border border-[#dbe1e8] rounded-[6px] overflow-hidden">
+
+                      <button onclick="toggleFaq(8)"
+                        class="w-full bg-[#edf1f5] px-5 py-4 flex items-center justify-between text-left">
+
+                        <span class="text-[#1f4e79] text-[16px] md:text-[18px] font-medium">
+                          Can I schedule a site visit online?
+                        </span>
+
+                        <i id="icon8" class="fa-solid fa-chevron-down text-[#1f4e79] text-[14px]"></i>
+
+                      </button>
+
+                      <div id="faq8" class="hidden px-5 py-4 bg-white">
+
+                        <p class="text-[#4b5563] leading-[1.8]">
+                          Yes, you can schedule an online or physical site visit through
+                          our sales team.
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                    <!-- FAQ 8 -->
+                    <div class="border border-[#dbe1e8] rounded-[6px] overflow-hidden">
+
+                      <button onclick="toggleFaq(8)"
+                        class="w-full bg-[#edf1f5] px-5 py-4 flex items-center justify-between text-left">
+
+                        <span class="text-[#1f4e79] text-[16px] md:text-[18px] font-medium">
+                          Can I schedule a site visit online?
+                        </span>
+
+                        <i id="icon8" class="fa-solid fa-chevron-down text-[#1f4e79] text-[14px]"></i>
+
+                      </button>
+
+                      <div id="faq8" class="hidden px-5 py-4 bg-white">
+
+                        <p class="text-[#4b5563] leading-[1.8]">
+                          Yes, you can schedule an online or physical site visit through
+                          our sales team.
+                        </p>
+
+                      </div>
+
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </section>
+
+
+              <!-- LEGAL CONSULTATION SECTION==== -->
+
+              <section class="relative overflow-hidden bg-gradient-to-r from-[#234e73] to-[#234e73]">
+                <!-- DOT PATTERN -->
+                <div class="absolute top-6 left-6 opacity-30 hidden md:block">
+                  <div class="grid grid-cols-4 gap-6">
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+                    <span class="w-1 h-1 bg-white rounded-full"></span>
+                  </div>
+                </div>
+
+                <div class="max-w-[1280px] mx-auto px-5">
+                  <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <!-- LEFT IMAGE -->
+                    <div class="relative flex justify-center lg:justify-start">
+                      <!-- MAIN IMAGE -->
+                      <img src="https://i.ibb.co/zhDsM2Sv/legal-Section.webp" alt="Legal Consultation"
+                        class="w-full max-w-[650px] object-contain" />
+                    </div>
+
+                    <!-- RIGHT CONTENT -->
+                    <div class="text-center lg:text-left">
+                      <!-- HEADING -->
+                      <h2
+                        class="text-white text-[32px] sm:text-[42px] md:text-[30px] font-black leading-[1.1] tracking-[-1px] max-w-[700px]">
+                        Housiey Legal:
+                        <br class="hidden md:block" />
+                        Free Real Estate Legal Consultation
+                      </h2>
+
+                      <!-- SUBTEXT -->
+                      <p
+                        class="text-white/90 text-[16px] md:text-[12px] leading-relaxed mt-6 max-w-[650px] mx-auto lg:mx-0">
+                        Get Expert Advice on RERA, Builder Refunds, Area Mismatch, Stuck
+                        Projects & More - at No Cost!
+                      </p>
+
+                      <!-- BUTTON AREA -->
+                      <div class="flex flex-col sm:flex-row items-center lg:items-center gap-5 mt-10">
+                        <!-- BUTTON -->
+                        <button
+                          class="bg-white hover:bg-[#f3f3f3] text-[#00a63e] text-sm font-bold px-4 py-2 rounded-lg transition">
+                          Consult Now
+                        </button>
+
+                        <!-- FREE TEXT -->
+                        <div class="flex items-center gap-3">
+                          <div class="w-4 h-4 rounded-full bg-white animate-pulse"></div>
+
+                          <span class="text-white text-[14px] font-black">
+                            100% Free
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+
+
+
+            </div>
+
+
+
+            <!-- RIGHT SIDE -->
+            <div class="xl:sticky xl:top-24 self-start h-fit">
+              <!-- CALL BOX -->
+              <div class="bg-gradient-to-r from-[#214b73] to-[#0d964b] rounded-2xl p-4 text-white">
+                <h2 class="text-[20px] font-bold">Call Me Instantly</h2>
+
+                <p class="text-[14px] mt-0">
+                  Hang Tight! Our Executive is calling you right now
+                </p>
+
+                <!-- INPUT -->
+                <div class="mt-2 relative">
+                  <input type="text" placeholder="Phone Number"
+                    class="w-full h-[40px] rounded-full bg-transparent border border-white/60 px-16 text-white placeholder:text-white/60 outline-none text-[15px]" />
+
+                  <span class="absolute left-5 top-1/2 -translate-y-1/2 text-[22px]">
+                    🇮🇳
+                  </span>
+                </div>
+
+                <!-- BTN -->
+                <button
+                  class="w-full h-[40px] rounded-full bg-white text-[#0d964b] font-bold text-[16px] mt-3 hover:scale-[1.02] duration-300">
+                  Call me now
+                </button>
+              </div>
+
+              <!-- BOOKING BOX -->
+              <div class="bg-white border border-gray-300 rounded-2xl mt-2 p-5">
+                <!-- TABS -->
+                <div class="flex items-center gap-3 mb-5">
+                  <!-- TAB 1 -->
+                  <button onclick="switchTab('sitevisit')" id="sitevisitBtn"
+                    class="tabBtn w-1/2 text-center text-gray-400 font-bold text-[14px] border-b-[4px] border-gray-400 pb-3 duration-300">
+                    Book Free Site Visit
+                  </button>
+
+                  <!-- TAB 2 -->
+                  <button onclick="switchTab('online')" id="onlineBtn"
+                    class="tabBtn w-1/2 text-center text-[#1f4f79] font-bold text-[14px] border-b-[4px] border-[#1f4f79] pb-3 duration-300">
+                    Online Presentation
+                  </button>
+                </div>
+
+                <!-- ONLINE PRESENTATION TAB -->
+
+                <div id="onlineTab">
+                  <!-- SEARCH -->
+                  <div class="bg-[#f5f5f5] rounded-2xl h-[40px] px-5 flex items-center justify-between">
+                    <span class="text-gray-500 text-[14px] font-medium">
+                      Search projects
+                    </span>
+
+                    <i class="fa-solid fa-magnifying-glass text-[#1f4f79] text-[20px]"></i>
+                  </div>
+
+                  <!-- DATE -->
+                  <div class="mt-4 bg-[#f5f5f5] rounded-2xl h-[40px] flex items-center px-5 gap-4">
+                    <i class="fa-regular fa-calendar text-[#1f4f79] text-[22px]"></i>
+
+                    <span class="text-gray-500 text-[14px] font-semibold">
+                      05-22-2026 1:00 PM
+                    </span>
+                  </div>
+
+                  <!-- OPTIONS -->
+                  <div class="flex items-center justify-between mt-4">
+                    <!-- GOOGLE MEET -->
+                    <label class="flex items-center gap-3 cursor-pointer">
+                      <input type="radio" name="meeting" checked class="w-[15px] h-[15px]" />
+
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/9/9b/Google_Meet_icon_%282020%29.svg"
+                        class="w-[24px] h-[24px]" />
+                    </label>
+
+                    <!-- TEAMS -->
+                    <label class="flex items-center gap-3 cursor-pointer">
+                      <input type="radio" name="meeting" class="w-[15px] h-[15px]" />
+
+                      <img
+                        src="https://upload.wikimedia.org/wikipedia/commons/4/4f/Microsoft_Office_Teams_%282018%E2%80%93present%29.svg"
+                        class="w-[15px] h-[15px]" />
+                    </label>
+
+                    <!-- ZOOM -->
+                    <label class="flex items-center gap-3 cursor-pointer">
+                      <input type="radio" name="meeting" class="w-[15px] h-[15px]" />
+
+                      <img src="https://upload.wikimedia.org/wikipedia/commons/7/7b/Zoom_Communications_Logo.svg"
+                        class="w-[60px]" />
+                    </label>
+                  </div>
+
+                  <!-- LIST -->
+                  <ul class="mt-4 text-[12px] text-[#1f4f79] font-semibold">
+                    <li>• Directly from Builder Salesperson</li>
+
+                    <li>• Latest Offer & Payment Schemes</li>
+
+                    <li>• Live Sample Flat Tour</li>
+                  </ul>
+
+                  <!-- BUTTON -->
+                  <button
+                    class="w-full h-[45px] rounded-full bg-[#1f4f79] hover:bg-[#173a5a] duration-300 text-white text-[14px] font-semibold mt-4">
+                    Continue Booking
+                  </button>
+
+                  <!-- TERMS -->
+                  <p class="text-center text-gray-500 text-[13px] mt-2">
+                    By continuing, you agree to our
+                    <span class="text-[#1f4f79] font-semibold">
+                      Terms & Conditions
+                    </span>
+                  </p>
+                </div>
+
+
+                <!-- SITE VISIT TAB -->
+                <!-- ========================= -->
+                <div id="sitevisitTab" class="hidden">
+                  <div class="bg-[#f5f5f5] rounded-2xl h-[40px] px-5 flex items-center justify-between">
+                    <span class="text-gray-500 text-[14px] font-medium">
+                      Search projects
+                    </span>
+
+                    <i class="fa-solid fa-magnifying-glass text-[#1f4f79] text-[20px]"></i>
+                  </div>
+
+                  <div class="mt-4 bg-[#f5f5f5] rounded-2xl h-[40px] flex items-center px-5 gap-4">
+                    <i class="fa-regular fa-calendar text-[#1f4f79] text-[22px]"></i>
+
+                    <span class="text-gray-500 text-[14px] font-semibold">
+                      05-22-2026 12:00 PM
+                    </span>
+                  </div>
+
+                  <!-- OPTIONS -->
+                  <div class="flex items-center gap-10 mt-4">
+                    <label class="flex items-center gap-3 text-[14px]">
+                      <input type="radio" name="pickup" />
+
+                      OLA
+                    </label>
+
+                    <label class="flex items-center gap-3 text-[14px]">
+                      <input type="radio" name="pickup" checked />
+
+                      Not Required
+                    </label>
+                  </div>
+
+                  <!-- LIST -->
+                  <ul class="mt-4 text-[12px] text-[#1f4f79] font-semibold">
+                    <li>• Free Pick Up & Drop - Book Personal Ola</li>
+
+                    <li>• Visit Your Selected 3 Projects in One Tour</li>
+
+                    <li>• Just Visit & Decide later</li>
+                  </ul>
+
+                  <!-- BUTTON -->
+                  <button
+                    class="w-full h-[45px] rounded-full bg-[#1f4f79] hover:bg-[#173a5a] duration-300 text-white text-[14px] font-semibold mt-4">
+                    Continue Booking
+                  </button>
+
+                  <!-- TERMS -->
+                  <p class="text-center text-gray-500 text-[12px] mt-2">
+                    By continuing, you agree to our
+                    <span class="text-[#1f4f79] font-semibold">
+                      Terms & Conditions
+                    </span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+
+
+
+
+
+
+            <style>
+              html {
+                scroll-behavior: smooth;
+              }
+
+              /* Hide scrollbar */
+              ::-webkit-scrollbar {
+                display: none;
+              }
+
+              body {
+                -ms-overflow-style: none;
+                scrollbar-width: none;
+              }
+            </style>
+
+            <!-- info -->
+          </div>
+      </section>
+
+      <!-- SCRIPT -->
+      <script>
+        function openAmenitiesPopup() {
+          const popup = document.getElementById("amenitiesPopup");
+
+          popup.classList.remove("hidden");
+          popup.classList.add("flex");
+
+          document.body.style.overflow = "hidden";
+        }
+
+        function closeAmenitiesPopup() {
+          const popup = document.getElementById("amenitiesPopup");
+
+          popup.classList.add("hidden");
+          popup.classList.remove("flex");
+
+          document.body.style.overflow = "auto";
+        }
+
+        // CLOSE ON OUTSIDE CLICK
+        document
+          .getElementById("amenitiesPopup")
+          .addEventListener("click", function (e) {
+            if (e.target === this) {
+              closeAmenitiesPopup();
+            }
+          });
+
+        function openExternalPopup() {
+          const popup = document.getElementById("externalAmenitiesPopup");
+
+          popup.classList.remove("hidden");
+          popup.classList.add("flex");
+
+          document.body.style.overflow = "hidden";
+        }
+
+        function closeExternalPopup() {
+          const popup = document.getElementById("externalAmenitiesPopup");
+
+          popup.classList.add("hidden");
+          popup.classList.remove("flex");
+
+          document.body.style.overflow = "auto";
+        }
+
+        // OUTSIDE CLICK CLOSE
+        document
+          .getElementById("externalAmenitiesPopup")
+          .addEventListener("click", function (e) {
+            if (e.target === this) {
+              closeExternalPopup();
+            }
+          });
+
+        // Pricing & Unit Plans
+        // TABS
+        function showTab(tabId, element) {
+          // hide all tabs
+          document.querySelectorAll(".pricing-content").forEach((content) => {
+            content.classList.add("hidden");
+          });
+
+          // show active
+          document.getElementById(tabId).classList.remove("hidden");
+
+          // reset buttons
+          document.querySelectorAll(".pricing-tab").forEach((btn) => {
+            btn.classList.remove("text-[#0b8f4d]", "border-[#0b8f4d]");
+
+            btn.classList.add("text-black", "border-transparent");
+          });
+
+          // active button
+          element.classList.remove("text-black", "border-transparent");
+
+          element.classList.add("text-[#0b8f4d]", "border-[#0b8f4d]");
+        }
+
+        // POPUP
+        function openPopup(src) {
+          document.getElementById("popupImage").src = src;
+
+          const popup = document.getElementById("imagePopup");
+
+          popup.classList.remove("hidden");
+          popup.classList.add("flex");
+
+          document.body.style.overflow = "hidden";
+        }
+
+        function closePopup() {
+          const popup = document.getElementById("imagePopup");
+
+          popup.classList.add("hidden");
+          popup.classList.remove("flex");
+
+          document.body.style.overflow = "auto";
+        }
+      </script>
+
+      <!-- STYLE -->
+      <style>
+        @keyframes popupScale {
+          0% {
+            transform: scale(0.8);
+            opacity: 0;
+          }
+
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+
+        .animate-popup {
+          animation: popupScale 0.25s ease;
+        }
+
+        @keyframes popupScale {
+          0% {
+            transform: scale(0.8);
+            opacity: 0;
+          }
+
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+
+        .animate-popup {
+          animation: popupScale 0.25s ease;
+        }
+      </style>
+</body>
+
+</html>

@@ -202,6 +202,7 @@ $stats = [
     'visits' => 0
 ];
 $wishlistProjects = [];
+$wishlistProjectGalleries = [];
 $inquiries = [];
 $siteVisits = [];
 
@@ -223,6 +224,7 @@ try {
     ");
     $stmt->execute([$_SESSION['user_id']]);
     $wishlistProjects = $stmt->fetchAll();
+    $wishlistProjectGalleries = fetchProjectGalleryImagesForProjects(array_column($wishlistProjects, 'id'), 4);
 
     $stmt = $pdo->prepare("
         SELECT i.inquiry_id, i.inquiry_status, i.budget, i.preferred_time, i.message,
@@ -258,7 +260,7 @@ require_once __DIR__ . '/../includes/header.php';
 ?>
 
 <section class="mt-20 bg-gray-50 py-6 md:py-10">
-    <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-20">
+    <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-10">
         <div class="grid gap-5 lg:grid-cols-[320px_1fr]">
 
             <aside class="md:sticky md:top-30 self-start space-y-5">
@@ -503,8 +505,26 @@ require_once __DIR__ . '/../includes/header.php';
                         <?php else: ?>
                             <div class="mt-5 space-y-3">
                                 <?php foreach ($wishlistProjects as $project): ?>
+                                    <?php $galleryImages = projectGalleryImages($project, $wishlistProjectGalleries ?? []); ?>
                                     <a href="<?php echo BASE_URL . 'project/' . urlencode($project['slug']); ?>" class="flex gap-3 rounded-md border border-gray-200 p-3 hover:border-accent">
-                                        <img src="<?php echo e(projectImage($project)); ?>" alt="<?php echo e($project['project_name']); ?>" class="h-20 w-24 rounded-md object-cover">
+                                        <span class="relative block h-20 w-24 shrink-0 overflow-hidden rounded-md" data-project-gallery>
+                                            <?php foreach ($galleryImages as $imageIndex => $imageUrl): ?>
+                                                <img src="<?php echo e($imageUrl); ?>" alt="<?php echo e($project['project_name']); ?>" class="h-20 w-24 object-cover <?php echo $imageIndex === 0 ? '' : 'hidden'; ?>" data-gallery-image>
+                                            <?php endforeach; ?>
+                                            <?php if (count($galleryImages) > 1): ?>
+                                                <button type="button" data-gallery-prev onclick="event.preventDefault(); event.stopPropagation();" class="absolute left-1 top-1/2 z-20 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full bg-black/45 text-white" aria-label="Previous image">
+                                                    <i class="fa-solid fa-chevron-left text-[8px]"></i>
+                                                </button>
+                                                <button type="button" data-gallery-next onclick="event.preventDefault(); event.stopPropagation();" class="absolute right-1 top-1/2 z-20 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full bg-black/45 text-white" aria-label="Next image">
+                                                    <i class="fa-solid fa-chevron-right text-[8px]"></i>
+                                                </button>
+                                                <span class="absolute bottom-1 left-1/2 z-20 flex -translate-x-1/2 gap-1">
+                                                    <?php foreach ($galleryImages as $imageIndex => $imageUrl): ?>
+                                                        <button type="button" data-gallery-dot="<?php echo (int)$imageIndex; ?>" onclick="event.preventDefault(); event.stopPropagation();" class="h-1 rounded-full bg-white/70 transition-all <?php echo $imageIndex === 0 ? 'w-3' : 'w-1'; ?>" aria-label="Show image <?php echo (int)$imageIndex + 1; ?>"></button>
+                                                    <?php endforeach; ?>
+                                                </span>
+                                            <?php endif; ?>
+                                        </span>
                                         <div class="min-w-0 flex-1">
                                             <h3 class="font-semibold text-primary truncate"><?php echo e($project['project_name']); ?></h3>
                                             <p class="mt-1 text-xs text-gray-500 truncate"><?php echo e($project['company_name']); ?></p>
