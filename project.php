@@ -806,6 +806,66 @@ require_once __DIR__ . '/includes/header.php';
         <div class="relative">
             <aside id="inquiry" class="sticky top-24 space-y-5">
 
+                <!-- Share -->
+                <?php
+                $shareProjectUrl = BASE_URL . 'project/' . $project['slug'];
+                $shareProjectUrlEncoded = urlencode($shareProjectUrl);
+                $shareLocation = trim(($project['locality'] ? $project['locality'] . ', ' : '') . $project['city'] . ', ' . $project['state'], ', ');
+                $shareConfigs = [];
+                foreach ($unitPlans as $p) {
+                    if (!empty($p['bhk_type'])) {
+                        $shareConfigs[$p['bhk_type']] = true;
+                    }
+                }
+                $shareConfigs = array_keys($shareConfigs);
+                $shareConfigText = !empty($shareConfigs) ? implode(', ', $shareConfigs) : 'N/A';
+                $shareAreaText = projectAreaRange($project, $unitPlans);
+                $sharePriceText = projectPriceRange($project, $unitPlans);
+                $sharePossession = !empty($project['possession_date']) ? date('M Y', strtotime($project['possession_date'])) : 'N/A';
+                $shareRera = $project['rera_number'] ?? 'N/A';
+
+                $shareBody = "Project: {$project['project_name']}\n"
+                    . "Builder: {$project['company_name']}\n"
+                    . "Location: {$shareLocation}\n"
+                    . "Type: {$project['project_type']}\n"
+                    . "Price: {$sharePriceText}\n"
+                    . "Config: {$shareConfigText}\n"
+                    . "Area: {$shareAreaText}\n"
+                    . "Status: {$project['project_status']}\n"
+                    . "RERA: {$shareRera}\n"
+                    . "Possession: {$sharePossession}\n"
+                    . "Link: {$shareProjectUrl}";
+                $shareBodyEncoded = urlencode($shareBody);
+                $shareShort = urlencode("{$project['project_name']} by {$project['company_name']} - {$sharePriceText} | {$shareLocation}");
+                ?>
+                <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+                    <h2 class="text-[18px] md:text-[20px] font-bold text-primary">Share</h2>
+                    <div class="mt-4 flex items-center gap-3">
+                        <a href="https://wa.me/?text=<?php echo $shareBodyEncoded; ?>" target="_blank"
+                            class="flex h-11 w-11 items-center justify-center rounded-full bg-green-500 text-white hover:opacity-80 transition" aria-label="Share on WhatsApp">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                        </a>
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $shareProjectUrlEncoded; ?>" target="_blank"
+                            class="flex h-11 w-11 items-center justify-center rounded-full bg-blue-600 text-white hover:opacity-80 transition" aria-label="Share on Facebook">
+                            <i class="fa-brands fa-facebook-f text-lg"></i>
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?text=<?php echo $shareShort; ?>&url=<?php echo $shareProjectUrlEncoded; ?>" target="_blank"
+                            class="flex h-11 w-11 items-center justify-center rounded-full bg-black text-white hover:opacity-80 transition" aria-label="Share on X">
+                            <i class="fa-brands fa-twitter text-lg"></i>
+                        </a>
+                        <button data-details="<?php echo e($shareBody); ?>"
+                            class="flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200 transition" aria-label="Copy project details"
+                            onclick="navigator.clipboard.writeText(this.dataset.details).then(()=>{this.querySelector('i').className='fa-solid fa-check text-green-500 text-lg';setTimeout(()=>{this.querySelector('i').className='fa-solid fa-copy text-lg'},2000)})">
+                            <i class="fa-solid fa-copy text-lg"></i>
+                        </button>
+                        <button data-title="<?php echo e($project['project_name']); ?>" data-details="<?php echo e($shareBody); ?>" data-url="<?php echo e($shareProjectUrl); ?>"
+                            class="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white hover:opacity-80 transition md:hidden" aria-label="Share"
+                            onclick="if(navigator.share){navigator.share({title:this.dataset.title,text:this.dataset.details,url:this.dataset.url})}">
+                            <i class="fa-solid fa-share-nodes text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Contact Builder -->
                 <form method="post" action="<?php echo BASE_URL; ?>actions"
                     class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
