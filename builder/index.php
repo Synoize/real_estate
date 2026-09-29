@@ -1,245 +1,176 @@
 <?php
-
 require_once __DIR__ . '/../includes/app_helpers.php';
 requireBuilder();
 
 $pageTitle = 'Builder Dashboard';
 $builderId = (int)$_SESSION['builder_id'];
 
-if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
-    $action = $_POST['action'] ?? '';
+$totalProjects = tableCount('projects', 'builder_id = ? AND deleted_at IS NULL', [$builderId]);
+$totalManagers = tableCount('associate_managers', 'builder_id = ?', [$builderId]);
+$totalLeads = tableCount('inquiries', 'builder_id = ?', [$builderId]);
+$totalVisits = tableCount('site_visit_bookings', 'builder_id = ?', [$builderId]);
+$successfulVisits = tableCount('site_visit_bookings', 'builder_id = ? AND status = ?', [$builderId, 'Successful']);
 
-    if ($action === 'create_manager') {
-        $name = trim($_POST['full_name'] ?? '');
-        $email = trim($_POST['email'] ?? '');
-        $phone = trim($_POST['phone'] ?? '');
+$monthlyData = $pdo->prepare("
+    SELECT DATE_FORMAT(created_at, '%b') AS month, COUNT(*) AS total
+    FROM projects WHERE builder_id = ? AND deleted_at IS NULL AND created_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+    GROUP BY DATE_FORMAT(created_at, '%Y-%m') ORDER BY MIN(created_at) ASC
+");
+$monthlyData->execute([$builderId]);
+$monthlyData = $monthlyData->fetchAll();
 
-        if ($name && $email && $phone) {
-            $stmt = $pdo->prepare("
-                INSERT INTO associate_managers (
-                    uuid, builder_id, manager_code, full_name, email, phone,
-                    whatsapp_number, password, status, created_by
-                ) VALUES (
-                    UUID(), :builder_id, :manager_code, :full_name, :email, :phone,
-                    :phone, :password, 'active', :created_by
-                )
-            ");
-            $stmt->execute([
-                ':builder_id' => $builderId,
-                ':manager_code' => makeCode('MGR'),
-                ':full_name' => $name,
-                ':email' => $email,
-                ':phone' => $phone,
-                ':password' => password_hash('Password@123', PASSWORD_DEFAULT),
-                ':created_by' => $builderId
-            ]);
-            setFlash('Associate manager created with default password Password@123.', 'success');
-            redirect(BUILDER_URL);
-        }
-    }
+$cityStats = $pdo->prepare("
+    SELECT city, COUNT(*) AS total
+    FROM projects WHERE builder_id = ? AND deleted_at IS NULL AND city != '' AND city IS NOT NULL
+    GROUP BY city ORDER BY total DESC LIMIT 8
+");
+$cityStats->execute([$builderId]);
+$cityStats = $cityStats->fetchAll();
 
-    if ($action === 'create_project') {
-        $name = trim($_POST['project_name'] ?? '');
-        $city = trim($_POST['city'] ?? '');
-        $state = trim($_POST['state'] ?? '');
-        $type = trim($_POST['project_type'] ?? 'Apartment');
+$recentProjects = $pdo->prepare("SELECT * FROM projects WHERE builder_id = ? AND deleted_at IS NULL ORDER BY created_at DESC LIMIT 5");
+$recentProjects->execute([$builderId]);
+$recentProjects = $recentProjects->fetchAll();
 
-        if ($name && $city && $state) {
-            $slug = makeSlug($name) . '-' . random_int(100, 999);
-            $stmt = $pdo->prepare("
-                INSERT INTO projects (
-                    uuid, builder_id, assigned_manager_id, project_type,
-                    project_name, slug, project_code, city, state, locality,
-                    overview, amenities, thumbnail_image, featured_image,
-                    youtube_video_link, is_verified, project_status, status
-                ) VALUES (
-                    UUID(), :builder_id, :manager_id, :project_type,
-                    :project_name, :slug, :project_code, :city, :state, :locality,
-                    :overview, :amenities, :thumbnail_image, :featured_image,
-                    :youtube_video_link, 0, :project_status, 'pending'
-                )
-            ");
-            $stmt->execute([
-                ':builder_id' => $builderId,
-                ':manager_id' => $_POST['assigned_manager_id'] ?: null,
-                ':project_type' => $type,
-                ':project_name' => $name,
-                ':slug' => $slug,
-                ':project_code' => makeCode('PRJ'),
-                ':city' => $city,
-                ':state' => $state,
-                ':locality' => trim($_POST['locality'] ?? ''),
-                ':overview' => trim($_POST['overview'] ?? ''),
-                ':amenities' => trim($_POST['amenities'] ?? ''),
-                ':thumbnail_image' => trim($_POST['image'] ?? ''),
-                ':featured_image' => trim($_POST['image'] ?? ''),
-                ':youtube_video_link' => trim($_POST['video_url'] ?? ''),
-                ':project_status' => $_POST['project_status'] ?? 'Upcoming'
-            ]);
+$recentLeads = $pdo->prepare("
+    SELECT i.*, p.project_name FROM inquiries i
+    INNER JOIN projects p ON p.id = i.project_id
+    WHERE i.builder_id = ? ORDER BY i.created_at DESC LIMIT 5
+");
+$recentLeads->execute([$builderId]);
+$recentLeads = $recentLeads->fetchAll();
 
-            $projectId = (int)$pdo->lastInsertId();
-            $videoUrl = trim($_POST['video_url'] ?? '');
-
-            if ($videoUrl !== '') {
-                $pdo->prepare("
-                    INSERT INTO project_videos (project_id, video_title, video_url)
-                    VALUES (?, ?, ?)
-                ")->execute([$projectId, $name . ' Video', $videoUrl]);
-            }
-
-            $unitNames = $_POST['unit_name'] ?? [];
-            $bhkTypes = $_POST['bhk_type'] ?? [];
-            $areas = $_POST['area'] ?? [];
-            $prices = $_POST['price'] ?? [];
-            $planStmt = $pdo->prepare("
-                INSERT INTO project_unit_plans (
-                    project_id, unit_name, bhk_type, area, price
-                ) VALUES (
-                    :project_id, :unit_name, :bhk_type, :area, :price
-                )
-            ");
-
-            foreach ($bhkTypes as $index => $bhkType) {
-                $unitName = trim($unitNames[$index] ?? '');
-                $bhkType = trim($bhkType);
-                $area = trim($areas[$index] ?? '');
-                $price = (float)($prices[$index] ?? 0);
-
-                if ($unitName === '' && $bhkType === '' && $area === '' && $price <= 0) {
-                    continue;
-                }
-
-                $planStmt->execute([
-                    ':project_id' => $projectId,
-                    ':unit_name' => $unitName,
-                    ':bhk_type' => $bhkType,
-                    ':area' => $area,
-                    ':price' => $price
-                ]);
-            }
-
-            setFlash('Project submitted for admin approval.', 'success');
-            redirect(BUILDER_URL);
-        }
-    }
+$monthLabels = [];
+$monthCounts = [];
+foreach ($monthlyData as $m) {
+    $monthLabels[] = $m['month'];
+    $monthCounts[] = (int)$m['total'];
 }
 
-$managers = $pdo->prepare('SELECT * FROM associate_managers WHERE builder_id = ? ORDER BY created_at DESC');
-$managers->execute([$builderId]);
-$managers = $managers->fetchAll();
+$cityLabels = [];
+$cityCounts = [];
+foreach ($cityStats as $c) {
+    $cityLabels[] = $c['city'];
+    $cityCounts[] = (int)$c['total'];
+}
 
-$projects = $pdo->prepare('SELECT * FROM projects WHERE builder_id = ? AND deleted_at IS NULL ORDER BY created_at DESC');
-$projects->execute([$builderId]);
-$projects = $projects->fetchAll();
-
-$leads = $pdo->prepare("
-    SELECT i.*, p.project_name
-    FROM inquiries i
-    INNER JOIN projects p ON p.id = i.project_id
-    WHERE i.builder_id = ?
-    ORDER BY i.created_at DESC
-    LIMIT 10
-");
-$leads->execute([$builderId]);
-$leads = $leads->fetchAll();
-
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
-<section class="mt-20 bg-gray-50 min-h-screen py-8">
-    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-        <div class="flex items-center justify-between gap-4">
+<section class="min-h-screen bg-gray-50 p-6 mt-20">
+    <div class="max-w-[1400px] mx-auto">
+        <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-bold uppercase text-accent">Builder</p>
-                <h1 class="text-3xl font-black text-primary"><?php echo e($_SESSION['builder_company_name']); ?></h1>
+                <p class="text-xs uppercase text-accent">Builder Panel</p>
+                <h1 class="text-3xl font-semibold text-primary"><?php echo e($_SESSION['builder_company_name'] ?? 'Dashboard'); ?></h1>
             </div>
-            <a href="<?php echo BUILDER_URL; ?>logout" class="rounded-md bg-primary px-4 py-3 text-sm font-bold text-white">Logout</a>
+            <p class="text-sm text-gray-500"><?php echo date('l, d M Y'); ?></p>
         </div>
 
         <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div class="rounded-lg border bg-white p-5"><p class="text-2xl font-black"><?php echo count($projects); ?></p><p class="text-sm text-gray-500">Projects</p></div>
-            <div class="rounded-lg border bg-white p-5"><p class="text-2xl font-black"><?php echo count($managers); ?></p><p class="text-sm text-gray-500">Managers</p></div>
-            <div class="rounded-lg border bg-white p-5"><p class="text-2xl font-black"><?php echo count($leads); ?></p><p class="text-sm text-gray-500">Recent leads</p></div>
-            <div class="rounded-lg border bg-white p-5"><p class="text-2xl font-black"><?php echo tableCount('site_visit_bookings', 'builder_id = ?', [$builderId]); ?></p><p class="text-sm text-gray-500">Visits</p></div>
-        </div>
-
-        <div class="mt-8 grid grid-cols-1 xl:grid-cols-2 gap-6">
-            <form method="post" class="rounded-lg border bg-white p-5">
-                <input type="hidden" name="action" value="create_project">
-                <h2 class="text-xl font-black text-primary">Add Project</h2>
-                <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <input name="project_name" required placeholder="Project name" class="h-12 rounded-md border px-3 text-sm">
-                    <select name="project_type" class="h-12 rounded-md border px-3 text-sm">
-                        <?php foreach (['Apartment', 'Plot', 'Villa', 'Commercial'] as $type): ?><option><?php echo e($type); ?></option><?php endforeach; ?>
-                    </select>
-                    <input name="city" required placeholder="City" class="h-12 rounded-md border px-3 text-sm">
-                    <input name="state" required placeholder="State" class="h-12 rounded-md border px-3 text-sm">
-                    <input name="locality" placeholder="Locality" class="h-12 rounded-md border px-3 text-sm">
-                    <select name="assigned_manager_id" class="h-12 rounded-md border px-3 text-sm">
-                        <option value="">No manager assigned</option>
-                        <?php foreach ($managers as $manager): ?><option value="<?php echo (int)$manager['id']; ?>"><?php echo e($manager['full_name']); ?></option><?php endforeach; ?>
-                    </select>
-                    <input name="image" placeholder="Image URL" class="h-12 rounded-md border px-3 text-sm md:col-span-2">
-                    <input name="video_url" placeholder="Video URL" class="h-12 rounded-md border px-3 text-sm md:col-span-2">
-                    <textarea name="overview" placeholder="Overview" class="min-h-24 rounded-md border px-3 py-3 text-sm md:col-span-2"></textarea>
-                    <input name="amenities" placeholder="Amenities comma separated" class="h-12 rounded-md border px-3 text-sm md:col-span-2">
-                    <div class="md:col-span-2 rounded-md border border-gray-200 bg-gray-50 p-3">
-                        <p class="text-sm font-bold text-primary">Unit Plans</p>
-                        <div class="mt-3 space-y-2">
-                            <?php for ($i = 0; $i < 5; $i++): ?>
-                                <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
-                                    <input name="unit_name[]" placeholder="Unit name" class="h-11 rounded-md border px-3 text-sm">
-                                    <input name="bhk_type[]" placeholder="BHK / unit type" class="h-11 rounded-md border px-3 text-sm">
-                                    <input name="area[]" placeholder="Area e.g. 908 sqft" class="h-11 rounded-md border px-3 text-sm">
-                                    <input name="price[]" type="number" placeholder="Price" class="h-11 rounded-md border px-3 text-sm">
-                                </div>
-                            <?php endfor; ?>
-                        </div>
-                    </div>
-                </div>
-                <button class="mt-4 h-12 rounded-md bg-primary px-5 font-bold text-white">Submit for Approval</button>
-            </form>
-
-            <div class="space-y-6">
-                <form method="post" class="rounded-lg border bg-white p-5">
-                    <input type="hidden" name="action" value="create_manager">
-                    <h2 class="text-xl font-black text-primary">Add Associate Manager</h2>
-                    <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-3">
-                        <input name="full_name" required placeholder="Name" class="h-12 rounded-md border px-3 text-sm">
-                        <input name="email" required type="email" placeholder="Email" class="h-12 rounded-md border px-3 text-sm">
-                        <input name="phone" required placeholder="Phone" class="h-12 rounded-md border px-3 text-sm">
-                    </div>
-                    <button class="mt-4 h-12 rounded-md bg-accent px-5 font-bold text-primary">Create Manager</button>
-                </form>
-
-                <div class="rounded-lg border bg-white p-5">
-                    <h2 class="text-xl font-black text-primary">Latest Leads</h2>
-                    <div class="mt-4 space-y-3">
-                        <?php foreach ($leads as $lead): ?>
-                            <div class="rounded-md bg-gray-50 p-4">
-                                <p class="font-bold"><?php echo e($lead['full_name']); ?> - <?php echo e($lead['phone']); ?></p>
-                                <p class="text-sm text-gray-500"><?php echo e($lead['project_name']); ?>, <?php echo e($lead['inquiry_status']); ?></p>
-                            </div>
-                        <?php endforeach; ?>
-                        <?php if (empty($leads)): ?><p class="text-sm text-gray-500">No leads yet.</p><?php endif; ?>
-                    </div>
-                </div>
+            <div class="rounded-lg border bg-white p-5">
+                <p class="text-2xl font-black"><?php echo $totalProjects; ?></p>
+                <p class="text-sm text-gray-500">Total Projects</p>
+            </div>
+            <div class="rounded-lg border bg-white p-5">
+                <p class="text-2xl font-black"><?php echo $totalManagers; ?></p>
+                <p class="text-sm text-gray-500">Associate Managers</p>
+            </div>
+            <div class="rounded-lg border bg-white p-5">
+                <p class="text-2xl font-black"><?php echo $totalLeads; ?></p>
+                <p class="text-sm text-gray-500">Total Inquiries</p>
+            </div>
+            <div class="rounded-lg border bg-white p-5">
+                <p class="text-2xl font-black"><?php echo $totalVisits; ?></p>
+                <p class="text-sm text-gray-500">Total Site Visits</p>
+            </div>
+            <div class="rounded-lg border bg-white p-5">
+                <p class="text-2xl font-black"><?php echo $successfulVisits; ?></p>
+                <p class="text-sm text-gray-500">Successful Visits</p>
             </div>
         </div>
 
-        <div class="mt-8 rounded-lg border bg-white p-5">
-            <h2 class="text-xl font-black text-primary">Projects</h2>
-            <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <?php foreach ($projects as $project): ?>
-                    <div class="rounded-md border p-4">
-                        <p class="font-black"><?php echo e($project['project_name']); ?></p>
-                        <p class="text-sm text-gray-500"><?php echo e($project['city']); ?> - <?php echo e($project['status']); ?></p>
-                        <p class="mt-2 text-sm font-bold text-accent"><?php echo e(projectPriceRange($project)); ?></p>
-                    </div>
-                <?php endforeach; ?>
+        <div class="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <div class="rounded-lg border bg-white p-5">
+                <h2 class="text-lg font-bold text-primary mb-4">Projects Growth (12 months)</h2>
+                <canvas id="monthlyChart" height="200"></canvas>
+            </div>
+            <div class="rounded-lg border bg-white p-5">
+                <h2 class="text-lg font-bold text-primary mb-4">Projects by City</h2>
+                <canvas id="cityChart" height="200"></canvas>
+            </div>
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <div class="rounded-lg border bg-white p-5">
+                <h2 class="text-lg font-bold text-primary mb-4">Recent Projects</h2>
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-50 text-gray-500">
+                        <tr><th class="px-4 py-3">Project</th><th class="px-4 py-3">City</th><th class="px-4 py-3">Status</th></tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($recentProjects as $p): ?>
+                            <tr class="border-t">
+                                <td class="px-4 py-3 font-medium"><?php echo e($p['project_name']); ?></td>
+                                <td class="px-4 py-3"><?php echo e($p['city']); ?></td>
+                                <td class="px-4 py-3">
+                                    <span class="rounded-full px-2.5 py-0.5 text-xs font-medium <?php echo $p['status'] === 'published' ? 'bg-green-100 text-green-700' : ($p['status'] === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-500'); ?>"><?php echo e($p['status']); ?></span>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($recentProjects)): ?><tr><td colspan="3" class="px-4 py-4 text-center text-gray-500">No projects yet.</td></tr><?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+            <div class="rounded-lg border bg-white p-5">
+                <h2 class="text-lg font-bold text-primary mb-4">Recent Inquiries</h2>
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-50 text-gray-500">
+                        <tr><th class="px-4 py-3">Name</th><th class="px-4 py-3">Project</th><th class="px-4 py-3">Status</th></tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($recentLeads as $l): ?>
+                            <tr class="border-t">
+                                <td class="px-4 py-3 font-medium"><?php echo e($l['full_name']); ?></td>
+                                <td class="px-4 py-3"><?php echo e($l['project_name']); ?></td>
+                                <td class="px-4 py-3"><span class="rounded-full px-2.5 py-0.5 text-xs font-medium bg-blue-100 text-blue-700"><?php echo e($l['inquiry_status']); ?></span></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($recentLeads)): ?><tr><td colspan="3" class="px-4 py-4 text-center text-gray-500">No inquiries yet.</td></tr><?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </section>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+new Chart(document.getElementById('monthlyChart'), {
+    type: 'bar',
+    data: {
+        labels: <?php echo json_encode($monthLabels ?: ['Jan']); ?>,
+        datasets: [{
+            label: 'Projects',
+            data: <?php echo json_encode($monthCounts ?: [0]); ?>,
+            backgroundColor: '#2B1C5A',
+            borderRadius: 4
+        }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } } }
+});
+new Chart(document.getElementById('cityChart'), {
+    type: 'bar',
+    data: {
+        labels: <?php echo json_encode($cityLabels ?: ['N/A']); ?>,
+        datasets: [{
+            label: 'Projects',
+            data: <?php echo json_encode($cityCounts ?: [0]); ?>,
+            backgroundColor: '#EC4B02',
+            borderRadius: 4
+        }]
+    },
+    options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } } }
+});
+</script>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

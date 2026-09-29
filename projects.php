@@ -93,7 +93,7 @@ require_once __DIR__ . '/includes/header.php';
                         <i class="fa-solid fa-building"></i>
                         <span>Properties</span>
                     </div>
-                    <h1 class="text-primary text-3xl md:text-4xl font-semibold leading-tight">
+                    <h1 class="text-primary text-2xl md:text-4xl font-semibold leading-tight">
                         All Projects
                     </h1>
                     <p class="mt-3 text-sm md:text-base text-gray-500">
@@ -108,7 +108,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
 
             <div class="mt-6 flex items-center justify-between md:hidden">
-                <button type="button" data-project-filter-open class="inline-flex h-11 items-center gap-2 rounded-lg bg-primary px-4 text-sm font-semibold text-white">
+                <button type="button" data-project-filter-open class="inline-flex h-10 items-center gap-2 rounded-lg bg-primary px-4 text-xs font-medium text-white">
                     <i class="fa-solid fa-filter"></i>
                     Filter
                 </button>
@@ -190,7 +190,7 @@ require_once __DIR__ . '/includes/header.php';
                 <p class="mt-2 text-gray-500 text-sm">Try a different city and budget.</p>
             </div>
         <?php else: ?>
-            <div class="mt-8 md:mt-12 grid grid-cols-2 gap-2 md:gap-5 md::grid-cols-3 2xl:grid-cols-4">
+            <div class="mt-8 md:mt-12 grid grid-cols-1 gap-2 md:gap-5 sm:grid-cols-2 md:grid-cols-3 2xl:grid-cols-4">
                 <?php foreach ($projects as $project): ?>
                     <?php
                     $unitPlans = $projectUnitPlans[(int)$project['id']] ?? [];
@@ -205,7 +205,7 @@ require_once __DIR__ . '/includes/header.php';
                             <a target="_blank" href="<?php echo BASE_URL . 'project/' . urlencode($project['slug']); ?>" class="relative block overflow-hidden rounded-lg md:rounded-2xl" data-project-gallery>
                                 <?php foreach ($galleryImages as $imageIndex => $imageUrl): ?>
                                     <img src="<?php echo e($imageUrl); ?>" alt="<?php echo e($project['project_name']); ?>"
-                                        class="w-full h-[150px] md:h-[220px] object-cover <?php echo $imageIndex === 0 ? '' : 'hidden'; ?>"
+                                        class="w-full h-[160px] md:h-[220px] object-cover <?php echo $imageIndex === 0 ? '' : 'hidden'; ?>"
                                         data-gallery-image />
                                 <?php endforeach; ?>
 
@@ -233,13 +233,13 @@ require_once __DIR__ . '/includes/header.php';
                                 <button
                                     type="button"
                                     onclick="event.preventDefault(); window.location.href='<?php echo e($videoUrl ?: BASE_URL . 'project/' . urlencode($project['slug'])); ?>';"
-                                    class="absolute bottom-1.5 right-1.5 md:bottom-4 md:right-4 z-20 bg-accent w-5 h-5 md:w-10 md:h-10 rounded-full text-white flex items-center justify-center"
+                                    class="absolute bottom-2.5 right-2.5 md:bottom-4 md:right-4 z-20 bg-accent w-8 h-8 md:w-10 md:h-10 rounded-full text-white flex items-center justify-center"
                                     aria-label="Play project video">
-                                    <i class="fa-solid fa-play text-[8px] md:text-sm"></i>
+                                    <i class="fa-solid fa-play text-xs sm:text-sm"></i>
                                 </button>
                             </a>
 
-                            <form method="post" action="<?php echo BASE_URL; ?>actions" class="absolute top-2 md:top-3.5 right-3.5 md:right-5 z-20" data-wishlist-form data-wishlist-project-id="<?php echo (int)$project['id']; ?>">
+                            <form method="post" action="<?php echo BASE_URL; ?>actions" class="absolute top-4 right-5 z-20" data-wishlist-form data-wishlist-project-id="<?php echo (int)$project['id']; ?>">
                                 <input type="hidden" name="action" value="wishlist">
                                 <input type="hidden" name="project_id" value="<?php echo (int)$project['id']; ?>">
                                 <input type="hidden" name="redirect_to" value="<?php echo e(getCurrentPageUrl()); ?>">

@@ -175,6 +175,8 @@ CREATE TABLE employees (
 
     profile_image VARCHAR(255) DEFAULT NULL,
 
+    document VARCHAR(255) DEFAULT NULL,
+
     auth_token TEXT DEFAULT NULL,
 
     remember_token VARCHAR(255) DEFAULT NULL,
@@ -239,6 +241,8 @@ CREATE TABLE builders (
     company_logo VARCHAR(255) DEFAULT NULL,
 
     company_banner VARCHAR(255) DEFAULT NULL,
+
+    document VARCHAR(255) DEFAULT NULL,
 
     established_year YEAR DEFAULT NULL,
 
@@ -465,8 +469,6 @@ CREATE TABLE projects (
     pros LONGTEXT DEFAULT NULL,
 
     cons LONGTEXT DEFAULT NULL,
-
-    amenities LONGTEXT DEFAULT NULL,
 
     legal_details LONGTEXT DEFAULT NULL,
 
@@ -869,6 +871,75 @@ CREATE TABLE activity_logs (
 
     INDEX idx_activity_user(user_type, user_id),
     INDEX idx_activity_created(created_at)
+
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4;
+
+-- -------------------------------------------------------------
+-- ADS / BANNERS
+-- -------------------------------------------------------------
+
+CREATE TABLE ads (
+
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    title VARCHAR(255) NOT NULL,
+
+    link_url VARCHAR(500) DEFAULT NULL,
+
+    image_desktop VARCHAR(255) DEFAULT NULL,
+
+    image_mobile VARCHAR(255) DEFAULT NULL,
+
+    position ENUM(
+        'top_banner',
+        'sidebar',
+        'between_projects',
+        'popup',
+        'bottom_banner'
+    ) DEFAULT 'top_banner',
+
+    sort_order INT DEFAULT 0,
+
+    clicks BIGINT UNSIGNED DEFAULT 0,
+
+    status ENUM('active','inactive') DEFAULT 'active',
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ON UPDATE CURRENT_TIMESTAMP
+
+) ENGINE=InnoDB
+DEFAULT CHARSET=utf8mb4;
+
+-- -------------------------------------------------------------
+-- NOTIFICATIONS
+-- -------------------------------------------------------------
+
+CREATE TABLE notifications (
+
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    user_id BIGINT UNSIGNED NOT NULL,
+
+    type VARCHAR(50) NOT NULL DEFAULT 'general',
+
+    title VARCHAR(255) NOT NULL,
+
+    message TEXT DEFAULT NULL,
+
+    link VARCHAR(500) DEFAULT NULL,
+
+    is_read TINYINT(1) DEFAULT 0,
+
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    INDEX idx_notifications_user(user_id, is_read, created_at),
+
+    FOREIGN KEY (user_id)
+    REFERENCES users(id)
+    ON DELETE CASCADE
 
 ) ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4;

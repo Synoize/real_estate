@@ -316,7 +316,7 @@ require_once __DIR__ . '/includes/header.php';
             <form method="get" action="<?php echo $filters['city'] ? cityUrl($filters['city']) : BASE_URL; ?>" data-city-search data-current-city="<?php echo e($filters['city']); ?>" class="mt-12 md:mt-20" data-home-search>
 
                 <!-- TOP TABS -->
-                <div class="max-w-full flex gap-1 overflow-x-auto font-medium text-sm">
+                <div class="max-w-md flex gap-1 overflow-x-auto font-medium text-sm">
                     <button
                         type="button"
                         data-search-type=""
@@ -328,7 +328,7 @@ require_once __DIR__ . '/includes/header.php';
                         <button
                             type="button"
                             data-search-type="<?php echo e($type); ?>"
-                            class="shrink-0 rounded-2xl rounded-b-none bg-primary min-w-[140px] px-5 py-3 text-white transition <?php echo $isActiveType ? 'border-b-[3px] border-accent-400' : 'text-white/80 hover:text-white'; ?>">
+                            class="shrink-0 rounded-2xl rounded-b-none bg-primary min-w-[125px] px-5 py-3 text-white transition <?php echo $isActiveType ? 'border-b-[3px] border-accent-400' : 'text-white/80 hover:text-white'; ?>">
                             <?php echo e($type === 'Plot' ? 'Plots' : $type); ?>
                         </button>
                     <?php endforeach; ?>
@@ -337,13 +337,13 @@ require_once __DIR__ . '/includes/header.php';
                 <input type="hidden" name="budget" value="<?php echo e($selectedBudget); ?>" data-search-budget-input>
 
                 <!-- MAIN SEARCH BOX -->
-                <div class="max-w-5xl w-full bg-white shadow-sm border rounded-2xl rounded-tl-none">
+                <div class="max-w-5xl w-full bg-white shadow-sm max-[370px]:rounded-tr-none rounded-2xl">
 
                     <div
-                        class="flex flex-col lg:flex-row items-stretch border border-transparent rounded-2xl rounded-tl-none">
+                        class="flex flex-col lg:flex-row items-stretch">
 
                         <!-- FILTERS -->
-                        <div class="flex flex-col sm:flex-row items-stretch divide-y sm:divide-y-0 sm:divide-x divide-gray-200 bg-white rounded-xl">
+                        <div class="flex flex-row items-stretch divide-x divide-gray-200 bg-white rounded-2xl">
 
                             <!-- LOCATION -->
                             <div class="relative w-full sm:w-[190px]">
@@ -761,12 +761,12 @@ require_once __DIR__ . '/includes/header.php';
 
                 <div class="flex gap-3">
                     <button
-                        class="property-prev w-11 h-11 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
+                        class="property-prev w-10 h-10 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
                         <i class="fa-solid fa-chevron-left"></i>
                     </button>
 
                     <button
-                        class="property-next w-11 h-11 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
+                        class="property-next w-10 h-10 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
                         <i class="fa-solid fa-chevron-right"></i>
                     </button>
                 </div>
@@ -828,12 +828,12 @@ require_once __DIR__ . '/includes/header.php';
                                         type="button"
                                         onclick="event.preventDefault(); window.location.href='<?php echo e($videoUrl ?: BASE_URL . 'project/' . urlencode($project['slug'])); ?>';"
                                         class="absolute bottom-4 right-4 z-20 bg-accent w-10 h-10 rounded-full text-white flex items-center justify-center">
-                                        <i class="fa-solid fa-play"></i>
+                                        <i class="fa-solid fa-play text-sm"></i>
                                     </button>
                                 </a>
 
                                 <!-- HEART -->
-                                <form method="post" action="<?php echo BASE_URL; ?>actions" class="absolute top-4.5 right-6 z-20" data-wishlist-form data-wishlist-project-id="<?php echo (int)$project['id']; ?>">
+                                <form method="post" action="<?php echo BASE_URL; ?>actions" class="absolute top-4 right-5 z-20" data-wishlist-form data-wishlist-project-id="<?php echo (int)$project['id']; ?>">
                                     <input type="hidden" name="action" value="wishlist">
                                     <input type="hidden" name="project_id" value="<?php echo (int)$project['id']; ?>">
                                     <input type="hidden" name="redirect_to" value="<?php echo e(getCurrentPageUrl()); ?>">
@@ -979,12 +979,12 @@ require_once __DIR__ . '/includes/header.php';
             <!-- NAVIGATION -->
             <div class="flex items-center gap-3">
                 <button
-                    class="developer-prev w-11 h-11 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
+                    class="developer-prev w-10 h-10 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
                     <i class="fa-solid fa-chevron-left"></i>
                 </button>
 
                 <button
-                    class="developer-next w-11 h-11 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
+                    class="developer-next w-10 h-10 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
                     <i class="fa-solid fa-chevron-right"></i>
                 </button>
             </div>
@@ -1106,7 +1106,7 @@ require_once __DIR__ . '/includes/header.php';
         font-semibold
         tracking-[-1px]">
 
-                    Discover Your Dream Home
+                    Discover Your <span class="text-accent">Dream Home</span>
 
                 </h2>
 
@@ -1166,7 +1166,8 @@ require_once __DIR__ . '/includes/header.php';
                     action="<?php echo BASE_URL; ?>actions"
                     class="mt-6">
 
-                    <!-- HIDDEN INPUT -->
+                    <!-- HIDDEN INPUTS -->
+                    <input type="hidden" name="action" value="site_visit">
                     <input type="hidden" name="project_id" id="project_id" required>
 
                     <div class="relative w-full">
@@ -1189,7 +1190,7 @@ require_once __DIR__ . '/includes/header.php';
                             <svg
                                 id="dropdownArrow"
                                 xmlns="http://www.w3.org/2000/svg"
-                                class="w-5 h-5 transition-transform duration-300"
+                                class="w-4 h-4 transition-transform duration-300 text-gray-500"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 stroke="currentColor">
@@ -1197,7 +1198,7 @@ require_once __DIR__ . '/includes/header.php';
                                 <path
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
-                                    stroke-width="2"
+                                    stroke-width="1.8"
                                     d="M19 9l-7 7-7-7" />
 
                             </svg>
@@ -1220,7 +1221,7 @@ require_once __DIR__ . '/includes/header.php';
                                 <?php foreach (fetchPublishedProjects($filters['city'] ? ['city' => $filters['city']] : [], 20) as $project): ?>
 
                                     <div
-                                        class="px-4 py-3 text-xs cursor-pointer
+                                        class="px-4 py-2 text-xs cursor-pointer
                     hover:bg-green-50
                     hover:text-green-600
                     transition-colors duration-200"
@@ -1283,7 +1284,7 @@ require_once __DIR__ . '/includes/header.php';
                                 "translate-y-0"
                             );
 
-                            dropdownArrow.classList.add("rotate-90");
+                            dropdownArrow.classList.add("rotate-180");
 
                             isOpen = true;
 
@@ -1304,7 +1305,7 @@ require_once __DIR__ . '/includes/header.php';
                                 "-translate-y-2"
                             );
 
-                            dropdownArrow.classList.remove("rotate-90");
+                            dropdownArrow.classList.remove("rotate-180");
 
                             isOpen = false;
 
@@ -1430,12 +1431,12 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="hidden md:flex items-center gap-3">
 
                     <button
-                        class="testimonial-prev w-11 h-11 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
+                        class="testimonial-prev w-10 h-10 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
                         <i class="fa-solid fa-chevron-left"></i>
                     </button>
 
                     <button
-                        class="testimonial-next w-11 h-11 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
+                        class="testimonial-next w-10 h-10 rounded-full bg-gray-100 text-gray-400 text-xs flex items-center justify-center hover:scale-105 duration-300">
                         <i class="fa-solid fa-chevron-right"></i>
                     </button>
 

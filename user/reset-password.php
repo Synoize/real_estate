@@ -125,19 +125,29 @@ require_once __DIR__ . '/../includes/head.php';
         <?php if ($user): ?>
             <form method="POST" class="space-y-5">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">New Password (min 6 characters)</label>
-                    <input type="password" name="password" required minlength="6"
-                        class="w-full px-4 py-3 border rounded-lg outline-none focus:border-accent transition">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">New Password (min 6 characters)</label>
+                    <input type="password"
+                        name="password"
+                        placeholder="New Password"
+                        required
+                        minlength="6"
+                        class="w-full h-12 px-4 border rounded-xl outline-none focus:border-accent transition">
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-                    <input type="password" name="confirm_password" required
-                        class="w-full px-4 py-3 border rounded-lg outline-none focus:border-accent transition">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+                    <input type="password"
+                        name="confirm_password"
+                        placeholder="Confirm Password"
+                        required
+                        minlength="6"
+                        class="w-full h-12 px-4 border rounded-xl outline-none focus:border-accent transition">
                 </div>
 
-                <button type="submit" class="w-full bg-accent hover:bg-accent-700/90 text-black py-3 rounded-lg transition hover:shadow-sm">
-                    <i class="fas fa-save mr-2"></i>Reset Password
+                <button
+                    type="submit"
+                    class="w-full h-12 rounded-xl bg-accent text-black font-medium">
+                    Reset Password
                 </button>
             </form>
         <?php endif; ?>

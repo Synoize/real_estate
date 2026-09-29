@@ -23,7 +23,7 @@ $footerLinks = [
     ]
 ];
 ?>
-<footer class="bg-primary text-white">
+<footer class="bg-primary text-white mb-12 md:mb-0">
     <div class="mx-auto max-w-[1920px] px-4 py-12 sm:px-6 lg:px-10">
         <div class="grid grid-cols-1 gap-8 lg:grid-cols-[1.25fr_2fr]">
             <div>

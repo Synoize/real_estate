@@ -10,7 +10,7 @@ if (session_status() === PHP_SESSION_NONE) {
 
 $errors = [];
 $success = '';
-
+$resetLink = '';
 $email = '';
 
 /* Process Form */
@@ -77,8 +77,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     'reset-password?token=' .
                     $resetToken;
 
-                /* Send Email Here */
-
                 $success =
                     'Password reset link sent successfully';
             }
@@ -118,11 +116,18 @@ require_once __DIR__ . '/../includes/head.php';
 
             <?php if (!empty($success)) : ?>
 
-                <div class="mb-6 bg-green-50 border border-green-200 rounded-xl p-4">
+                <div class="mb-6 bg-green-50 border border-green-200 rounded-xl p-4 space-y-2">
 
                     <p class="text-green-600 text-sm">
                         <?php echo htmlspecialchars($success); ?>
                     </p>
+
+                    <a
+                        href="<?php echo $resetLink; ?>"
+                        class="block text-sm text-green-700 font-medium break-all hover:underline"
+                    >
+                        <?php echo htmlspecialchars($resetLink); ?>
+                    </a>
 
                 </div>
 

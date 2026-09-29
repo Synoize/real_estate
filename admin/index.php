@@ -24,11 +24,31 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
 $stats = [
     'Users' => tableCount('users', "status <> 'deleted'"),
-    'Builders' => tableCount('builders'),
+    'Builders' => tableCount('builders', "status != 'pending'"),
+    'Pending' => tableCount('builders', "status = 'pending'"),
     'Projects' => tableCount('projects', 'deleted_at IS NULL'),
-    'Leads' => tableCount('inquiries'),
-    'Site Visits' => tableCount('site_visit_bookings')
+    'Employees' => tableCount('employees', "status = 'active'"),
+    'Enquiries' => tableCount('inquiries'),
+    'Site Visits' => tableCount('site_visit_bookings'),
 ];
+
+$monthlyUsers = $pdo->query("
+    SELECT DATE_FORMAT(created_at, '%b') AS month, COUNT(*) AS total
+    FROM users WHERE created_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+    GROUP BY DATE_FORMAT(created_at, '%Y-%m') ORDER BY MIN(created_at)
+")->fetchAll();
+
+$monthlyBuilders = $pdo->query("
+    SELECT DATE_FORMAT(created_at, '%b') AS month, COUNT(*) AS total
+    FROM builders WHERE created_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+    GROUP BY DATE_FORMAT(created_at, '%Y-%m') ORDER BY MIN(created_at)
+")->fetchAll();
+
+$cityStats = $pdo->query("
+    SELECT city, COUNT(*) AS total FROM projects
+    WHERE deleted_at IS NULL AND city != ''
+    GROUP BY city ORDER BY total DESC LIMIT 10
+")->fetchAll();
 
 $projects = $pdo->query("
     SELECT p.*, b.company_name
@@ -46,31 +66,82 @@ $leads = $pdo->query("
     LIMIT 10
 ")->fetchAll();
 
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
-<section class="mt-20 bg-gray-50 min-h-screen py-8">
-    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-            <div>
-                <p class="text-sm font-bold uppercase text-accent">Admin</p>
-                <h1 class="text-3xl font-black text-primary">Dashboard</h1>
-            </div>
-            <a href="<?php echo ADMIN_URL; ?>logout" class="rounded-md bg-primary px-4 py-3 text-sm font-bold text-white">Logout</a>
+<section class="min-h-screen bg-gray-50 p-6 mt-20">
+    <div class="max-w-[1400px] mx-auto">
+        <div>
+            <p class="text-xs uppercase text-accent">Admin</p>
+            <h1 class="text-3xl font-semibold text-primary">Dashboard</h1>
         </div>
 
-        <div class="mt-6 grid grid-cols-2 md:grid-cols-5 gap-4">
+        <div class="mt-6 grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
             <?php foreach ($stats as $label => $value): ?>
-                <div class="rounded-lg border border-gray-200 bg-white p-5">
+                <div class="rounded-lg border border-gray-200 bg-white p-4">
                     <p class="text-2xl font-black text-gray-950"><?php echo (int)$value; ?></p>
-                    <p class="text-sm text-gray-500"><?php echo e($label); ?></p>
+                    <p class="text-xs text-gray-500 mt-1"><?php echo e($label); ?></p>
                 </div>
             <?php endforeach; ?>
         </div>
 
-        <div class="mt-8 grid grid-cols-1 xl:grid-cols-[1fr_420px] gap-6">
+        <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div class="rounded-lg border border-gray-200 bg-white p-5">
-                <h2 class="text-xl font-black text-primary">Project Moderation</h2>
+                <h2 class="text-lg font-bold text-primary">Monthly Registrations</h2>
+                <div class="mt-4 flex items-end gap-2 h-40">
+                    <?php
+                    $months = array_column($monthlyUsers, 'month');
+                    $userCounts = array_column($monthlyUsers, 'total');
+                    $builderData = [];
+                    foreach ($monthlyBuilders as $m) {
+                        $builderData[$m['month']] = $m['total'];
+                    }
+                    $allVals = array_merge($userCounts, array_values($builderData));
+                    $maxVal = !empty($allVals) ? max($allVals) : 1;
+                    foreach ($monthlyUsers as $i => $row):
+                        $uH = round(($row['total'] / $maxVal) * 160);
+                        $bC = $builderData[$row['month']] ?? 0;
+                        $bH = round(($bC / $maxVal) * 160);
+                    ?>
+                        <div class="flex-1 flex flex-col items-center gap-1">
+                            <div class="w-full flex flex-col items-center justify-end h-40 gap-0.5">
+                                <div title="Builders: <?php echo $bC; ?>" style="height:<?php echo max($bH, 1); ?>px" class="w-4 bg-amber-400 rounded-t"></div>
+                                <div title="Users: <?php echo $row['total']; ?>" style="height:<?php echo max($uH, 1); ?>px" class="w-4 bg-primary rounded-t"></div>
+                            </div>
+                            <span class="text-[10px] text-gray-500"><?php echo e($row['month']); ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+                <div class="mt-2 flex gap-4 text-xs text-gray-500">
+                    <span class="flex items-center gap-1"><span class="w-3 h-3 bg-primary rounded"></span> Users</span>
+                    <span class="flex items-center gap-1"><span class="w-3 h-3 bg-amber-400 rounded"></span> Builders</span>
+                </div>
+            </div>
+
+            <div class="rounded-lg border border-gray-200 bg-white p-5">
+                <h2 class="text-lg font-bold text-primary">Projects by City</h2>
+                <div class="mt-4 space-y-3">
+                    <?php
+                    $cityTotals = array_column($cityStats, 'total');
+                    $cityMax = !empty($cityTotals) ? max($cityTotals) : 1;
+                    ?>
+                    <?php foreach ($cityStats as $city): ?>
+                        <div class="flex items-center gap-3">
+                            <span class="w-24 text-sm text-gray-700 truncate"><?php echo e($city['city']); ?></span>
+                            <div class="flex-1 bg-gray-100 rounded-full h-4 overflow-hidden">
+                                <div style="width:<?php echo round(($city['total'] / $cityMax) * 100); ?>%" class="h-full bg-accent rounded-full"></div>
+                            </div>
+                            <span class="text-sm font-bold text-gray-600 w-8 text-right"><?php echo (int)$city['total']; ?></span>
+                        </div>
+                    <?php endforeach; ?>
+                    <?php if (empty($cityStats)): ?><p class="text-sm text-gray-500">No projects yet.</p><?php endif; ?>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-6 grid grid-cols-1 xl:grid-cols-[1fr_400px] gap-6">
+            <div class="rounded-lg border border-gray-200 bg-white p-5">
+                <h2 class="text-lg font-bold text-primary">Project Moderation</h2>
                 <div class="mt-4 overflow-x-auto">
                     <table class="w-full text-left text-sm">
                         <thead class="bg-gray-50 text-gray-500">
@@ -109,7 +180,7 @@ require_once __DIR__ . '/../includes/header.php';
             </div>
 
             <div class="rounded-lg border border-gray-200 bg-white p-5">
-                <h2 class="text-xl font-black text-primary">Latest Leads</h2>
+                <h2 class="text-lg font-bold text-primary">Latest Enquiries</h2>
                 <div class="mt-4 space-y-3">
                     <?php foreach ($leads as $lead): ?>
                         <div class="rounded-md bg-gray-50 p-4">
@@ -118,13 +189,11 @@ require_once __DIR__ . '/../includes/header.php';
                             <p class="mt-2 text-sm font-semibold text-accent"><?php echo e($lead['phone']); ?></p>
                         </div>
                     <?php endforeach; ?>
-                    <?php if (empty($leads)): ?>
-                        <p class="text-sm text-gray-500">No leads yet.</p>
-                    <?php endif; ?>
+                    <?php if (empty($leads)): ?><p class="text-sm text-gray-500">No enquiries yet.</p><?php endif; ?>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

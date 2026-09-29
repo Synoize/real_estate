@@ -84,7 +84,6 @@ $metaThemeColor = trim((string)($pageThemeColor ?? '#2B1C5A'));
 
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -125,5 +124,54 @@ $metaThemeColor = trim((string)($pageThemeColor ?? '#2B1C5A'));
                 }
             }
         };
+    </script>
+    <style>
+        .pwd-toggle-wrap { position: relative; display: block; }
+        .pwd-toggle-wrap input { padding-right: 2.5rem !important; }
+        .pwd-toggle-btn {
+            position: absolute; right: 0.75rem; top: 50%;
+            transform: translateY(-50%);
+            background: none; border: none; cursor: pointer;
+            color: #bababa; padding: 0.25rem;
+            font-size: 1rem; line-height: 1;
+        }
+        .pwd-toggle-btn:hover { color: #a1a1a1; }
+    </style>
+    <script>
+        (function() {
+            function enhance() {
+                var fields = document.querySelectorAll('input[type="password"]');
+                for (var i = 0; i < fields.length; i++) {
+                    (function(input) {
+                        if (input.closest('.pwd-toggle-wrap')) return;
+                        var wrap = document.createElement('div');
+                        wrap.className = 'pwd-toggle-wrap';
+                        input.parentNode.insertBefore(wrap, input);
+                        wrap.appendChild(input);
+                        var btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.className = 'pwd-toggle-btn';
+                        btn.setAttribute('aria-label', 'Toggle password visibility');
+                        btn.innerHTML = '<i class="fa-regular fa-eye"></i>';
+                        btn.addEventListener('click', function() {
+                            var icon = this.querySelector('i');
+                            if (input.type === 'password') {
+                                input.type = 'text';
+                                icon.className = 'fa-regular fa-eye-slash';
+                            } else {
+                                input.type = 'password';
+                                icon.className = 'fa-regular fa-eye';
+                            }
+                        });
+                        wrap.appendChild(btn);
+                    })(fields[i]);
+                }
+            }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', enhance);
+            } else {
+                enhance();
+            }
+        })();
     </script>
 </head>

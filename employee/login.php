@@ -63,13 +63,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     designation,
                     status
                 FROM employees
-                WHERE employee_code = :employee_code
-                   OR email = :employee_code
+                WHERE employee_code = :emp_code
+                   OR email = :emp_email
                 LIMIT 1
             ");
 
             $stmt->execute([
-                ':employee_code' => $employeeCode
+                ':emp_code'  => $employeeCode,
+                ':emp_email' => $employeeCode
             ]);
 
             $employee = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -80,30 +81,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 $errors[] = 'Invalid employee ID or password';
 
-            }
-
-            /* Status Check */
-
-            elseif ($employee['status'] !== 'active') {
+            } elseif ($employee['status'] !== 'active') {
 
                 $errors[] = 'Your account is inactive';
 
-            }
-
-            /* Verify Password */
-
-            elseif (!password_verify(
+            } elseif (!password_verify(
                 $password,
                 $employee['password']
             )) {
 
                 $errors[] = 'Invalid employee ID or password';
 
-            }
-
-            /* Login Success */
-
-            else {
+            } else {
 
                 /* Generate Auth Token */
 
@@ -218,12 +207,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header("Location: " . EMPLOYEE_URL);
                 exit;
             }
-
         } catch (PDOException $e) {
 
             error_log(
                 'EMPLOYEE LOGIN ERROR : ' .
-                $e->getMessage()
+                    $e->getMessage()
             );
 
             $errors[] =
@@ -234,139 +222,123 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $pageTitle = "Employee Login";
 
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/includes/head.php';
 
 ?>
 
-<section class="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-10">
+<body class="min-h-screen flex items-center justify-center px-6 py-12">
 
-    <div class="w-full max-w-md">
+    <section class="w-full max-w-sm">
 
-        <div class="bg-white rounded-2xl shadow-sm border p-6 md:p-8">
+        <!-- Logo -->
+        <div class="text-center mb-8">
 
-            <!-- Logo -->
+            <h1 class="text-2xl font-medium text-gray-900">
+                Employee Login
+            </h1>
 
-            <div class="text-center mb-8">
-
-                <img
-                    src="<?php echo ASSETS_URL; ?>/public/logo.png"
-                    alt="Logo"
-                    class="h-20 mx-auto mb-4"
-                >
-
-                <h1 class="text-2xl font-bold text-gray-900">
-                    Employee Login
-                </h1>
-
-                <p class="text-sm text-gray-500 mt-1">
-                    Login using Employee ID
-                </p>
-
-            </div>
-
-            <!-- Errors -->
-
-            <?php if (!empty($errors)) : ?>
-
-                <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
-
-                    <ul class="space-y-1">
-
-                        <?php foreach ($errors as $error) : ?>
-
-                            <li class="text-sm text-red-600">
-                                • <?php echo htmlspecialchars($error); ?>
-                            </li>
-
-                        <?php endforeach; ?>
-
-                    </ul>
-
-                </div>
-
-            <?php endif; ?>
-
-            <!-- Form -->
-
-            <form method="POST" class="space-y-5">
-
-                <!-- Employee ID -->
-
-                <div>
-
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Employee ID
-                    </label>
-
-                    <input
-                        type="text"
-                        name="employee_code"
-                        value="<?php echo htmlspecialchars($employeeCode); ?>"
-                        placeholder="Enter Employee ID"
-                        required
-                        class="w-full h-12 px-4 border border-gray-300 rounded-xl outline-none focus:border-accent"
-                    >
-
-                </div>
-
-                <!-- Password -->
-
-                <div>
-
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Password
-                    </label>
-
-                    <input
-                        type="password"
-                        name="password"
-                        placeholder="Enter Password"
-                        required
-                        class="w-full h-12 px-4 border border-gray-300 rounded-xl outline-none focus:border-accent"
-                    >
-
-                </div>
-
-                <!-- Remember -->
-
-                <div class="flex items-center justify-between">
-
-                    <label class="flex items-center gap-2">
-
-                        <input
-                            type="checkbox"
-                            name="remember"
-                            class="w-4 h-4"
-                        >
-
-                        <span class="text-sm text-gray-600">
-                            Remember me
-                        </span>
-
-                    </label>
-
-                    <a
-                        href="<?php echo EMPLOYEE_URL; ?>forgot-password"
-                        class="text-sm text-accent hover:underline"
-                    >
-                        Forgot Password?
-                    </a>
-
-                </div>
-
-                <!-- Submit -->
-
-                <button
-                    type="submit"
-                    class="w-full h-12 rounded-xl bg-accent text-black font-medium hover:opacity-90 transition"
-                >
-                    Login
-                </button>
-
-            </form>
+            <p class="text-[12px] text-gray-500 mt-2">
+                Login using Employee ID
+            </p>
 
         </div>
 
-    </div>
+        <!-- Errors -->
 
-</section>
+        <?php if (!empty($errors)) : ?>
+
+            <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+
+                <ul class="space-y-1">
+
+                    <?php foreach ($errors as $error) : ?>
+
+                        <li class="text-sm text-red-600">
+                            • <?php echo htmlspecialchars($error); ?>
+                        </li>
+
+                    <?php endforeach; ?>
+
+                </ul>
+
+            </div>
+
+        <?php endif; ?>
+
+        <!-- Form -->
+
+        <form method="POST" class="space-y-5">
+
+            <!-- Employee ID -->
+
+            <div>
+
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Employee ID
+                </label>
+
+                <input
+                    type="text"
+                    name="employee_code"
+                    value="<?php echo htmlspecialchars($employeeCode); ?>"
+                    placeholder="Enter Employee ID"
+                    required
+                    class="w-full h-12 px-4 border border-gray-300 rounded-xl outline-none focus:border-accent">
+
+            </div>
+
+            <!-- Password -->
+
+            <div>
+
+                <label class="block text-sm font-medium text-gray-700 mb-2">
+                    Password
+                </label>
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Enter Password"
+                    required
+                    class="w-full h-12 px-4 border border-gray-300 rounded-xl outline-none focus:border-accent">
+
+            </div>
+
+            <!-- Remember -->
+            <div class="flex items-center justify-between">
+
+                <label class="flex items-center gap-2">
+
+                    <input
+                        type="checkbox"
+                        name="remember"
+                        class="w-4 h-4">
+
+                    <span class="text-sm text-gray-600">
+                        Remember me
+                    </span>
+
+                </label>
+
+                <a
+                    href="<?php echo EMPLOYEE_URL; ?>forgot-password"
+                    class="text-sm text-accent hover:underline">
+                    Forgot Password?
+                </a>
+
+            </div>
+
+            <!-- Submit -->
+            <button
+                type="submit"
+                class="w-full h-12 rounded-xl bg-accent text-black font-medium hover:opacity-90 transition">
+                Login
+            </button>
+
+        </form>
+
+    </section>
+    <script src="<?php echo ASSETS_URL; ?>js/script.js"></script>
+</body>
+
+</html>

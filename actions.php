@@ -138,6 +138,7 @@ try {
         ]);
 
         $pdo->prepare('UPDATE projects SET total_inquiries = total_inquiries + 1 WHERE id = ?')->execute([$projectId]);
+        createNotification($userId, 'inquiry', 'Inquiry Sent', 'Your inquiry for ' . $project['project_name'] . ' has been received.', BASE_URL . 'project/' . urlencode($project['slug']));
         setFlash('Inquiry sent. Our team will contact you shortly.', 'success');
         redirect(BASE_URL . 'project/' . urlencode($project['slug']));
     }
@@ -177,6 +178,7 @@ try {
         ]);
 
         setFlash('Site visit booked. We will confirm the slot soon.', 'success');
+        createNotification($userId, 'site_visit', 'Site Visit Booked', 'Your site visit for ' . $project['project_name'] . ' has been booked on ' . $visitDate . '.', BASE_URL . 'project/' . urlencode($project['slug']));
         redirect(BASE_URL . 'project/' . urlencode($project['slug']));
     }
 

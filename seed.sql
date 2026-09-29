@@ -66,7 +66,7 @@ WHERE slug = 'skyline-garden-villas'
 INSERT IGNORE INTO projects (
   uuid, builder_id, assigned_manager_id, category_id, project_type,
   project_name, slug, project_code, rera_number, city, state, locality,
-  address, overview, amenities, brochure_file, thumbnail_image,
+  address, overview, brochure_file, thumbnail_image,
   featured_image, youtube_video_link, total_towers, total_units,
   total_floors, total_area, possession_date, launch_date,
   is_featured, is_verified, project_status, status
@@ -77,7 +77,6 @@ INSERT IGNORE INTO projects (
   'Mumbai', 'Maharashtra', 'Bandra',
   'Near Bandra Kurla Complex, Mumbai',
   'Sea-facing luxury apartments with smart layouts, direct builder offers, and assisted site visits.',
-  'Clubhouse, Swimming Pool, Gym, Kids Play Area, Sky Lounge, Security',
   NULL,
   'https://images.unsplash.com/photo-1605146769289-440113cc3d00?auto=format&fit=crop&w=900&q=80',
   'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1600&q=80',
@@ -90,7 +89,6 @@ INSERT IGNORE INTO projects (
   'Pune', 'Maharashtra', 'Hinjewadi',
   'Hinjewadi Phase 1, Pune',
   'Transit-friendly residences close to IT parks with no-brokerage assistance and flexible visit slots.',
-  'Coworking Lounge, Garden, Jogging Track, Gym, EV Charging, CCTV',
   NULL,
   'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=900&q=80',
   'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=1600&q=80',
@@ -103,13 +101,104 @@ INSERT IGNORE INTO projects (
   'Mumbai', 'Maharashtra', 'Thane',
   'Ghodbunder Road, Thane',
   'Low-density plotted development with clear title, internal roads, and guided online presentations.',
-  'Gated Entry, Internal Roads, Street Lighting, Water Connection, 24x7 Security',
   NULL,
   'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=900&q=80',
   'https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?auto=format&fit=crop&w=1600&q=80',
   NULL, 0, 120, 0, '12 acres', '2028-03-31', '2025-01-15',
   0, 1, 'Upcoming', 'published'
 );
+
+INSERT INTO project_amenities (project_id, amenity_name, amenity_icon)
+SELECT p.id, a.amenity_name, a.amenity_icon
+FROM projects p
+CROSS JOIN (
+  SELECT 'Clubhouse' AS amenity_name, NULL AS amenity_icon
+  UNION ALL SELECT 'Swimming Pool', NULL
+  UNION ALL SELECT 'Gym', NULL
+  UNION ALL SELECT 'Kids Play Area', NULL
+  UNION ALL SELECT 'Sky Lounge', NULL
+  UNION ALL SELECT 'Security', NULL
+) a
+WHERE p.slug = 'skyline-marina-residences'
+  AND NOT EXISTS (
+    SELECT 1 FROM project_amenities pa
+    WHERE pa.project_id = p.id AND pa.amenity_name = a.amenity_name
+  );
+
+INSERT INTO project_amenities (project_id, amenity_name, amenity_icon)
+SELECT p.id, a.amenity_name, a.amenity_icon
+FROM projects p
+CROSS JOIN (
+  SELECT 'Coworking Lounge' AS amenity_name, NULL AS amenity_icon
+  UNION ALL SELECT 'Garden', NULL
+  UNION ALL SELECT 'Jogging Track', NULL
+  UNION ALL SELECT 'Gym', NULL
+  UNION ALL SELECT 'EV Charging', NULL
+  UNION ALL SELECT 'CCTV', NULL
+) a
+WHERE p.slug = 'green-vista-heights'
+  AND NOT EXISTS (
+    SELECT 1 FROM project_amenities pa
+    WHERE pa.project_id = p.id AND pa.amenity_name = a.amenity_name
+  );
+
+INSERT INTO project_amenities (project_id, amenity_name, amenity_icon)
+SELECT p.id, a.amenity_name, a.amenity_icon
+FROM projects p
+CROSS JOIN (
+  SELECT 'Gated Entry' AS amenity_name, NULL AS amenity_icon
+  UNION ALL SELECT 'Internal Roads', NULL
+  UNION ALL SELECT 'Street Lighting', NULL
+  UNION ALL SELECT 'Water Connection', NULL
+  UNION ALL SELECT '24x7 Security', NULL
+) a
+WHERE p.slug = 'skyline-garden-plots'
+  AND NOT EXISTS (
+    SELECT 1 FROM project_amenities pa
+    WHERE pa.project_id = p.id AND pa.amenity_name = a.amenity_name
+  );
+
+INSERT INTO project_images (project_id, image, image_type, sort_order)
+SELECT p.id, i.image, 'gallery', i.ord
+FROM projects p
+CROSS JOIN (
+  SELECT 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80' AS image, 0 AS ord
+  UNION ALL SELECT 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80', 1
+  UNION ALL SELECT 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=800&q=80', 2
+) i
+WHERE p.slug = 'skyline-marina-residences'
+  AND NOT EXISTS (
+    SELECT 1 FROM project_images pi
+    WHERE pi.project_id = p.id AND pi.image = i.image AND pi.image_type = 'gallery'
+  );
+
+INSERT INTO project_images (project_id, image, image_type, sort_order)
+SELECT p.id, i.image, 'gallery', i.ord
+FROM projects p
+CROSS JOIN (
+  SELECT 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80' AS image, 0 AS ord
+  UNION ALL SELECT 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80', 1
+  UNION ALL SELECT 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80', 2
+) i
+WHERE p.slug = 'green-vista-heights'
+  AND NOT EXISTS (
+    SELECT 1 FROM project_images pi
+    WHERE pi.project_id = p.id AND pi.image = i.image AND pi.image_type = 'gallery'
+  );
+
+INSERT INTO project_images (project_id, image, image_type, sort_order)
+SELECT p.id, i.image, 'gallery', i.ord
+FROM projects p
+CROSS JOIN (
+  SELECT 'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80' AS image, 0 AS ord
+  UNION ALL SELECT 'https://images.unsplash.com/photo-1600566753086-00f18fb6b3b2?auto=format&fit=crop&w=800&q=80', 1
+  UNION ALL SELECT 'https://images.unsplash.com/photo-1600047509807-ba8f99d2cdde?auto=format&fit=crop&w=800&q=80', 2
+) i
+WHERE p.slug = 'skyline-garden-plots'
+  AND NOT EXISTS (
+    SELECT 1 FROM project_images pi
+    WHERE pi.project_id = p.id AND pi.image = i.image AND pi.image_type = 'gallery'
+  );
 
 INSERT INTO project_unit_plans (
   project_id, unit_name, bhk_type, area, facing, price, booking_amount, description

@@ -15,7 +15,9 @@ $pageTitle = $project['project_name'] . ($projectLocation ? ' in ' . $projectLoc
 
 $pdo->prepare('UPDATE projects SET total_views = total_views + 1 WHERE id = ?')->execute([$project['id']]);
 
-$amenities = array_filter(array_map('trim', explode(',', (string)($project['amenities'] ?? ''))));
+$amenityStmt = $pdo->prepare("SELECT * FROM project_amenities WHERE project_id = ?");
+$amenityStmt->execute([$project['id']]);
+$amenities = $amenityStmt->fetchAll();
 
 $unitStmt = $pdo->prepare('SELECT * FROM project_unit_plans WHERE project_id = ? ORDER BY price ASC');
 $unitStmt->execute([$project['id']]);
@@ -66,209 +68,288 @@ $pageType = 'article';
 require_once __DIR__ . '/includes/header.php';
 ?>
 
+<!-- Share -->
+<?php
+$shareProjectUrl = BASE_URL . 'project/' . $project['slug'];
+$shareProjectUrlEncoded = urlencode($shareProjectUrl);
+$shareLocation = trim(($project['locality'] ? $project['locality'] . ', ' : '') . $project['city'] . ', ' . $project['state'], ', ');
+$shareConfigs = [];
+foreach ($unitPlans as $p) {
+    if (!empty($p['bhk_type'])) {
+        $shareConfigs[$p['bhk_type']] = true;
+    }
+}
+$shareConfigs = array_keys($shareConfigs);
+$shareConfigText = !empty($shareConfigs) ? implode(', ', $shareConfigs) : 'N/A';
+$shareAreaText = projectAreaRange($project, $unitPlans);
+$sharePriceText = projectPriceRange($project, $unitPlans);
+$sharePossession = !empty($project['possession_date']) ? date('M Y', strtotime($project['possession_date'])) : 'N/A';
+$shareRera = $project['rera_number'] ?? 'N/A';
+
+$shareBody = "Project: {$project['project_name']}\n"
+    . "Builder: {$project['company_name']}\n"
+    . "Location: {$shareLocation}\n"
+    . "Type: {$project['project_type']}\n"
+    . "Price: {$sharePriceText}\n"
+    . "Config: {$shareConfigText}\n"
+    . "Area: {$shareAreaText}\n"
+    . "Status: {$project['project_status']}\n"
+    . "RERA: {$shareRera}\n"
+    . "Possession: {$sharePossession}\n"
+    . "Link: {$shareProjectUrl}";
+$shareBodyEncoded = urlencode($shareBody);
+$shareShort = urlencode("{$project['project_name']} by {$project['company_name']} - {$sharePriceText} | {$shareLocation}");
+?>
+
 <section class="mt-20 py-6">
     <div class="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-10">
+
+        <!-- BACK -->
         <a href="<?php echo BASE_URL; ?>" class="group text-sm font-semibold text-gray-500">
-            <i class="fa-solid fa-arrow-left transition-transform duration-300 group-hover:-translate-x-1 mr-1"></i> Back to projects
+            <i class="fa-solid fa-arrow-left transition-transform duration-300 group-hover:-translate-x-1 mr-1"></i>
+            Back to projects
         </a>
-        <div class="mt-4 grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-8 justify-center">
-            <div class="cursor-default">
-                <h1 class="text-xl md:text-4xl font-medium leading-tight"><?php echo e($project['project_name']); ?></h1>
-                <div class="mt-2 flex items-center gap-4">
-                    <p class="text-sm text-gray-500"><?php echo e($project['project_type']); ?> by <span class="underline text-primary "><?php echo e($project['company_name']); ?></span></p>
-                    <p class="text-gray-500 text-xs">
-                        <i class="fa-solid fa-location-dot text-accent"></i>
-                        <?php echo e(trim(($project['locality'] ? $project['locality'] . ', ' : '') . $project['city'] . ', ' . $project['state'])); ?>
+
+        <div class="flex flex-col">
+
+            <!-- HEADER -->
+            <div class="order-2 lg:order-1 mt-6 lg:mt-4 grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-4 justify-center">
+
+                <!-- LEFT -->
+                <div>
+                    <h1 class="text-2xl md:text-4xl font-medium leading-tight">
+                        <?php echo e($project['project_name']); ?>
+                    </h1>
+
+                    <div class="mt-2 flex flex-wrap items-center gap-4">
+                        <p class="text-sm text-gray-500">
+                            <?php echo e($project['project_type']); ?> by
+                            <span class="underline text-primary">
+                                <?php echo e($project['company_name']); ?>
+                            </span>
+                        </p>
+
+                        <p class="text-gray-500 text-sm">
+                            <i class="fa-solid fa-location-dot text-accent"></i>
+                            <?php echo e(trim(($project['locality'] ? $project['locality'] . ', ' : '') . $project['city'] . ', ' . $project['state'])); ?>
+                        </p>
+                    </div>
+
+                    <div class="mt-4 flex items-center gap-2">
+                        <!-- WhatsApp -->
+                        <a href="https://wa.me/?text=<?php echo $shareBodyEncoded; ?>" target="_blank" class="w-7 h-7 rounded-full bg-green-500 text-white flex items-center justify-center hover:scale-110 hover:shadow-md transition duration-300" aria-label="Share on WhatsApp">
+                            <i class="fa-brands fa-whatsapp text-xs"></i>
+                        </a>
+                        <!-- Facebook -->
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $shareProjectUrlEncoded; ?>" target="_blank" class="w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center hover:scale-110 hover:shadow-md transition duration-300" aria-label="Share on Facebook">
+                            <i class="fa-brands fa-facebook-f text-xs"></i>
+                        </a>
+                        <!-- X -->
+                        <a href="https://twitter.com/intent/tweet?text=<?php echo $shareShort; ?>&url=<?php echo $shareProjectUrlEncoded; ?>" target="_blank" class="w-7 h-7 rounded-full bg-black text-white flex items-center justify-center hover:scale-110 hover:shadow-md transition duration-300" aria-label="Share on X">
+                            <i class="fa-brands fa-twitter text-xs"></i>
+                        </a>
+                        <button data-title="<?php echo e($project['project_name']); ?>" data-details="<?php echo e($shareBody); ?>" data-url="<?php echo e($shareProjectUrl); ?>"
+                            class="flex h-7 w-7 items-center justify-center rounded-full bg-accent text-white hover:opacity-80 transition" aria-label="Share"
+                            onclick="if(navigator.share){navigator.share({title:this.dataset.title,text:this.dataset.details,url:this.dataset.url})}">
+                            <i class="fa-solid fa-share-nodes text-xs"></i>
+                        </button>
+                         <button data-details="<?php echo e($shareBody); ?>"
+                            class="flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200 transition" aria-label="Copy project details"
+                            onclick="navigator.clipboard.writeText(this.dataset.details).then(()=>{this.querySelector('i').className='fa-solid fa-check text-green-500 text-xs';setTimeout(()=>{this.querySelector('i').className='fa-solid fa-copy text-xs'},2000)})">
+                            <i class="fa-solid fa-copy text-xs"></i>
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- RIGHT -->
+                <div>
+
+                    <p class="mt-1 text-lg sm:text-xl font-medium text-accent">
+                        <?php echo e(projectPriceRange($project, $unitPlans)); ?>
+                        <span class="text-gray-500 text-xs">(All inc)</span>
                     </p>
-                </div>
-            </div>
-            <div>
-                <p class="mt-1 text-lg sm:text-xl font-medium text-accent"><?php echo e(projectPriceRange($project, $unitPlans)); ?> <span class="text-gray-500 text-xs">(All inc)</span></p>
-                <div class="mt-4 grid grid-cols-2 gap-3">
-                    <a href="#inquiry" class="flex items-center justify-center gap-2
-        bg-primary text-white
-        py-3 rounded-lg text-sm
-        hover:opacity-90 duration-300">
-                        <!-- ICONS -->
-                        <div class="flex items-center gap-2">
 
-                            <i class="fa-solid fa-laptop text-xs "></i>
+                    <div class="mt-4 grid grid-cols-2 gap-3">
 
-                            <span class="text-white">|</span>
+                        <!-- TOUR -->
+                        <a href="#inquiry"
+                            class="flex items-center justify-center gap-2 bg-primary text-white py-3 rounded-lg text-sm hover:opacity-90 duration-300">
 
-                            <i class="fa-solid fa-car text-xs"></i>
+                            <div class="flex items-center gap-2">
+                                <i class="fa-solid fa-laptop text-xs"></i>
+                                <span>|</span>
+                                <i class="fa-solid fa-car text-xs"></i>
+                            </div>
 
-                        </div>
-
-                        <!-- TEXT -->
-                        <span>
-                            Tour
-                        </span>
-                    </a>
-
-                    <?php
-                    $phone = preg_replace('/\D+/', '', $project['whatsapp_number'] ?: $project['builder_phone']);
-
-                    $message = "";
-
-                    // Property Details
-                    $message .= "Property Inquiry\n\n";
-                    $message .= "Property Name: " . $project['project_name'] . "\n";
-
-                    if (!empty($project['project_location'])) {
-                        $message .= "Location: " . $project['project_location'] . "\n";
-                    }
-
-                    if (!empty(projectPriceRange($project, $unitPlans))) {
-                        $message .= "Starting Price: ₹" . projectPriceRange($project, $unitPlans) . "\n";
-                    }
-
-                    if (!empty($project['project_status'])) {
-                        $message .= "Status: " . $project['project_status'] . "\n";
-                    }
-
-                    if (!empty($project['builder_name'])) {
-                        $message .= "Builder: " . $project['builder_name'] . "\n";
-                    }
-
-                    $message .= "\nI am interested in this property. Please share more details.";
-
-                    // Property Image (First)
-                    if (!empty($projectGalleryImages[0])) {
-                        $message .= "\n\nProperty Image:\n" . $projectGalleryImages[0];
-                    }
-
-                    // Current Page URL (Optional)
-                    $message .= "\nProperty Link:\n" . BASE_URL . 'project/' . $project['slug'];
-                    ?>
-
-                    <a target="_blank" href="https://wa.me/<?php echo $phone; ?>?text=<?php echo urlencode($message); ?>" class="flex items-center justify-center gap-2
-        bg-green-600 text-white
-        py-3 rounded-lg text-sm
-        hover:opacity-90 duration-300">
-
-                        <!-- WHATSAPP ICON -->
-                        <i class="fa-brands fa-whatsapp text-sm"></i>
-
-                        <!-- TEXT -->
-                        <span>
-                            Live Chat
-                        </span>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="mt-8" data-project-gallery>
-            <div class="grid grid-cols-1 lg:grid-cols-[1.02fr_1fr] gap-4">
-
-                <!-- LEFT BIG IMAGE -->
-                <div class="relative rounded-[8px] overflow-hidden min-h-[420px] group">
-                    <img
-                        src="<?php echo e($projectGalleryImages[0] ?? ''); ?>"
-                        alt="<?php echo e($project['project_name']); ?>"
-                        class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
-                        data-gallery-image>
-
-                    <!-- PREV -->
-                    <?php if (count($projectGalleryImages) > 1): ?>
-                        <button type="button"
-                            data-gallery-prev
-                            class="absolute left-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/20 backdrop-blur text-white hover:bg-black/40 transition">
-                            <i class="fa-solid fa-chevron-left"></i>
-                        </button>
-
-                        <!-- NEXT -->
-                        <button type="button"
-                            data-gallery-next
-                            class="absolute right-5 top-1/2 -translate-y-1/2 z-20 w-10 h-10 rounded-full bg-black/20 backdrop-blur text-white hover:bg-black/40 transition">
-                            <i class="fa-solid fa-chevron-right"></i>
-                        </button>
-                    <?php endif; ?>
-
-                    <!-- HEART -->
-                    <form method="post" action="<?php echo BASE_URL; ?>actions" data-wishlist-form data-wishlist-project-id="<?php echo (int)$project['id']; ?>">
-                        <?php $savedInWishlist = isLoggedIn() && isInWishlist((int)$project['id']); ?>
-                        <input type="hidden" name="action" value="wishlist">
-                        <input type="hidden" name="project_id" value="<?php echo (int)$project['id']; ?>">
-                        <input type="hidden" name="redirect_to" value="<?php echo e(getCurrentPageUrl()); ?>">
-                        <button class="absolute top-5 right-5 w-[42px] h-[42px] rounded-full bg-black/10 backdrop-blur-md text-white flex items-center justify-center text-[18px] hover:opacity-90 transition" data-wishlist-button>
-                            <i class="<?php echo $savedInWishlist ? 'fa-solid text-red-500' : 'fa-regular'; ?> fa-heart" data-wishlist-icon></i>
-                        </button>
-                    </form>
-
-                    <!-- BOTTOM ICONS -->
-                    <div class="absolute bottom-5 right-5 flex items-center gap-2">
-                        <a href="#location"
-                            class="w-[38px] h-[38px] rounded-full bg-primary text-white flex items-center justify-center hover:scale-110 transition">
-                            <i class="fa-solid fa-expand"></i>
+                            <span>Tour</span>
                         </a>
 
-                        <a href="#video"
-                            class="w-[38px] h-[38px] rounded-full bg-accent text-white flex items-center justify-center hover:scale-110 transition">
-                            <i class="fa-solid fa-play"></i>
+                        <!-- WHATSAPP -->
+                        <?php
+                        $phone = preg_replace('/\D+/', '', $project['whatsapp_number'] ?: $project['builder_phone']);
+
+                        $message = "Property Inquiry\n\n";
+                        $message .= "Property Name: " . $project['project_name'] . "\n";
+
+                        if (!empty($project['project_location'])) {
+                            $message .= "Location: " . $project['project_location'] . "\n";
+                        }
+
+                        $message .= "Starting Price: ₹" . projectPriceRange($project, $unitPlans) . "\n";
+                        $message .= "\nI am interested in this property. Please share more details.";
+                        ?>
+
+                        <a target="_blank"
+                            href="https://wa.me/<?php echo $phone; ?>?text=<?php echo urlencode($message); ?>"
+                            class="flex items-center justify-center gap-2 bg-green-600 text-white py-3 rounded-lg text-sm hover:opacity-90 duration-300">
+
+                            <i class="fa-brands fa-whatsapp text-sm"></i>
+                            <span>Live Chat</span>
                         </a>
                     </div>
                 </div>
+            </div>
 
-                <!-- RIGHT THUMBNAILS -->
-                <div class="grid grid-cols-2 gap-4 h-[420px]">
+            <!-- GALLERY -->
+            <div class="order-1 lg:order-2 mt-8" data-project-gallery>
 
-                    <?php
-                    $totalImages = count($projectGalleryImages);
-                    for ($i = 1; $i <= 4; $i++):
-                        if (!isset($projectGalleryImages[$i])) continue;
+                <?php $totalImages = count($projectGalleryImages); ?>
 
-                        $remaining = $totalImages - 5;
-                    ?>
+                <div class="grid grid-cols-1 lg:grid-cols-[1.02fr_1fr] gap-4">
 
-                        <?php if ($i == 4 && $remaining > 0): ?>
-                            <!-- LAST IMAGE -->
-                            <div class="relative rounded-[8px] overflow-hidden cursor-pointer"
-                                data-gallery-dot="<?php echo $i; ?>">
+                    <!-- MAIN IMAGE -->
+                    <div class="relative rounded-[8px] overflow-hidden h-[250px] sm:h-[350px] lg:h-[420px] group">
+                        <img id="mainGalleryImage"
+                            src="<?php echo e($projectGalleryImages[0] ?? ''); ?>"
+                            alt="<?php echo e($project['project_name']); ?>"
+                            class="w-full h-full object-cover transition duration-500">
 
-                                <img
-                                    src="<?php echo e($projectGalleryImages[$i]); ?>"
-                                    class="w-full h-[200px] object-cover brightness-[0.45]"
-                                    alt="">
+                        <?php if ($totalImages > 1): ?>
 
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <h3 class="text-white text-2xl font-black">
-                                        <?php echo $remaining; ?>+ more
-                                    </h3>
-                                </div>
-                            </div>
+                            <!-- PREV -->
+                            <button id="galleryPrev"
+                                class="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/10 backdrop-blur text-white text-[10px] sm:text-xs">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </button>
 
-                        <?php else: ?>
-
-                            <div class="rounded-[8px] overflow-hidden cursor-pointer group"
-                                data-gallery-dot="<?php echo $i; ?>">
-
-                                <img
-                                    src="<?php echo e($projectGalleryImages[$i]); ?>"
-                                    alt=""
-                                    class="w-full h-[200px] object-cover group-hover:scale-105 transition duration-500">
-                            </div>
+                            <!-- NEXT -->
+                            <button id="galleryNext"
+                                class="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 z-20 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/10 backdrop-blur text-white text-[10px] sm:text-xs">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </button>
 
                         <?php endif; ?>
 
-                    <?php endfor; ?>
+                        <!-- WISHLIST -->
+                        <form method="post"
+                            action="<?php echo BASE_URL; ?>actions"
+                            class="absolute top-3 right-3 sm:top-5 sm:right-5">
 
+                            <?php $savedInWishlist = isLoggedIn() && isInWishlist((int)$project['id']); ?>
+
+                            <input type="hidden" name="action" value="wishlist">
+                            <input type="hidden" name="project_id" value="<?php echo (int)$project['id']; ?>">
+
+                            <button
+                                class="w-[42px] h-[42px] text-sm sm:text-base rounded-full bg-black/10 backdrop-blur-md text-white flex items-center justify-center">
+                                <i class="<?php echo $savedInWishlist ? 'fa-solid text-red-500' : 'fa-regular'; ?> fa-heart"></i>
+                            </button>
+                        </form>
+
+                        <!-- PLAY -->
+                        <button
+                            type="button"
+                            onclick="event.preventDefault(); window.location.href='#video';"
+                            class=" absolute bottom-2.5 right-2.5 md:bottom-4 md:right-4 z-20 bg-accent w-8 h-8 md:w-10 md:h-10 rounded-full text-white flex items-center justify-center">
+                            <i class="fa-solid fa-play text-xs sm:text-sm"></i>
+                        </button>
+
+                        <!-- Pricing -->
+                        <button
+                            type="button"
+                            onclick="event.preventDefault(); window.location.href='#pricing';"
+                            class=" absolute bottom-2.5 right-12 md:bottom-4 md:right-16 z-20 bg-white w-8 h-8 md:w-10 md:h-10 rounded-full text-primary flex items-center justify-center ">
+                            <i class="fa-solid fa-expand text-xs sm:text-sm"></i>
+                        </button>
+
+
+                       
+                    </div>
+
+                    <!-- DESKTOP THUMBNAILS -->
+                    <div class="hidden lg:grid grid-cols-2 gap-4 h-[420px]">
+                        <?php foreach ($projectGalleryImages as $index => $image): ?>
+                            <?php if ($index == 0) continue; ?>
+
+                            <div class="rounded-[8px] overflow-hidden cursor-pointer group gallery-thumb"
+                                data-index="<?php echo $index; ?>">
+
+                                <img src="<?php echo e($image); ?>"
+                                    class="w-full h-[200px] object-cover group-hover:scale-105 transition duration-500">
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
                 </div>
+
+                <!-- MOBILE THUMBNAILS -->
+                <div class="mt-4 lg:hidden overflow-x-auto scrollbar-hide">
+                    <div class="flex gap-3 min-w-max">
+                        <?php foreach ($projectGalleryImages as $index => $image): ?>
+                            <div class="w-[120px] h-[90px] flex-shrink-0 rounded-lg overflow-hidden cursor-pointer gallery-thumb"
+                                data-index="<?php echo $index; ?>">
+
+                                <img src="<?php echo e($image); ?>"
+                                    class="w-full h-full object-cover">
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Hidden Images For JS Slider -->
-            <div class="hidden">
-                <?php foreach ($projectGalleryImages as $imageIndex => $imageUrl): ?>
-                    <img
-                        src="<?php echo e($imageUrl); ?>"
-                        alt="<?php echo e($project['project_name']); ?>"
-                        data-gallery-image>
-                <?php endforeach; ?>
-            </div>
         </div>
     </div>
 </section>
+
+<!-- SCRIPT -->
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const images = <?php echo json_encode($projectGalleryImages); ?>;
+        let currentIndex = 0;
+
+        const mainImage = document.getElementById("mainGalleryImage");
+        const prevBtn = document.getElementById("galleryPrev");
+        const nextBtn = document.getElementById("galleryNext");
+        const thumbs = document.querySelectorAll(".gallery-thumb");
+
+        function updateImage(index) {
+            currentIndex = index;
+            mainImage.src = images[index];
+        }
+
+        thumbs.forEach((thumb) => {
+            thumb.addEventListener("click", function() {
+                const index = parseInt(this.dataset.index);
+                updateImage(index);
+            });
+        });
+
+        if (prevBtn) {
+            prevBtn.addEventListener("click", function() {
+                currentIndex = currentIndex === 0 ? images.length - 1 : currentIndex - 1;
+                updateImage(currentIndex);
+            });
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener("click", function() {
+                currentIndex = currentIndex === images.length - 1 ? 0 : currentIndex + 1;
+                updateImage(currentIndex);
+            });
+        }
+    });
+</script>
 
 <section class="mt-6">
     <!-- TOP NAV -->
@@ -603,13 +684,21 @@ require_once __DIR__ . '/includes/header.php';
                         Amenities
                     </h2>
                 </div>
-                <div class="p-3 md:p-5 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3">
-                    <?php foreach ($amenities ?: ['Verified builder', 'Direct inquiry', 'Free site visit'] as $amenity): ?>
-                        <div class="rounded-md border border-gray-200 px-4 py-3 text-xs font-semibold text-gray-700 flex gap-2 justify-start items-center">
-                            <i class="fa-solid fa-circle-check text-accent text-sm"></i>
-                            <?php echo e($amenity); ?>
-                        </div>
-                    <?php endforeach; ?>
+                <div class="p-3 md:p-5 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
+                    <?php if (!empty($amenities)): ?>
+                        <?php foreach ($amenities as $a): ?>
+                            <div class="rounded-md border border-gray-200 px-4 py-3 text-xs font-semibold text-gray-700 flex gap-2 justify-start items-center">
+                                <?php if (!empty($a['amenity_icon'])): ?>
+                                    <img src="<?php echo e(getImageUrl($a['amenity_icon'])); ?>" alt="<?php echo e($a['amenity_name']); ?>" class="w-5 h-5 object-contain shrink-0">
+                                <?php else: ?>
+                                    <i class="fa-solid fa-circle-check text-accent text-sm shrink-0"></i>
+                                <?php endif; ?>
+                                <?php echo e($a['amenity_name']); ?>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="rounded-md border border-gray-200 px-4 py-3 text-xs font-semibold text-gray-500 col-span-full text-center">No amenities listed</div>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -806,130 +895,88 @@ require_once __DIR__ . '/includes/header.php';
         <div class="relative">
             <aside id="inquiry" class="sticky top-24 space-y-5">
 
-                <!-- Share -->
-                <?php
-                $shareProjectUrl = BASE_URL . 'project/' . $project['slug'];
-                $shareProjectUrlEncoded = urlencode($shareProjectUrl);
-                $shareLocation = trim(($project['locality'] ? $project['locality'] . ', ' : '') . $project['city'] . ', ' . $project['state'], ', ');
-                $shareConfigs = [];
-                foreach ($unitPlans as $p) {
-                    if (!empty($p['bhk_type'])) {
-                        $shareConfigs[$p['bhk_type']] = true;
-                    }
-                }
-                $shareConfigs = array_keys($shareConfigs);
-                $shareConfigText = !empty($shareConfigs) ? implode(', ', $shareConfigs) : 'N/A';
-                $shareAreaText = projectAreaRange($project, $unitPlans);
-                $sharePriceText = projectPriceRange($project, $unitPlans);
-                $sharePossession = !empty($project['possession_date']) ? date('M Y', strtotime($project['possession_date'])) : 'N/A';
-                $shareRera = $project['rera_number'] ?? 'N/A';
+                <!-- Site Visit -->
+                <div class="bg-white rounded-2xl p-6 border shadow-sm">
 
-                $shareBody = "Project: {$project['project_name']}\n"
-                    . "Builder: {$project['company_name']}\n"
-                    . "Location: {$shareLocation}\n"
-                    . "Type: {$project['project_type']}\n"
-                    . "Price: {$sharePriceText}\n"
-                    . "Config: {$shareConfigText}\n"
-                    . "Area: {$shareAreaText}\n"
-                    . "Status: {$project['project_status']}\n"
-                    . "RERA: {$shareRera}\n"
-                    . "Possession: {$sharePossession}\n"
-                    . "Link: {$shareProjectUrl}";
-                $shareBodyEncoded = urlencode($shareBody);
-                $shareShort = urlencode("{$project['project_name']} by {$project['company_name']} - {$sharePriceText} | {$shareLocation}");
-                ?>
-                <div class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-                    <h2 class="text-[18px] md:text-[20px] font-bold text-primary">Share</h2>
-                    <div class="mt-4 flex items-center gap-3">
-                        <a href="https://wa.me/?text=<?php echo $shareBodyEncoded; ?>" target="_blank"
-                            class="flex h-11 w-11 items-center justify-center rounded-full bg-green-500 text-white hover:opacity-80 transition" aria-label="Share on WhatsApp">
-                            <i class="fa-brands fa-whatsapp text-lg"></i>
-                        </a>
-                        <a href="https://www.facebook.com/sharer/sharer.php?u=<?php echo $shareProjectUrlEncoded; ?>" target="_blank"
-                            class="flex h-11 w-11 items-center justify-center rounded-full bg-blue-600 text-white hover:opacity-80 transition" aria-label="Share on Facebook">
-                            <i class="fa-brands fa-facebook-f text-lg"></i>
-                        </a>
-                        <a href="https://twitter.com/intent/tweet?text=<?php echo $shareShort; ?>&url=<?php echo $shareProjectUrlEncoded; ?>" target="_blank"
-                            class="flex h-11 w-11 items-center justify-center rounded-full bg-black text-white hover:opacity-80 transition" aria-label="Share on X">
-                            <i class="fa-brands fa-twitter text-lg"></i>
-                        </a>
-                        <button data-details="<?php echo e($shareBody); ?>"
-                            class="flex h-11 w-11 items-center justify-center rounded-full bg-gray-100 text-gray-800 hover:bg-gray-200 transition" aria-label="Copy project details"
-                            onclick="navigator.clipboard.writeText(this.dataset.details).then(()=>{this.querySelector('i').className='fa-solid fa-check text-green-500 text-lg';setTimeout(()=>{this.querySelector('i').className='fa-solid fa-copy text-lg'},2000)})">
-                            <i class="fa-solid fa-copy text-lg"></i>
+                    <h3 class="text-xl md:text-2xl font-medium text-gray-900">
+                        Book Free Site Visit
+                    </h3>
+
+                    <p class="mt-2 text-gray-500 text-xs md:text-sm">
+                        Fill your details and we will contact you shortly.
+                    </p>
+
+                    <form method="post" action="<?php echo BASE_URL; ?>actions" class="mt-6">
+
+                        <input type="hidden" name="action" value="site_visit">
+                        <input type="hidden" name="project_id" value="<?php echo (int)$project['id']; ?>">
+
+                        <div class="grid grid-cols-2 gap-3 text-xs md:text-sm">
+
+                            <input name="full_name" required placeholder="Full Name"
+                                class="h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
+
+                            <input name="phone" required placeholder="Mobile Number"
+                                class="h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
+
+                            <input type="email" name="email" required placeholder="Email Address"
+                                class="col-span-2 h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
+
+                            <p class="col-span-2 text-xs">Booking Date & Time</p>
+
+                            <input type="time" name="preferred_time" required
+                                class="h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
+
+                            <input type="date" name="visit_date" min="<?php echo date('Y-m-d'); ?>" required
+                                class="h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
+
+                            <input name="budget" placeholder="Budget"
+                                class="col-span-2 h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
+
+                        </div>
+
+                        <button class="mt-3 md:mt-6 w-full h-10 md:h-12 rounded-lg bg-green-600 hover:bg-green-700 transition text-white font-semibold text-xs md:text-sm">
+                            Book Free Site Visit
                         </button>
-                        <button data-title="<?php echo e($project['project_name']); ?>" data-details="<?php echo e($shareBody); ?>" data-url="<?php echo e($shareProjectUrl); ?>"
-                            class="flex h-11 w-11 items-center justify-center rounded-full bg-primary text-white hover:opacity-80 transition md:hidden" aria-label="Share"
-                            onclick="if(navigator.share){navigator.share({title:this.dataset.title,text:this.dataset.details,url:this.dataset.url})}">
-                            <i class="fa-solid fa-share-nodes text-lg"></i>
-                        </button>
-                    </div>
+
+                    </form>
+
                 </div>
 
                 <!-- Contact Builder -->
                 <form method="post" action="<?php echo BASE_URL; ?>actions"
-                    class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
+                    class="bg-white rounded-2xl p-6 border shadow-sm">
 
                     <input type="hidden" name="action" value="inquiry">
                     <input type="hidden" name="project_id" value="<?php echo (int)$project['id']; ?>">
 
-                    <h2 class="text-[18px] md:text-[20px] font-bold text-primary">
+                    <h3 class="text-xl md:text-2xl font-medium text-gray-900">
                         Contact Builder
-                    </h2>
+                    </h3>
 
-                    <div class="mt-4 space-y-3">
-                        <input name="full_name" required placeholder="Full name"
-                            class="h-12 w-full rounded-lg border border-gray-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                    <p class="mt-2 text-gray-500 text-xs md:text-sm">
+                        Send your inquiry and we will get back to you.
+                    </p>
 
-                        <input name="phone" required placeholder="Mobile number"
-                            class="h-12 w-full rounded-lg border border-gray-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                    <div class="mt-6 grid grid-cols-2 gap-3 text-xs md:text-sm">
+                        <input name="full_name" required placeholder="Full Name"
+                            class="h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
 
-                        <input name="email" required type="email" placeholder="Email address"
-                            class="h-12 w-full rounded-lg border border-gray-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                        <input name="phone" required placeholder="Mobile Number"
+                            class="h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
+
+                        <input name="email" required type="email" placeholder="Email Address"
+                            class="col-span-2 h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
 
                         <input name="budget" placeholder="Budget"
-                            class="h-12 w-full rounded-lg border border-gray-200 px-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            class="col-span-2 h-10 md:h-11 rounded-lg border border-gray-200 px-4 outline-none focus:border-green-500">
 
                         <textarea name="message" placeholder="Message"
-                            class="min-h-24 w-full rounded-lg border border-gray-200 px-3 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                            class="col-span-2 min-h-24 rounded-lg border border-gray-200 px-4 py-3 outline-none focus:border-green-500"></textarea>
                     </div>
 
-                    <button class="mt-4 h-12 w-full rounded-lg bg-primary font-semibold text-white hover:opacity-90 duration-300">
+                    <button class="mt-3 md:mt-6 w-full h-10 md:h-12 rounded-lg bg-green-600 hover:bg-green-700 transition text-white font-semibold text-xs md:text-sm">
                         Send Inquiry
-                    </button>
-                </form>
-
-                <!-- Site Visit -->
-                <form method="post" action="<?php echo BASE_URL; ?>actions"
-                    class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-
-                    <input type="hidden" name="action" value="site_visit">
-                    <input type="hidden" name="project_id" value="<?php echo (int)$project['id']; ?>">
-
-                    <h2 class="text-[18px] md:text-[20px] font-bold text-primary">
-                        Book Free Site Visit
-                    </h2>
-
-                    <div class="mt-4 space-y-3">
-                        <input name="full_name" required placeholder="Full name"
-                            class="h-12 w-full rounded-lg border border-gray-200 px-3 text-sm">
-
-                        <input name="phone" required placeholder="Mobile number"
-                            class="h-12 w-full rounded-lg border border-gray-200 px-3 text-sm">
-
-                        <input name="email" required type="email" placeholder="Email address"
-                            class="h-12 w-full rounded-lg border border-gray-200 px-3 text-sm">
-
-                        <input name="visit_date" required type="date"
-                            min="<?php echo date('Y-m-d'); ?>"
-                            class="h-12 w-full rounded-lg border border-gray-200 px-3 text-sm">
-
-                        <input name="preferred_time" placeholder="Preferred time"
-                            class="h-12 w-full rounded-lg border border-gray-200 px-3 text-sm">
-                    </div>
-
-                    <button class="mt-4 h-12 w-full rounded-lg bg-accent font-semibold text-primary hover:opacity-90 duration-300">
-                        Schedule Now
                     </button>
                 </form>
 
@@ -1000,17 +1047,17 @@ require_once __DIR__ . '/includes/header.php';
                                     <button
                                         type="button"
                                         onclick="event.preventDefault(); window.location.href='<?php echo e($videoUrl ?: BASE_URL . 'project/' . urlencode($project['slug'])); ?>';"
-                                        class="absolute bottom-4 right-4 z-20 bg-accent w-10 h-10 rounded-full text-white flex items-center justify-center">
-                                        <i class="fa-solid fa-play"></i>
+                                        class="absolute bottom-2.5 right-2.5 md:bottom-4 md:right-4 z-20 bg-accent w-8 h-8 md:w-10 md:h-10 rounded-full text-white flex items-center justify-center">
+                                        <i class="fa-solid fa-play text-xs sm:text-sm"></i>
                                     </button>
                                 </a>
 
                                 <!-- HEART -->
-                                <form method="post" action="<?php echo BASE_URL; ?>actions" class="absolute top-4.5 right-6 z-20" data-wishlist-form data-wishlist-project-id="<?php echo (int)$project['id']; ?>">
+                                <form method="post" action="<?php echo BASE_URL; ?>actions" class="absolute top-4 right-5 z-20" data-wishlist-form data-wishlist-project-id="<?php echo (int)$project['id']; ?>">
                                     <input type="hidden" name="action" value="wishlist">
                                     <input type="hidden" name="project_id" value="<?php echo (int)$project['id']; ?>">
                                     <input type="hidden" name="redirect_to" value="<?php echo e(getCurrentPageUrl()); ?>">
-                                    <button type="submit" class="text-white text-xl drop-shadow" aria-label="<?php echo $savedInWishlist ? 'Saved in wishlist' : 'Add to wishlist'; ?>" data-wishlist-button>
+                                    <button type="submit" class="text-white text-sm md:text-xl drop-shadow" aria-label="<?php echo $savedInWishlist ? 'Saved in wishlist' : 'Add to wishlist'; ?>" data-wishlist-button>
                                         <i class="<?php echo $savedInWishlist ? 'fa-solid text-red-500' : 'fa-regular'; ?> fa-heart" data-wishlist-icon></i>
                                     </button>
                                 </form>

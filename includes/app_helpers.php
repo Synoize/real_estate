@@ -542,3 +542,40 @@ function tableCount($table, $where = '1=1', $params = [])
 
     return (int)($row['total'] ?? 0);
 }
+
+function createNotification($userId, $type, $title, $message = null, $link = null)
+{
+    global $pdo;
+    $stmt = $pdo->prepare("INSERT INTO notifications (user_id, type, title, message, link) VALUES (?, ?, ?, ?, ?)");
+    $stmt->execute([$userId, $type, $title, $message, $link]);
+}
+
+function fetchNotifications($userId, $limit = 10)
+{
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT * FROM notifications WHERE user_id = ? ORDER BY created_at DESC LIMIT ?");
+    $stmt->execute([$userId, $limit]);
+    return $stmt->fetchAll();
+}
+
+function unreadNotificationCount($userId)
+{
+    global $pdo;
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM notifications WHERE user_id = ? AND is_read = 0");
+    $stmt->execute([$userId]);
+    return (int)$stmt->fetchColumn();
+}
+
+function markNotificationRead($notificationId, $userId)
+{
+    global $pdo;
+    $stmt = $pdo->prepare("UPDATE notifications SET is_read = 1 WHERE id = ? AND user_id = ?");
+    $stmt->execute([$notificationId, $userId]);
+}
+
+function markAllNotificationsRead($userId)
+{
+    global $pdo;
+    $stmt = $pdo->prepare("UPDATE notifications SET is_read = 1 WHERE user_id = ? AND is_read = 0");
+    $stmt->execute([$userId]);
+}

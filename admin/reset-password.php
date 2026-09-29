@@ -22,6 +22,8 @@ if (!empty($token)) {
 
     try {
 
+        $now = date('Y-m-d H:i:s');
+
         $stmt = $pdo->prepare("
             SELECT
                 id,
@@ -32,12 +34,14 @@ if (!empty($token)) {
                 status
             FROM admins
             WHERE reset_token = :token
-            AND reset_token_expiry > NOW()
+            AND reset_token_expiry > :now
+            AND status = 'active'
             LIMIT 1
         ");
 
         $stmt->execute([
-            ':token' => $token
+            ':token' => $token,
+            ':now'   => $now
         ]);
 
         $admin = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -47,13 +51,6 @@ if (!empty($token)) {
             $errors[] =
                 'Invalid or expired reset token';
         }
-
-        elseif ($admin['status'] !== 'active') {
-
-            $errors[] =
-                'Your account is inactive';
-        }
-
     } catch (PDOException $e) {
 
         error_log($e->getMessage());
@@ -61,7 +58,6 @@ if (!empty($token)) {
         $errors[] =
             'Something went wrong';
     }
-
 } else {
 
     $errors[] =
@@ -87,9 +83,7 @@ if (
 
         $errors[] =
             'Password is required';
-    }
-
-    elseif (strlen($password) < 6) {
+    } elseif (strlen($password) < 6) {
 
         $errors[] =
             'Password must be at least 6 characters';
@@ -125,10 +119,10 @@ if (
             $updateStmt->execute([
 
                 ':password' =>
-                    $hashedPassword,
+                $hashedPassword,
 
                 ':id' =>
-                    $admin['id']
+                $admin['id']
             ]);
 
             setFlash(
@@ -139,7 +133,6 @@ if (
             redirect(
                 ADMIN_URL . 'login'
             );
-
         } catch (PDOException $e) {
 
             error_log($e->getMessage());
@@ -152,79 +145,74 @@ if (
 
 $pageTitle = "Admin Reset Password";
 
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/includes/head.php';
 
 ?>
 
-<section class="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-10">
+<body class="min-h-screen flex items-center justify-center px-6 py-12">
 
-    <div class="w-full max-w-md">
+    <section class="w-full max-w-sm">
 
-        <div class="bg-white border rounded-2xl shadow-sm p-6 md:p-8">
+        <div class="text-center mb-8">
+            <h1 class="text-2xl font-medium text-gray-900">
+                Reset Password
+            </h1>
 
-            <div class="text-center mb-8">
+            <p class="text-[12px] text-gray-500 mt-2">Enter your new password</p>
+        </div>
 
-                <img
-                    src="<?php echo ASSETS_URL; ?>public/logo.png"
-                    class="h-20 mx-auto mb-4"
-                    alt="Logo"
-                >
+        <?php if (!empty($errors)) : ?>
 
-                <h1 class="text-2xl font-bold">
-                    Admin Reset Password
-                </h1>
+            <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+
+                <?php foreach ($errors as $error) : ?>
+
+                    <p class="text-sm text-red-600">
+                        • <?php echo e($error); ?>
+                    </p>
+
+                <?php endforeach; ?>
 
             </div>
 
-            <?php if (!empty($errors)) : ?>
+        <?php endif; ?>
 
-                <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+        <?php if ($admin) : ?>
 
-                    <?php foreach ($errors as $error) : ?>
-
-                        <p class="text-sm text-red-600">
-                            • <?php echo e($error); ?>
-                        </p>
-
-                    <?php endforeach; ?>
-
-                </div>
-
-            <?php endif; ?>
-
-            <?php if ($admin) : ?>
-
-                <form method="POST" class="space-y-5">
-
-                    <input
-                        type="password"
+            <form method="POST" class="space-y-5">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">New Password (min 6 characters)</label>
+                    <input type="password"
                         name="password"
                         placeholder="New Password"
                         required
-                        class="w-full h-12 px-4 border rounded-xl"
-                    >
+                        minlength="6"
+                        class="w-full h-12 px-4 border rounded-xl outline-none focus:border-accent transition">
+                </div>
 
-                    <input
-                        type="password"
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+                    <input type="password"
                         name="confirm_password"
                         placeholder="Confirm Password"
                         required
-                        class="w-full h-12 px-4 border rounded-xl"
-                    >
+                        minlength="6"
+                        class="w-full h-12 px-4 border rounded-xl outline-none focus:border-accent transition">
+                </div>
 
-                    <button
-                        type="submit"
-                        class="w-full h-12 rounded-xl bg-accent"
-                    >
-                        Reset Password
-                    </button>
+                <button
+                    type="submit"
+                    class="w-full h-12 rounded-xl bg-accent text-black font-medium">
+                    Reset Password
+                </button>
 
-                </form>
+            </form>
 
-            <?php endif; ?>
+        <?php endif; ?>
 
-        </div>
+    </section>
 
-    </div>
+    <script src="<?php echo ASSETS_URL; ?>js/script.js"></script>
+</body>
 
-</section>
+</html>

@@ -22,6 +22,8 @@ if (!empty($token)) {
 
     try {
 
+        $now = date('Y-m-d H:i:s');
+
         $stmt = $pdo->prepare("
             SELECT
                 id,
@@ -32,12 +34,14 @@ if (!empty($token)) {
                 status
             FROM builders
             WHERE reset_token = :token
-            AND reset_token_expiry > NOW()
+            AND reset_token_expiry > :now
+            AND status = 'active'
             LIMIT 1
         ");
 
         $stmt->execute([
-            ':token' => $token
+            ':token' => $token,
+            ':now'   => $now
         ]);
 
         $builder = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -47,13 +51,6 @@ if (!empty($token)) {
             $errors[] =
                 'Invalid or expired reset token';
         }
-
-        elseif ($builder['status'] !== 'active') {
-
-            $errors[] =
-                'Your account is inactive';
-        }
-
     } catch (PDOException $e) {
 
         error_log($e->getMessage());
@@ -61,7 +58,6 @@ if (!empty($token)) {
         $errors[] =
             'Something went wrong';
     }
-
 } else {
 
     $errors[] =
@@ -87,9 +83,7 @@ if (
 
         $errors[] =
             'Password is required';
-    }
-
-    elseif (strlen($password) < 6) {
+    } elseif (strlen($password) < 6) {
 
         $errors[] =
             'Password must be minimum 6 characters';
@@ -125,10 +119,10 @@ if (
             $stmt->execute([
 
                 ':password' =>
-                    $hashedPassword,
+                $hashedPassword,
 
                 ':id' =>
-                    $builder['id']
+                $builder['id']
             ]);
 
             /* Log */
@@ -152,10 +146,10 @@ if (
             $logStmt->execute([
 
                 ':user_id' =>
-                    $builder['id'],
+                $builder['id'],
 
                 ':ip' =>
-                    $_SERVER['REMOTE_ADDR'] ?? NULL
+                $_SERVER['REMOTE_ADDR'] ?? NULL
             ]);
 
             setFlash(
@@ -166,7 +160,6 @@ if (
             redirect(
                 BUILDER_URL . 'login'
             );
-
         } catch (PDOException $e) {
 
             error_log($e->getMessage());
@@ -179,120 +172,107 @@ if (
 
 $pageTitle = "Builder Reset Password";
 
-require_once __DIR__ . '/../includes/header.php';
+require_once __DIR__ . '/includes/head.php';
 
 ?>
 
-<section class="min-h-screen bg-gray-100 flex items-center justify-center px-4 py-10">
+<body class="min-h-screen flex items-center justify-center px-6 py-12">
 
-    <div class="w-full max-w-md">
+    <section class="w-full max-w-sm">
 
-        <div class="bg-white border rounded-2xl shadow-sm p-6 md:p-8">
+        <div class="text-center mb-8">
 
-            <!-- Logo -->
+            <h1 class="text-2xl font-medium text-gray-900">
+                Builder Reset Password
+            </h1>
 
-            <div class="text-center mb-8">
-
-                <img
-                    src="<?php echo ASSETS_URL; ?>public/logo.png"
-                    class="h-20 mx-auto mb-4"
-                    alt="Logo"
-                >
-
-                <h1 class="text-2xl font-bold text-gray-900">
-                    Builder Reset Password
-                </h1>
-
-                <p class="text-sm text-gray-500 mt-1">
-                    Create your new password
-                </p>
-
-            </div>
-
-            <!-- Errors -->
-
-            <?php if (!empty($errors)) : ?>
-
-                <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
-
-                    <ul class="space-y-1">
-
-                        <?php foreach ($errors as $error) : ?>
-
-                            <li class="text-red-600 text-sm">
-                                • <?php echo e($error); ?>
-                            </li>
-
-                        <?php endforeach; ?>
-
-                    </ul>
-
-                </div>
-
-            <?php endif; ?>
-
-            <!-- Form -->
-
-            <?php if ($builder) : ?>
-
-                <form method="POST" class="space-y-5">
-
-                    <div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            New Password
-                        </label>
-
-                        <input
-                            type="password"
-                            name="password"
-                            required
-                            minlength="6"
-                            class="w-full h-12 px-4 border border-gray-300 rounded-xl outline-none focus:border-accent"
-                        >
-
-                    </div>
-
-                    <div>
-
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Confirm Password
-                        </label>
-
-                        <input
-                            type="password"
-                            name="confirm_password"
-                            required
-                            minlength="6"
-                            class="w-full h-12 px-4 border border-gray-300 rounded-xl outline-none focus:border-accent"
-                        >
-
-                    </div>
-
-                    <button
-                        type="submit"
-                        class="w-full h-12 rounded-xl bg-accent text-black font-medium"
-                    >
-                        Reset Password
-                    </button>
-
-                </form>
-
-            <?php endif; ?>
-
-            <div class="mt-6 text-center">
-
-                <a
-                    href="<?php echo BUILDER_URL; ?>login"
-                    class="text-sm text-accent hover:underline"
-                >
-                    Back to Login
-                </a>
-
-            </div>
+            <p class="text-[12px] text-gray-500 mt-2">
+                Create your new password
+            </p>
 
         </div>
 
-    </div>
+        <!-- Errors -->
 
-</section>
+        <?php if (!empty($errors)) : ?>
+
+            <div class="mb-6 bg-red-50 border border-red-200 rounded-xl p-4">
+
+                <ul class="space-y-1">
+
+                    <?php foreach ($errors as $error) : ?>
+
+                        <li class="text-red-600 text-sm">
+                            • <?php echo e($error); ?>
+                        </li>
+
+                    <?php endforeach; ?>
+
+                </ul>
+
+            </div>
+
+        <?php endif; ?>
+
+        <!-- Form -->
+
+        <?php if ($builder) : ?>
+
+            <form method="POST" class="space-y-5">
+
+                <div>
+
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        New Password
+                    </label>
+
+                    <input
+                        type="password"
+                        name="password"
+                        required
+                        minlength="6"
+                        class="w-full h-12 px-4 border border-gray-300 rounded-xl outline-none focus:border-accent">
+
+                </div>
+
+                <div>
+
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type="password"
+                        name="confirm_password"
+                        required
+                        minlength="6"
+                        class="w-full h-12 px-4 border border-gray-300 rounded-xl outline-none focus:border-accent">
+
+                </div>
+
+                <button
+                    type="submit"
+                    class="w-full h-12 rounded-xl bg-accent text-black font-medium">
+                    Reset Password
+                </button>
+
+            </form>
+
+        <?php endif; ?>
+
+        <div class="mt-6 text-center">
+
+            <a
+                href="<?php echo BUILDER_URL; ?>login"
+                class="text-sm text-accent hover:underline">
+                Back to Login
+            </a>
+
+        </div>
+
+    </section>
+
+    <script src="<?php echo ASSETS_URL; ?>js/script.js"></script>
+</body>
+
+</html>

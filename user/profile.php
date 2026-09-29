@@ -269,13 +269,13 @@ require_once __DIR__ . '/../includes/header.php';
                         <?php if (!empty($currentUser['profile_image'])): ?>
                             <img src="<?php echo e(getImageUrl($currentUser['profile_image'], 'uploads')); ?>" alt="<?php echo e($currentUser['full_name']); ?>" class="h-16 w-16 rounded-full object-cover">
                         <?php else: ?>
-                            <div class="h-16 w-16 rounded-full bg-primary text-white flex items-center justify-center text-xl font-semibold">
+                            <div class="h-16 w-16 rounded-full bg-green-600 text-white flex items-center justify-center text-xl font-semibold">
                                 <?php echo e(initialsFromName($currentUser['full_name'] ?? '')); ?>
                             </div>
                         <?php endif; ?>
                         <div class="min-w-0">
                             <h1 class="text-xl font-semibold text-primary truncate"><?php echo e($currentUser['full_name'] ?? 'User'); ?></h1>
-                            <p class="text-sm text-gray-500">Member since <?php echo e(profileDate($currentUser['created_at'] ?? null)); ?></p>
+                            <p class="text-xs text-gray-500">Member since <?php echo e(profileDate($currentUser['created_at'] ?? null)); ?></p>
                         </div>
                     </div>
 
@@ -322,6 +322,10 @@ require_once __DIR__ . '/../includes/header.php';
                         </a>
                         <a href="<?php echo BASE_URL; ?>wishlist" class="flex items-center justify-between rounded-md border border-gray-200 px-3 py-3 hover:border-accent hover:bg-amber-50/40">
                             <span><i class="fa-solid fa-heart mr-2 text-accent"></i>Wishlist</span>
+                            <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
+                        </a>
+                        <a href="<?php echo BASE_URL; ?>notifications" class="flex items-center justify-between rounded-md border border-gray-200 px-3 py-3 hover:border-accent hover:bg-amber-50/40">
+                            <span><i class="fa-solid fa-bell mr-2 text-accent"></i>Notifications</span>
                             <i class="fa-solid fa-chevron-right text-xs text-gray-400"></i>
                         </a>
                         <a href="<?php echo BASE_URL; ?>logout" class="flex items-center justify-between rounded-md border border-rose-100 px-3 py-3 text-rose-600 hover:bg-rose-50">
@@ -503,7 +507,7 @@ require_once __DIR__ . '/../includes/header.php';
                                 <a href="<?php echo BASE_URL; ?>projects" class="mt-3 inline-flex rounded-md bg-primary px-4 py-2 text-sm text-white">Browse Projects</a>
                             </div>
                         <?php else: ?>
-                            <div class="mt-5 space-y-3">
+                            <div class="mt-5 space-y-3 overflow-y-auto max-h-[48vh]">
                                 <?php foreach ($wishlistProjects as $project): ?>
                                     <?php $galleryImages = projectGalleryImages($project, $wishlistProjectGalleries ?? []); ?>
                                     <a href="<?php echo BASE_URL . 'project/' . urlencode($project['slug']); ?>" class="flex gap-3 rounded-md border border-gray-200 p-3 hover:border-accent">
@@ -551,7 +555,7 @@ require_once __DIR__ . '/../includes/header.php';
                                 <p class="mt-2 text-sm font-semibold text-primary">No inquiries yet</p>
                             </div>
                         <?php else: ?>
-                            <div class="mt-5 space-y-3">
+                            <div class="mt-5 space-y-3 overflow-y-auto max-h-[48vh]">
                                 <?php foreach ($inquiries as $inquiry): ?>
                                     <div class="rounded-md border border-gray-200 p-4">
                                         <div class="flex items-start justify-between gap-3">
@@ -595,7 +599,7 @@ require_once __DIR__ . '/../includes/header.php';
                             <p class="mt-2 text-sm font-semibold text-primary">No site visits booked</p>
                         </div>
                     <?php else: ?>
-                        <div class="mt-5 overflow-x-auto">
+                        <div class="mt-5 overflow-auto max-h-[48vh]">
                             <table class="w-full min-w-[700px] text-left text-sm">
                                 <thead class="border-b border-gray-200 text-xs uppercase text-gray-500">
                                     <tr>

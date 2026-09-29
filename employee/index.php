@@ -5,143 +5,168 @@ requireEmployee();
 
 $pageTitle = 'Employee Dashboard';
 
-if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST' && ($_POST['action'] ?? '') === 'create_builder') {
-    $company = trim($_POST['company_name'] ?? '');
-    $name = trim($_POST['builder_name'] ?? '');
-    $email = trim($_POST['email'] ?? '');
-    $phone = trim($_POST['phone'] ?? '');
-    $city = trim($_POST['city'] ?? '');
-    $state = trim($_POST['state'] ?? '');
-    $companyLogo = trim($_POST['company_logo'] ?? '');
-    $establishedYear = trim($_POST['established_year'] ?? '');
-    $establishedYearValue = preg_match('/^\d{4}$/', $establishedYear) ? (int)$establishedYear : null;
-
-    if ($company && $name && $email && $phone) {
-        $stmt = $pdo->prepare("
-            INSERT INTO builders (
-                uuid, company_name, company_slug, builder_name,
-                email, phone, whatsapp_number, password, city, state,
-                company_logo, established_year, status, created_by_employee
-            ) VALUES (
-                UUID(), :company_name, :company_slug, :builder_name,
-                :email, :phone, :phone, :password, :city, :state,
-                :company_logo, :established_year, 'pending', :employee_id
-            )
-        ");
-        $stmt->execute([
-            ':company_name' => $company,
-            ':company_slug' => makeSlug($company) . '-' . random_int(100, 999),
-            ':builder_name' => $name,
-            ':email' => $email,
-            ':phone' => $phone,
-            ':password' => password_hash('Password@123', PASSWORD_DEFAULT),
-            ':city' => $city,
-            ':state' => $state,
-            ':company_logo' => $companyLogo,
-            ':established_year' => $establishedYearValue,
-            ':employee_id' => $_SESSION['employee_id']
-        ]);
-        setFlash('Builder added as pending. Default password is Password@123.', 'success');
-        redirect(EMPLOYEE_URL);
-    }
-}
-
-$stats = [
-    'Pending Builders' => tableCount('builders', "status = 'pending'"),
-    'Published Projects' => tableCount('projects', "status = 'published'"),
-    'New Leads' => tableCount('inquiries', "inquiry_status = 'New'"),
-    'Pending Visits' => tableCount('site_visit_bookings', "status = 'Pending'")
-];
-
-$builders = $pdo->query('SELECT * FROM builders ORDER BY created_at DESC LIMIT 12')->fetchAll();
-$leads = $pdo->query("
-    SELECT i.*, p.project_name
-    FROM inquiries i
-    INNER JOIN projects p ON p.id = i.project_id
-    ORDER BY i.created_at DESC
-    LIMIT 12
+$totalBuilders = tableCount('builders', "deleted_at IS NULL");
+$totalUsers = tableCount('users', "status <> 'deleted'");
+$totalProjects = tableCount('projects', "deleted_at IS NULL");
+$totalEnquiries = tableCount('inquiries', '1=1');
+$pendingBuilders = tableCount('builders', "status = 'pending'");
+$newLeads = tableCount('inquiries', "inquiry_status = 'New'");
+$monthlyData = $pdo->query("
+    SELECT DATE_FORMAT(created_at, '%b') AS month, COUNT(*) AS total
+    FROM projects WHERE deleted_at IS NULL AND created_at >= DATE_SUB(NOW(), INTERVAL 12 MONTH)
+    GROUP BY DATE_FORMAT(created_at, '%Y-%m') ORDER BY MIN(created_at) ASC
 ")->fetchAll();
 
-require_once __DIR__ . '/../includes/header.php';
+$cityStats = $pdo->query("
+    SELECT city, COUNT(*) AS total
+    FROM projects WHERE deleted_at IS NULL AND city != '' AND city IS NOT NULL
+    GROUP BY city ORDER BY total DESC LIMIT 8
+")->fetchAll();
+
+$recentBuilders = $pdo->query("SELECT * FROM builders WHERE deleted_at IS NULL ORDER BY created_at DESC LIMIT 5")->fetchAll();
+$recentLeads = $pdo->query("
+    SELECT i.*, p.project_name FROM inquiries i
+    INNER JOIN projects p ON p.id = i.project_id
+    ORDER BY i.created_at DESC LIMIT 5
+")->fetchAll();
+
+$monthLabels = [];
+$monthCounts = [];
+foreach ($monthlyData as $m) {
+    $monthLabels[] = $m['month'];
+    $monthCounts[] = (int)$m['total'];
+}
+
+$cityLabels = [];
+$cityCounts = [];
+foreach ($cityStats as $c) {
+    $cityLabels[] = $c['city'];
+    $cityCounts[] = (int)$c['total'];
+}
+
+require_once __DIR__ . '/includes/header.php';
 ?>
 
-<section class="mt-20 bg-gray-50 min-h-screen py-8">
-    <div class="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-10">
-        <div class="flex items-center justify-between gap-4">
+<section class="min-h-screen bg-gray-50 p-6 mt-20">
+    <div class="max-w-[1400px] mx-auto">
+        <div class="flex items-center justify-between">
             <div>
-                <p class="text-sm font-bold uppercase text-accent">Employee</p>
-                <h1 class="text-3xl font-black text-primary"><?php echo e($_SESSION['employee_name'] ?? 'Operations'); ?></h1>
+                <p class="text-xs uppercase text-accent">Employee Panel</p>
+                <h1 class="text-3xl font-semibold text-primary"><?php echo e($_SESSION['employee_name'] ?? 'Dashboard'); ?></h1>
             </div>
-            <a href="<?php echo EMPLOYEE_URL; ?>logout" class="rounded-md bg-primary px-4 py-3 text-sm font-bold text-white">Logout</a>
+            <p class="text-sm text-gray-500"><?php echo date('l, d M Y'); ?></p>
         </div>
 
         <div class="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-            <?php foreach ($stats as $label => $value): ?>
-                <div class="rounded-lg border bg-white p-5">
-                    <p class="text-2xl font-black"><?php echo (int)$value; ?></p>
-                    <p class="text-sm text-gray-500"><?php echo e($label); ?></p>
-                </div>
-            <?php endforeach; ?>
+            <div class="rounded-lg border bg-white p-5">
+                <p class="text-2xl font-black"><?php echo $totalBuilders; ?></p>
+                <p class="text-sm text-gray-500">Total Builders</p>
+            </div>
+            <div class="rounded-lg border bg-white p-5">
+                <p class="text-2xl font-black"><?php echo $totalUsers; ?></p>
+                <p class="text-sm text-gray-500">Total Users</p>
+            </div>
+            <div class="rounded-lg border bg-white p-5">
+                <p class="text-2xl font-black"><?php echo $totalProjects; ?></p>
+                <p class="text-sm text-gray-500">Projects</p>
+            </div>
+            <div class="rounded-lg border bg-white p-5">
+                <p class="text-2xl font-black"><?php echo $totalEnquiries; ?></p>
+                <p class="text-sm text-gray-500">Enquiries</p>
+            </div>
+            <div class="rounded-lg border bg-white p-5">
+                <p class="text-2xl font-black"><?php echo $pendingBuilders; ?></p>
+                <p class="text-sm text-gray-500">Pending Builders</p>
+            </div>
+            <div class="rounded-lg border bg-white p-5">
+                <p class="text-2xl font-black"><?php echo $newLeads; ?></p>
+                <p class="text-sm text-gray-500">New Leads</p>
+            </div>
+
         </div>
 
-        <div class="mt-8 grid grid-cols-1 xl:grid-cols-[420px_1fr] gap-6">
-            <form method="post" class="rounded-lg border bg-white p-5">
-                <input type="hidden" name="action" value="create_builder">
-                <h2 class="text-xl font-black text-primary">Onboard Builder</h2>
-                <div class="mt-4 space-y-3">
-                    <input name="company_name" required placeholder="Company name" class="h-12 w-full rounded-md border px-3 text-sm">
-                    <input name="builder_name" required placeholder="Contact person" class="h-12 w-full rounded-md border px-3 text-sm">
-                    <input name="email" required type="email" placeholder="Email" class="h-12 w-full rounded-md border px-3 text-sm">
-                    <input name="phone" required placeholder="Phone" class="h-12 w-full rounded-md border px-3 text-sm">
-                    <input name="city" placeholder="City" class="h-12 w-full rounded-md border px-3 text-sm">
-                    <input name="state" placeholder="State" class="h-12 w-full rounded-md border px-3 text-sm">
-                    <input name="company_logo" placeholder="Developer logo URL or upload path" class="h-12 w-full rounded-md border px-3 text-sm">
-                    <input name="established_year" type="number" min="1800" max="<?php echo date('Y'); ?>" placeholder="Established year" class="h-12 w-full rounded-md border px-3 text-sm">
-                </div>
-                <button class="mt-4 h-12 w-full rounded-md bg-primary font-bold text-white">Create Builder</button>
-            </form>
-
+        <div class="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-6">
             <div class="rounded-lg border bg-white p-5">
-                <h2 class="text-xl font-black text-primary">Recent Builders</h2>
-                <div class="mt-4 overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-gray-50 text-gray-500">
-                            <tr>
-                                <th class="px-4 py-3">Company</th>
-                                <th class="px-4 py-3">Contact</th>
-                                <th class="px-4 py-3">City</th>
-                                <th class="px-4 py-3">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($builders as $builder): ?>
-                                <tr class="border-t">
-                                    <td class="px-4 py-3 font-bold"><?php echo e($builder['company_name']); ?></td>
-                                    <td class="px-4 py-3"><?php echo e($builder['builder_name']); ?></td>
-                                    <td class="px-4 py-3"><?php echo e($builder['city']); ?></td>
-                                    <td class="px-4 py-3"><?php echo e($builder['status']); ?></td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                </div>
+                <h2 class="text-lg font-bold text-primary mb-4">Projects Growth (12 months)</h2>
+                <canvas id="monthlyChart" height="200"></canvas>
+            </div>
+            <div class="rounded-lg border bg-white p-5">
+                <h2 class="text-lg font-bold text-primary mb-4">Projects by City</h2>
+                <canvas id="cityChart" height="200"></canvas>
             </div>
         </div>
 
-        <div class="mt-8 rounded-lg border bg-white p-5">
-            <h2 class="text-xl font-black text-primary">Recent Leads</h2>
-            <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <?php foreach ($leads as $lead): ?>
-                    <div class="rounded-md border p-4">
-                        <p class="font-black"><?php echo e($lead['full_name']); ?></p>
-                        <p class="text-sm text-gray-500"><?php echo e($lead['project_name']); ?></p>
-                        <p class="mt-2 text-sm font-bold text-accent"><?php echo e($lead['phone']); ?></p>
-                    </div>
-                <?php endforeach; ?>
-                <?php if (empty($leads)): ?><p class="text-sm text-gray-500">No leads yet.</p><?php endif; ?>
+        <div class="mt-6 grid grid-cols-1 xl:grid-cols-2 gap-6">
+            <div class="rounded-lg border bg-white p-5">
+                <h2 class="text-lg font-bold text-primary mb-4">Recent Builders</h2>
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-50 text-gray-500">
+                        <tr><th class="px-4 py-3">Company</th><th class="px-4 py-3">Contact</th><th class="px-4 py-3">Status</th></tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($recentBuilders as $b): ?>
+                            <tr class="border-t">
+                                <td class="px-4 py-3 font-medium"><?php echo e($b['company_name']); ?></td>
+                                <td class="px-4 py-3"><?php echo e($b['builder_name']); ?></td>
+                                <td class="px-4 py-3">
+                                    <span class="rounded-full px-2.5 py-0.5 text-xs font-medium <?php echo $b['status'] === 'active' ? 'bg-green-100 text-green-700' : ($b['status'] === 'pending' ? 'bg-amber-100 text-amber-700' : 'bg-gray-100 text-gray-500'); ?>"><?php echo e($b['status']); ?></span>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($recentBuilders)): ?><tr><td colspan="3" class="px-4 py-4 text-center text-gray-500">No builders yet.</td></tr><?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+            <div class="rounded-lg border bg-white p-5">
+                <h2 class="text-lg font-bold text-primary mb-4">Recent Leads</h2>
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-gray-50 text-gray-500">
+                        <tr><th class="px-4 py-3">Name</th><th class="px-4 py-3">Project</th><th class="px-4 py-3">Phone</th></tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($recentLeads as $l): ?>
+                            <tr class="border-t">
+                                <td class="px-4 py-3 font-medium"><?php echo e($l['full_name']); ?></td>
+                                <td class="px-4 py-3"><?php echo e($l['project_name']); ?></td>
+                                <td class="px-4 py-3"><?php echo e($l['phone']); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                        <?php if (empty($recentLeads)): ?><tr><td colspan="3" class="px-4 py-4 text-center text-gray-500">No leads yet.</td></tr><?php endif; ?>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </section>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+new Chart(document.getElementById('monthlyChart'), {
+    type: 'bar',
+    data: {
+        labels: <?php echo json_encode($monthLabels ?: ['Jan']); ?>,
+        datasets: [{
+            label: 'Projects',
+            data: <?php echo json_encode($monthCounts ?: [0]); ?>,
+            backgroundColor: '#2B1C5A',
+            borderRadius: 4
+        }]
+    },
+    options: { responsive: true, plugins: { legend: { display: false } } }
+});
+new Chart(document.getElementById('cityChart'), {
+    type: 'bar',
+    data: {
+        labels: <?php echo json_encode($cityLabels ?: ['N/A']); ?>,
+        datasets: [{
+            label: 'Projects',
+            data: <?php echo json_encode($cityCounts ?: [0]); ?>,
+            backgroundColor: '#EC4B02',
+            borderRadius: 4
+        }]
+    },
+    options: { responsive: true, indexAxis: 'y', plugins: { legend: { display: false } } }
+});
+</script>
+
+<?php require_once __DIR__ . '/includes/footer.php'; ?>
